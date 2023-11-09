@@ -1,18 +1,18 @@
-# Copyright (c) 2020-2021-2022-2023 Luca Cappa
+# Copyright (c) 2019-2020-2021-2022-2023 Luca Cappa
 # Released under the term specified in file LICENSE.txt
 # SPDX short identifier: MIT
 #
-# The peculiarity of this workflow is that assumes vcpkg is NOT stored as a submodule of 
-# this repository.
+# The peculiarity of this workflow is that assumes vcpkg stored as a submodule of this
+# repository.
 # The workflow does the following:
-# - Using the provided Git commit id, sets up vcpkg if needed, then run CMake with
-#   CMakePreset.json using a configuration that leverages the vcpkg's toolchain file. 
+# - Sets up vcpkg if needed, then run CMake with CMakePreset.json using a configuration
+#   that leverages the vcpkg's toolchain file.
 #   This will automatically run vcpkg to install dependencies described by the vcpkg.json
-#   manifest file. 
+#   manifest file.
 #   vcpkg's Binary Caching backed by GH Action cache is being used. It will be a no-op if 
 #   the dependencies are restored from GH Action cache.
 # - Finally builds the sources with Ninja.
-name: hosted-ninja-vcpkg-cacheoff
+name: hosted-ninja_multi-vcpkg_submod-triplet-cacheoff
 on: [push, workflow_dispatch]
 
 jobs:
@@ -25,11 +25,14 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         include:
           - os: windows-latest
-            vcpkgCommitId: 'c9f906558f9bb12ee9811d6edc98ec9255c6cda5'
+            triplet: x64-windows
           - os: ubuntu-latest
-            vcpkgCommitId: 'c9f906558f9bb12ee9811d6edc98ec9255c6cda5'
+            triplet: x64-linux
           - os: macos-latest
-            vcpkgCommitId: 'c9f906558f9bb12ee9811d6edc98ec9255c6cda5'
+            triplet: x64-osx
+
+    env:
+      VCPKG_DEFAULT_TRIPLET: ${{ matrix.triplet }}
 
     steps:
       - uses: actions/checkout@v3
@@ -37,10 +40,7 @@ jobs:
           submodules: true
 
       - uses: lukka/get-cmake@latest
-      - name: Dump the content of $RUNNER_TEMP
-        run: find $RUNNER_TEMP
-        shell: bash
-      - name: Dump the content of $RUNNER_WORKSPACE
+      - name: dir
         run: find $RUNNER_WORKSPACE
         shell: bash
 
@@ -48,19 +48,23 @@ jobs:
         uses: lukka/run-vcpkg@main
         id: runvcpkg
         with:
-          # This specifies the location of vcpkg, where it is going to be restored from cache, or create from scratch.
-          vcpkgDirectory: '${{ runner.workspace }}/b/vcpkg'
-          # The Git commit id of vcpkg to be checked out. This is only needed because we are not using a submodule.
-          vcpkgGitCommitId: '${{ matrix.vcpkgCommitId}}'
-          # The vcpkg.json file, which will be part of cache key computation.
+          # This one is not needed, as it is the default value anyway.
+          # vcpkgDirectory: '${{ github.workspace }}/vcpkg'
           vcpkgJsonGlob: '**/cmakepresets/vcpkg.json'
 
-      - name: Prints output of run-vcpkg's action
-        run: echo "root='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}', triplet='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_DEFAULT_TRIPLET_OUT }}'"
-
-      - name: Run CMake with vcpkg.json manifest
+      - name: List $RUNNER_WORKSPACE before build
+        run: find $RUNNER_WORKSPACE
+        shell: bash
+      - name: Prints output of run-vcpkg's action.
+        run: echo "root='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}', triplet='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_DEFAULT_TRIPLET_OUT }}' "
+      - name: Run CMake+vcpkg+NinjaMulti-Config (Release configuration)
         uses: lukka/run-cmake@v10
+        id: runcmake
         with:
           cmakeListsTxtPath: '${{ github.workspace }}/cmakepresets/CMakeLists.txt'
-          configurePreset: ninja-multi-vcpkg
-          buildPreset: ninja-multi-vcpkg
+          configurePreset: 'ninja-multi-vcpkg'
+          buildPreset: 'ninja-multi-vcpkg'
+          buildPresetAdditionalArgs: '[`--config Release`]'
+      - name: List $RUNNER_WORKSPACE after build
+        run: find $RUNNER_WORKSPACE
+        shell: bash
