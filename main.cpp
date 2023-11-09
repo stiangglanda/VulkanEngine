@@ -1,17 +1,19 @@
 #define GLFW_INCLUDE_VULKAN
-#include "../vendor/glfw/include/GLFW/glfw3.h"
+#include <GLFW/glfw3.h>
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #define GLM_ENABLE_EXPERIMENTAL
-#include "../vendor/glm/glm/glm.hpp"
-#include "../vendor/glm/glm/gtc/matrix_transform.hpp"
-#include "../vendor/glm/glm/gtx/hash.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/hash.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "../vendor/stb_image.h"
+#include "include/stb_image.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION
+#include <tiny_obj_loader.h>
+
 #include <algorithm>
 #include <array>
 #include <chrono>
@@ -26,8 +28,6 @@
 #include <stdexcept>
 #include <unordered_map>
 #include <vector>
-
-#include "../vendor/tinyobjloader/tiny_obj_loader.h"
 
 constexpr uint32_t WIDTH = 800;
 constexpr uint32_t HEIGHT = 600;
