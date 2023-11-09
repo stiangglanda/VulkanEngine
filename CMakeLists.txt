@@ -15,6 +15,8 @@ add_executable (VulkanEngine "src/main.cpp" "vendor/stb_image.h")
 add_subdirectory("vendor/glfw")
 add_subdirectory("vendor/glm")
 add_subdirectory("vendor/tinyobjloader")
+
+find_package(Vulkan REQUIRED)
 # Add source to this project's executable. 
 
 target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/") # This is useful to get an ASSETS_PATH in your IDE during development but you should comment this if you compile a release version and uncomment the next line
@@ -31,6 +33,7 @@ target_link_directories(VulkanEngine
 	PUBLIC vendor/tinyobjloader 
 )
 
+target_link_libraries(VulkanEngine Vulkan::Vulkan)
 target_link_libraries(VulkanEngine glfw)
 target_link_libraries(VulkanEngine glm::glm)
 target_link_libraries(VulkanEngine tinyobjloader)
