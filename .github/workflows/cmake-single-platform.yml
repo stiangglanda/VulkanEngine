@@ -1,41 +1,66 @@
-name: Build and Test
-
-on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+# Copyright (c) 2020-2021-2022-2023 Luca Cappa
+# Released under the term specified in file LICENSE.txt
+# SPDX short identifier: MIT
+#
+# The peculiarity of this workflow is that assumes vcpkg is NOT stored as a submodule of 
+# this repository.
+# The workflow does the following:
+# - Using the provided Git commit id, sets up vcpkg if needed, then run CMake with
+#   CMakePreset.json using a configuration that leverages the vcpkg's toolchain file. 
+#   This will automatically run vcpkg to install dependencies described by the vcpkg.json
+#   manifest file. 
+#   vcpkg's Binary Caching backed by GH Action cache is being used. It will be a no-op if 
+#   the dependencies are restored from GH Action cache.
+# - Finally builds the sources with Ninja.
+name: hosted-ninja-vcpkg-cacheoff
+on: [push, workflow_dispatch]
 
 jobs:
-  build:
+  job:
+    name: ${{ matrix.os }}-${{ github.workflow }}
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        cmake: [3.15]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+          - os: windows-latest
+            vcpkgCommitId: 'c9f906558f9bb12ee9811d6edc98ec9255c6cda5'
+          - os: ubuntu-latest
+            vcpkgCommitId: 'c9f906558f9bb12ee9811d6edc98ec9255c6cda5'
+          - os: macos-latest
+            vcpkgCommitId: 'c9f906558f9bb12ee9811d6edc98ec9255c6cda5'
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
 
-    - name: Setup Vcpkg
-      uses: microsoft/vcpkg@bc5cf2962b0d8d5fb897ed58f25c7c7c7bfab369
-      with:
-        triplet: x64-${{ matrix.os }}
+      - uses: lukka/get-cmake@latest
+      - name: Dump the content of $RUNNER_TEMP
+        run: find $RUNNER_TEMP
+        shell: bash
+      - name: Dump the content of $RUNNER_WORKSPACE
+        run: find $RUNNER_WORKSPACE
+        shell: bash
 
-    - name: Install Dependencies
-      run: |
-        vcpkg install tinyobjloader glfw3 glm gtest vulkan
-        vcpkg integrate install
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@main
+        id: runvcpkg
+        with:
+          # This specifies the location of vcpkg, where it is going to be restored from cache, or create from scratch.
+          vcpkgDirectory: '${{ runner.workspace }}/b/vcpkg'
+          # The Git commit id of vcpkg to be checked out. This is only needed because we are not using a submodule.
+          vcpkgGitCommitId: '${{ matrix.vcpkgCommitId}}'
+          # The vcpkg.json file, which will be part of cache key computation.
+          vcpkgJsonGlob: '**/cmakepresets/vcpkg.json'
 
-    - name: Setup CMake
-      uses: lukka/run-cmake@v1
-      with:
-        cmake-version: ${{ matrix.cmake }}
+      - name: Prints output of run-vcpkg's action
+        run: echo "root='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}', triplet='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_DEFAULT_TRIPLET_OUT }}'"
 
-    - name: Build
-      run: cmake --build build --config Release
-
-    - name: Run Tests
-      if: matrix.os == 'ubuntu-latest'
-      run: ctest -C Release --output-on-failure
+      - name: Run CMake with vcpkg.json manifest
+        uses: lukka/run-cmake@v10
+        with:
+          cmakeListsTxtPath: '${{ github.workspace }}/cmakepresets/CMakeLists.txt'
+          configurePreset: ninja-multi-vcpkg
+          buildPreset: ninja-multi-vcpkg
