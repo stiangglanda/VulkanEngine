@@ -1,0 +1,41 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        cmake: [3.15]
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Setup Vcpkg
+      uses: microsoft/vcpkg@bc5cf2962b0d8d5fb897ed58f25c7c7c7bfab369
+      with:
+        triplet: x64-${{ matrix.os }}
+
+    - name: Install Dependencies
+      run: |
+        vcpkg install tinyobjloader glfw3 glm gtest vulkan
+        vcpkg integrate install
+
+    - name: Setup CMake
+      uses: lukka/run-cmake@v1
+      with:
+        cmake-version: ${{ matrix.cmake }}
+
+    - name: Build
+      run: cmake --build build --config Release
+
+    - name: Run Tests
+      if: matrix.os == 'ubuntu-latest'
+      run: ctest -C Release --output-on-failure
