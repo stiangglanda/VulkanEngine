@@ -10,6 +10,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED On)
 
 project ("VulkanEngine")
 
+add_subdirectory("vendor/glfw")
+add_subdirectory("vendor/glm")
+add_subdirectory("vendor/tinyobjloader")
+
+
 find_package(glfw3 3.3 REQUIRED)
 find_package(glm REQUIRED)
 find_package(tinyobjloader REQUIRED)
