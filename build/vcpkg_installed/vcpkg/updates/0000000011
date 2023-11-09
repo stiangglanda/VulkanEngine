@@ -1,0 +1,9 @@
+Package: vulkan
+Version: 1.1.82.1
+Port-Version: 2
+Architecture: x64-windows
+Multi-Arch: same
+Abi: 979d429115a91227ac6672780e1dea2e191d86dbb15d8bbff1b09674bd9eee84
+Description: A graphics and compute API that provides high-efficiency, cross-platform access to modern GPUs on a wide variety of devices.
+Type: Port
+Status: install ok installed

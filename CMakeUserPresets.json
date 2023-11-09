@@ -1,0 +1,11 @@
+﻿{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "default",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "D:/dev/vcpkg/scripts/buildsystems/vcpkg.cmake"
+      }
+    }
+  ]
+}

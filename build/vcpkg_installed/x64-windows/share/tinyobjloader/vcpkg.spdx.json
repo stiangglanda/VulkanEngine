@@ -1,0 +1,114 @@
+{
+  "$schema": "https://raw.githubusercontent.com/spdx/spdx-spec/v2.2.1/schemas/spdx-schema.json",
+  "spdxVersion": "SPDX-2.2",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "documentNamespace": "https://spdx.org/spdxdocs/tinyobjloader-x64-windows-2.0.0-rc9-8a63f801-24e8-4935-963f-28c533d79378",
+  "name": "tinyobjloader:x64-windows@2.0.0-rc9 c784c6a1a653dfbd33e055ed721b6ea264260d7a5f86a5c8bb08553b4fe7ff25",
+  "creationInfo": {
+    "creators": [
+      "Tool: vcpkg-3247920fbdd47d08f36cbd480addd9890d3c2435"
+    ],
+    "created": "2023-11-08T19:50:14Z"
+  },
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-port",
+      "relationshipType": "GENERATES",
+      "relatedSpdxElement": "SPDXRef-binary"
+    },
+    {
+      "spdxElementId": "SPDXRef-port",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-file-0"
+    },
+    {
+      "spdxElementId": "SPDXRef-port",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-file-1"
+    },
+    {
+      "spdxElementId": "SPDXRef-binary",
+      "relationshipType": "GENERATED_FROM",
+      "relatedSpdxElement": "SPDXRef-port"
+    },
+    {
+      "spdxElementId": "SPDXRef-file-0",
+      "relationshipType": "CONTAINED_BY",
+      "relatedSpdxElement": "SPDXRef-port"
+    },
+    {
+      "spdxElementId": "SPDXRef-file-1",
+      "relationshipType": "CONTAINED_BY",
+      "relatedSpdxElement": "SPDXRef-port"
+    },
+    {
+      "spdxElementId": "SPDXRef-file-1",
+      "relationshipType": "DEPENDENCY_MANIFEST_OF",
+      "relatedSpdxElement": "SPDXRef-port"
+    }
+  ],
+  "packages": [
+    {
+      "name": "tinyobjloader",
+      "SPDXID": "SPDXRef-port",
+      "versionInfo": "2.0.0-rc9",
+      "downloadLocation": "git+https://github.com/microsoft/vcpkg@c1e6a1c3ddc75a72ea801b5d0980a73e14358e5e",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "description": "Tiny but powerful single file wavefront obj loader",
+      "comment": "This is the port (recipe) consumed by vcpkg."
+    },
+    {
+      "name": "tinyobjloader:x64-windows",
+      "SPDXID": "SPDXRef-binary",
+      "versionInfo": "c784c6a1a653dfbd33e055ed721b6ea264260d7a5f86a5c8bb08553b4fe7ff25",
+      "downloadLocation": "NONE",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "comment": "This is a binary package built by vcpkg."
+    },
+    {
+      "SPDXID": "SPDXRef-resource-1",
+      "name": "syoyo/tinyobjloader",
+      "downloadLocation": "git+https://github.com/syoyo/tinyobjloader@v2.0.0rc9",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "checksums": [
+        {
+          "algorithm": "SHA512",
+          "checksumValue": "e188d6077cb19f9044da9c98c2c4284cad09f4ee745f4746d0df5b22a379d3b32fe20aa998151d6dc08e7f113f50abf80a7509d63c36de46547ce43b5fe1fa54"
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "fileName": "./portfile.cmake",
+      "SPDXID": "SPDXRef-file-0",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "54573a3cc58e253163a349df162afaa8f984fd69961e48cab01549fd0ee2778b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./vcpkg.json",
+      "SPDXID": "SPDXRef-file-1",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "45b491f9920cda6e7e88ff17c672618b06dd518afff05dfec2c8c2d901675023"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    }
+  ]
+}

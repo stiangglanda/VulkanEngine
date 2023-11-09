@@ -1,0 +1,9 @@
+Package: tinyobjloader
+Version: 2.0.0-rc9
+Depends: vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-windows
+Multi-Arch: same
+Abi: c784c6a1a653dfbd33e055ed721b6ea264260d7a5f86a5c8bb08553b4fe7ff25
+Description: Tiny but powerful single file wavefront obj loader
+Type: Port
+Status: install ok installed
