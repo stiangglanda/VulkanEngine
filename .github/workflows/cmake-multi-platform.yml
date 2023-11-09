@@ -1,28 +1,18 @@
-# Copyright (c) 2019-2020-2021-2022-2023 Luca Cappa
+# Copyright (c) 2020-2021-2022-2023 Luca Cappa
 # Released under the term specified in file LICENSE.txt
 # SPDX short identifier: MIT
 #
-# The peculiarity of this workflow is that runs `vcpkg install` at `run-vcpkg`, 
-# rather than with `run-cmake.
-# Also, it does not assume that vcpkg is a submodule of this repository.
-#
+# The peculiarity of this workflow is that assumes vcpkg is NOT stored as a submodule of 
+# this repository.
 # The workflow does the following:
-# - Download and setup vcpkg (which is stored NOT in a Git submodule), then run
-#   `vcpkg install` to install the packages described in vcpkg.json manifest file.
-# - Note: at this point, all the vcpkg dependencies specified in vcpkg.json are installed,
-#   and it is possible to run anything that is needed to build the C++ application as.
-#   long the paths to headers and libraries are correctly set.
-#
-# - _Warning:_ in this sample, CMake is going to be used to build the application, 
-#   but anything else could be used. This means that vcpkg will be run again and 
-#   it will quickly realize that all dependencies are already installed.
-#   In short: *it is not needed to run vcpkg* in the step before if you build with CMake,
-#   since CMake will run it for you already! 
-#   Look to (hosted-ninja-vcpkg_submod.yml)[./hosted-ninja-vcpkg_submod.yml] sample.
-#
-# - Finally, it runs CMake with CMakePreset.json and vcpkg's toolchain file to build 
-#   the C++ sources with Ninja.
-name: hosted-ninja-vcpkg-install-cacheoff
+# - Using the provided Git commit id, sets up vcpkg if needed, then run CMake with
+#   CMakePreset.json using a configuration that leverages the vcpkg's toolchain file. 
+#   This will automatically run vcpkg to install dependencies described by the vcpkg.json
+#   manifest file. 
+#   vcpkg's Binary Caching backed by GH Action cache is being used. It will be a no-op if 
+#   the dependencies are restored from GH Action cache.
+# - Finally builds the sources with Ninja.
+name: hosted-ninja-vcpkg-cacheoff
 on: [push, workflow_dispatch]
 
 jobs:
@@ -47,7 +37,10 @@ jobs:
           submodules: true
 
       - uses: lukka/get-cmake@latest
-      - name: List $RUNNER_WORKSPACE before build
+      - name: Dump the content of $RUNNER_TEMP
+        run: find $RUNNER_TEMP
+        shell: bash
+      - name: Dump the content of $RUNNER_WORKSPACE
         run: find $RUNNER_WORKSPACE
         shell: bash
 
@@ -55,22 +48,19 @@ jobs:
         uses: lukka/run-vcpkg@main
         id: runvcpkg
         with:
+          # This specifies the location of vcpkg, where it is going to be restored from cache, or create from scratch.
           vcpkgDirectory: '${{ runner.workspace }}/b/vcpkg'
-          vcpkgGitCommitId: '${{ matrix.vcpkgCommitId }}'
-          # Run vcpkg with the command specified by the `runVcpkgFormatString` input.
-          runVcpkgInstall: true
+          # The Git commit id of vcpkg to be checked out. This is only needed because we are not using a submodule.
+          vcpkgGitCommitId: '${{ matrix.vcpkgCommitId}}'
+          # The vcpkg.json file, which will be part of cache key computation.
           vcpkgJsonGlob: '**/cmakepresets/vcpkg.json'
 
-      - name: Prints output of run-vcpkg's action.
-        run: echo "root='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}', triplet='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_DEFAULT_TRIPLET_OUT }}' "
+      - name: Prints output of run-vcpkg's action
+        run: echo "root='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}', triplet='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_DEFAULT_TRIPLET_OUT }}'"
 
-      - name: Run CMake with Ninja
+      - name: Run CMake with vcpkg.json manifest
         uses: lukka/run-cmake@v10
         with:
           cmakeListsTxtPath: '${{ github.workspace }}/cmakepresets/CMakeLists.txt'
-          configurePreset: 'ninja-multi-vcpkg'
-          buildPreset: 'ninja-multi-vcpkg'
-
-      - name: List $RUNNER_WORKSPACE after build
-        run: find $RUNNER_WORKSPACE
-        shell: bash
+          configurePreset: ninja-multi-vcpkg
+          buildPreset: ninja-multi-vcpkg
