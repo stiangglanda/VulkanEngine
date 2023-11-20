@@ -10,7 +10,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED On)
 
 project ("VulkanEngine")
 
-add_executable (VulkanEngine "src/main.cpp" "vendor/stb_image.h")
+add_library(Core "src/Core/Core.cpp")
+
+add_executable(Client "src/Client/main.cpp" "vendor/stb_image.h")
 
 add_subdirectory("vendor/glfw")
 add_subdirectory("vendor/glm")
@@ -19,24 +21,27 @@ add_subdirectory("vendor/tinyobjloader")
 find_package(Vulkan REQUIRED)
 # Add source to this project's executable. 
 
-target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/") # This is useful to get an ASSETS_PATH in your IDE during development but you should comment this if you compile a release version and uncomment the next line
+target_compile_definitions(Client PUBLIC RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/") # This is useful to get an ASSETS_PATH in your IDE during development but you should comment this if you compile a release version and uncomment the next line
 
-target_include_directories(VulkanEngine 
+target_include_directories(Client 
 	PUBLIC vendor/glfw/include 
 	PUBLIC vendor/glm/glm 
 	PUBLIC vendor/tinyobjloader 
+	PUBLIC src/Core
 )
 
-target_link_directories(VulkanEngine 
+target_link_directories(Client 
 	PUBLIC vendor/glfw/src 
 	PUBLIC vendor/glm/glm 
 	PUBLIC vendor/tinyobjloader 
+	PRIVATE src/Core 
 )
 
-target_link_libraries(VulkanEngine Vulkan::Vulkan)
-target_link_libraries(VulkanEngine glfw)
-target_link_libraries(VulkanEngine glm::glm)
-target_link_libraries(VulkanEngine tinyobjloader)
+target_link_libraries(Client Vulkan::Vulkan)
+target_link_libraries(Client glfw)
+target_link_libraries(Client glm::glm)
+target_link_libraries(Client tinyobjloader)
+target_link_libraries(Client Core)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -53,10 +58,13 @@ add_executable(
   VE_Test
   "test/VE_UnitTest.cpp"
 )
-target_link_libraries(
-  VE_Test
-  GTest::gtest_main
-)
+
+target_include_directories(VE_Test PUBLIC src/Core)
+
+target_link_directories(VE_Test PRIVATE src/Core)
+
+target_link_libraries(VE_Test GTest::gtest_main)
+target_link_libraries(VE_Test Core)
 
 include(GoogleTest)
 gtest_discover_tests(VE_Test)
