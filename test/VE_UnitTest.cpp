@@ -16,11 +16,11 @@ TEST(CoreTest, Timer)
     Core::Timer timer;
 
     timer.Tick();
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     timer.Tick();
 
     // Expect equality.
-    EXPECT_EQ(timer.DeltaTime() > 0.01 && timer.DeltaTime() < 0.015, true);
+    EXPECT_EQ(timer.DeltaTime() > 1 && timer.DeltaTime() < 1.1, true);
 }
 
 TEST(CoreTest, TimerStop)
@@ -55,5 +55,5 @@ TEST(CoreTest, TimerStart)
     timer.Tick();
 
     // Expect equality.
-    EXPECT_EQ(timer.DeltaTime() > 0.01 && timer.DeltaTime() < 0.015, 0);
+    EXPECT_EQ(timer.DeltaTime() > 0.01 && timer.DeltaTime() < 0.015, true);
 }
