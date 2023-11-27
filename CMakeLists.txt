@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED On)
 
 project ("VulkanEngine")
 
-add_library(Core "src/Core/Core.cpp" "src/Core/Timer.h")
+add_library(Core "src/Core/Core.cpp" "src/Core/Timer.h" "src/Core/Timer.cpp")
 
 add_executable(Client "src/Client/main.cpp" "vendor/stb_image.h")
 
