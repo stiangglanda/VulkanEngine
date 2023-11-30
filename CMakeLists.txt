@@ -4,15 +4,11 @@
 cmake_minimum_required (VERSION 3.8)
 
 # Enable Hot Reload for MSVC compilers if supported.
-
+set(CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API aa1f7df0-828a-4fcd-9afc-2dc80491aca7)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED On)
 
-project ("VulkanEngine")
-
-add_library(Core "src/Core/Core.cpp" "src/Core/Timer.h" "src/Core/Timer.cpp")
-
-add_executable(Client "src/Client/main.cpp" "vendor/stb_image.h")
+project ("VulkanEngine") 
 
 add_subdirectory("vendor/glfw")
 add_subdirectory("vendor/glm")
@@ -20,6 +16,24 @@ add_subdirectory("vendor/tinyobjloader")
 
 find_package(Vulkan REQUIRED)
 # Add source to this project's executable. 
+
+add_library(Core "src/Core/Core.cpp" "src/Core/Timer.h" "src/Core/Timer.cpp"  "src/Core/Application.cpp" "src/Core/Application.h")
+
+target_include_directories(Core 
+	PUBLIC vendor/glfw/include 
+	PUBLIC vendor/glm/glm 
+)
+
+target_link_directories(Core 
+	PUBLIC vendor/glfw/src 
+	PUBLIC vendor/glm/glm 
+)
+
+target_link_libraries(Core Vulkan::Vulkan)
+target_link_libraries(Core glfw)
+target_link_libraries(Core glm::glm)
+
+add_executable(Client "src/Client/main.cpp" "vendor/stb_image.h")
 
 target_compile_definitions(Client PUBLIC RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/") # This is useful to get an ASSETS_PATH in your IDE during development but you should comment this if you compile a release version and uncomment the next line
 

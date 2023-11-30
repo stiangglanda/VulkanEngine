@@ -1,3 +1,4 @@
+#include <Application.h>
 #include <Core.h>
 #include <Timer.h>
 #include <gtest/gtest.h>
