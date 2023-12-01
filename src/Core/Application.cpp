@@ -1,45 +1,45 @@
 #include "Application.h"
 
+#include <iostream>
+
 namespace Core
 {
 
-Application::Application()
+Application *Application::s_Instance = nullptr;
+
+Application::Application(const ApplicationSpecification &specification) : m_Specification(specification)
 {
+    s_Instance = this;
+    // if (!m_Specification.WorkingDirectory.empty())
+    //     std::filesystem::current_path(m_Specification.WorkingDirectory);
+
+    mWindow = Window::Create(WindowProps(m_Specification.Name));
 }
 
 Core::Application::~Application()
 {
-
+    Shutdown();
 }
 
-void Application::init()
-{
-    initWindow();
-}
-
-void Application::cleanUp()
+void Application::Shutdown()
 {
 
-    glfwDestroyWindow(mWindowPtr);
+    // glfwDestroyWindow(mWindow);
 
-    glfwTerminate();
+    // glfwTerminate();
 }
 
 
-void Application::framebufferResizeCallback(GLFWwindow *window, int width, int height)
+void Application::Run()
 {
-    auto app = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window));
-    app->mResizing = true;
-}
+    std::string input;//TODO delete
+    std::cin >> input;
+} // glfwInit();
 
-void Application::initWindow()
-{
-    glfwInit();
+// glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+// mWindowPtr = glfwCreateWindow(mWidth, mHeight, mWindowTitle.c_str(), nullptr, nullptr);
+// glfwSetWindowUserPointer(mWindowPtr, this);
+// glfwSetFramebufferSizeCallback(mWindowPtr, framebufferResizeCallback);
 
-    mWindowPtr = glfwCreateWindow(mWidth, mHeight, mWindowTitle.c_str(), nullptr, nullptr);
-    glfwSetWindowUserPointer(mWindowPtr, this);
-    glfwSetFramebufferSizeCallback(mWindowPtr, framebufferResizeCallback);
-}
-}
+} // namespace Core

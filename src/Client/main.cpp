@@ -17,6 +17,7 @@
 #include <tiny_obj_loader.h>
 
 #include <Core.h>
+#include <EntryPoint.h>
 
 #include <algorithm>
 #include <array>
@@ -1792,24 +1793,59 @@ class HelloTriangleApplication
     }
 };
 
-int main()
+// int main()
+//{
+//     // HelloTriangleApplication app;
+//     Core::Application app(Core::WindowProps());
+//
+//     std::string input;
+//     std::cin >> input;
+//     Core::Application::Get().Shutdown();
+//     // try {
+//     //   app.run();
+//     // } catch (const std::exception &e) {
+//     //   std::cerr << e.what() << std::endl;
+//     //   return EXIT_FAILURE;
+//     // }
+//
+//     // return EXIT_SUCCESS;
+// }
+
+class Sandbox : public Core::Application
 {
-    Core::PrintHelloWorld();
-    // HelloTriangleApplication app;
-    Core::Application app;
+  public:
+    Sandbox(const Core::ApplicationSpecification &specification) : Core::Application(specification)
+    {
+    }
 
-    app.init();
+    ~Sandbox()
+    {
+    }
+};
 
-    std::string input;
-    std::cin >> input;
+Core::Application *Core::CreateApplication(Core::ApplicationCommandLineArgs args)
+{
+    ApplicationSpecification spec;
+    spec.Name = "Sandbox";
+    spec.WorkingDirectory = "";
+    spec.CommandLineArgs = args;
 
-    app.cleanUp();
-    // try {
-    //   app.run();
-    // } catch (const std::exception &e) {
-    //   std::cerr << e.what() << std::endl;
-    //   return EXIT_FAILURE;
-    // }
-
-    // return EXIT_SUCCESS;
+    return new Sandbox(spec);
 }
+
+// class Sandbox : public Core::Application
+//{
+//   public:
+//     Sandbox(const Core::WindowProps &specification) : Core::Application(specification)
+//     {
+//     }
+//
+//     ~Sandbox()
+//     {
+//     }
+// };
+//
+// Core::Application *Core::CreateApplication()
+//{
+//     return new Sandbox(Core::WindowProps());
+// }

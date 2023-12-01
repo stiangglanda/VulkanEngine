@@ -17,7 +17,13 @@ add_subdirectory("vendor/tinyobjloader")
 find_package(Vulkan REQUIRED)
 # Add source to this project's executable. 
 
-add_library(Core "src/Core/Core.cpp" "src/Core/Timer.h" "src/Core/Timer.cpp"  "src/Core/Application.cpp" "src/Core/Application.h")
+add_library(Core "src/Core/Core.cpp" "src/Core/Timer.h" "src/Core/Timer.cpp"
+"src/Core/Application.cpp" "src/Core/Application.h" "src/Core/Window.h" 
+"src/Core/Window.cpp" "src/Core/Input.h"
+"src/Core/KeyCodes.h" "src/Core/MouseCodes.h" 
+"src/Core/Platform/Windows/WindowsWindow.h" 
+"src/Core/Platform/Windows/WindowsWindow.cpp" 
+"src/Core/Platform/Windows/WindowsInput.cpp" "src/Core/PlatformDetection.h" "src/Core/EntryPoint.h")
 
 target_include_directories(Core 
 	PUBLIC vendor/glfw/include 

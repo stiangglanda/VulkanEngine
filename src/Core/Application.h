@@ -1,42 +1,60 @@
 #pragma once
 #define GLFW_INCLUDE_VULKAN
+#include "Window.h"
 #include <GLFW/glfw3.h>
+
 #include <memory>
 
-#include <string>
+int main(int argc, char **argv);
 
 namespace Core
 {
 
+struct ApplicationCommandLineArgs
+{
+    int Count = 0;
+    char **Args = nullptr;
+
+    const char *operator[](int index) const
+    {
+        return Args[index];
+    }
+};
+
+struct ApplicationSpecification
+{
+    std::string Name = "Application";
+    std::string WorkingDirectory;
+    ApplicationCommandLineArgs CommandLineArgs;
+};
+
 class Application
 {
   public:
-    Application();
+    Application(const ApplicationSpecification &specification);
+    virtual ~Application();
 
-    ~Application();
+    void Shutdown();
 
-    void init();
-    void run();
-    void draw();
-    void update();
-    void cleanUp();
-
-    static void framebufferResizeCallback(GLFWwindow *window, int width, int height);
-
-    constexpr std::string getWindowTitle()
+    Window &GetWindow()
     {
-        return mWindowTitle;
-    };
+        return *mWindow;
+    }
 
-  protected:
-    uint32_t mWidth = 600;
-    uint32_t mHeight = 800;
+    static Application &Get()
+    {
+        return *s_Instance;
+    }
 
   private:
-    void initWindow();
+    void Run();
+    ApplicationSpecification m_Specification;
+    static Application *s_Instance;
 
-    GLFWwindow *mWindowPtr;
+    std::unique_ptr<Window> mWindow;
     bool mResizing = false;
-    std::string mWindowTitle = "VulkanEngine";
+    friend int ::main(int argc, char **argv);
 };
+// To be defined in CLIENT
+Application *CreateApplication(ApplicationCommandLineArgs args);
 } // namespace Core
