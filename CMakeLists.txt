@@ -23,7 +23,12 @@ add_library(Core "src/Core/Core.cpp" "src/Core/Timer.h" "src/Core/Timer.cpp"
 "src/Core/KeyCodes.h" "src/Core/MouseCodes.h" 
 "src/Core/Platform/Windows/WindowsWindow.h" 
 "src/Core/Platform/Windows/WindowsWindow.cpp" 
-"src/Core/Platform/Windows/WindowsInput.cpp" "src/Core/PlatformDetection.h" "src/Core/EntryPoint.h")
+"src/Core/Platform/Windows/WindowsInput.cpp" 
+"src/Core/PlatformDetection.h" "src/Core/EntryPoint.h"
+"src/Core/Events/ApplicationEvent.h"
+"src/Core/Events/Event.h"
+"src/Core/Events/KeyEvent.h"
+"src/Core/Events/MouseEvent.h")
 
 target_include_directories(Core 
 	PUBLIC vendor/glfw/include 

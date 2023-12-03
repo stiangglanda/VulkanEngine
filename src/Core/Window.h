@@ -1,4 +1,7 @@
 #pragma once
+#include "Events/Event.h"
+
+#include <functional>
 #include <memory>
 #include <string>
 
@@ -30,7 +33,7 @@ class Window
     virtual uint32_t GetHeight() const = 0;
 
     // Window attributes
-    //virtual void SetEventCallback(const std::function<void(Event &)> &callback) = 0;
+    virtual void SetEventCallback(const std::function<void(Event &)> &callback) = 0;
     virtual void SetVSync(bool enabled) = 0;
     virtual bool IsVSync() const = 0;
 

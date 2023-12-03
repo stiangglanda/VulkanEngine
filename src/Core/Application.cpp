@@ -14,32 +14,60 @@ Application::Application(const ApplicationSpecification &specification) : m_Spec
     //     std::filesystem::current_path(m_Specification.WorkingDirectory);
 
     mWindow = Window::Create(WindowProps(m_Specification.Name));
+    mWindow->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 }
 
-Core::Application::~Application()
+Application::~Application()
 {
     Shutdown();
 }
 
-void Application::Shutdown()
+void Application::OnEvent(Event &e)
 {
+    EventDispatcher dispatcher(e);
+    dispatcher.Dispatch<WindowCloseEvent>(std::bind(&Application::OnWindowClose, this, std::placeholders::_1));
+    dispatcher.Dispatch<WindowResizeEvent>(std::bind(&Application::OnWindowResize, this, std::placeholders::_1));
 
-    // glfwDestroyWindow(mWindow);
-
-    // glfwTerminate();
+    // event hendling here
 }
 
+bool Application::OnWindowClose(WindowCloseEvent &e)
+{
+    mRunning = false;
+    return true;
+}
+
+bool Application::OnWindowResize(WindowResizeEvent &e)
+{
+    if (e.GetWidth() == 0 || e.GetHeight() == 0)
+    {
+        mMinimized = true;
+        return false;
+    }
+
+    mMinimized = false;
+
+    return false;
+}
+
+void Application::Shutdown()
+{
+}
 
 void Application::Run()
 {
-    std::string input;//TODO delete
-    std::cin >> input;
-} // glfwInit();
 
-// glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    while (mRunning)
+    {
 
-// mWindowPtr = glfwCreateWindow(mWidth, mHeight, mWindowTitle.c_str(), nullptr, nullptr);
-// glfwSetWindowUserPointer(mWindowPtr, this);
-// glfwSetFramebufferSizeCallback(mWindowPtr, framebufferResizeCallback);
+        // Timer code here
 
+        if (!mMinimized)
+        {
+            // ImGui code here
+        }
+
+        mWindow->OnUpdate();
+    }
+}
 } // namespace Core

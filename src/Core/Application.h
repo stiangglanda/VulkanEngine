@@ -4,6 +4,8 @@
 #include <GLFW/glfw3.h>
 
 #include <memory>
+#include "Events/Event.h"
+#include "Events/ApplicationEvent.h"
 
 int main(int argc, char **argv);
 
@@ -34,6 +36,8 @@ class Application
     Application(const ApplicationSpecification &specification);
     virtual ~Application();
 
+    void OnEvent(Event &e);
+
     void Shutdown();
 
     Window &GetWindow()
@@ -48,11 +52,15 @@ class Application
 
   private:
     void Run();
+    bool OnWindowClose(WindowCloseEvent &e);
+    bool OnWindowResize(WindowResizeEvent &e);
+
     ApplicationSpecification m_Specification;
     static Application *s_Instance;
 
     std::unique_ptr<Window> mWindow;
-    bool mResizing = false;
+    bool mRunning = true;
+    bool mMinimized = false;
     friend int ::main(int argc, char **argv);
 };
 // To be defined in CLIENT

@@ -1,7 +1,9 @@
 #pragma once
 #include "../../Window.h"
 
+#include <functional>
 #include <GLFW/glfw3.h>
+#include "../../Events/Event.h"
 
 namespace Core
 {
@@ -24,10 +26,10 @@ class WindowsWindow : public Window
     }
 
     // Window attributes
-    //void SetEventCallback(const EventCallbackFn &callback) override
-    //{
-    //    m_Data.EventCallback = callback;
-    //}
+    void SetEventCallback(const std::function<void(Event &)> &callback) override
+    {
+        m_Data.EventCallback = callback;
+    }
     void SetVSync(bool enabled) override;
     bool IsVSync() const override;
 
@@ -50,7 +52,7 @@ class WindowsWindow : public Window
         unsigned int Width, Height;
         bool VSync;
 
-        //EventCallbackFn EventCallback;
+        std::function<void(Event &)> EventCallback;
     };
 
     WindowData m_Data;

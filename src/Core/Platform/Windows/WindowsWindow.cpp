@@ -1,5 +1,8 @@
 
 #include "WindowsWindow.h"
+#include "../../Events/MouseEvent.h"
+#include "../../Events/ApplicationEvent.h"
+#include "../../Events/KeyEvent.h"
 
 namespace Core
 {
@@ -42,7 +45,7 @@ void WindowsWindow::Init(const WindowProps &props)
     SetVSync(true);
 
     // Set GLFW callbacks
-    /*   glfwSetWindowSizeCallback(m_Window, [](GLFWwindow *window, int width, int height) {
+       glfwSetWindowSizeCallback(m_Window, [](GLFWwindow *window, int width, int height) {
            WindowData &data = *(WindowData *)glfwGetWindowUserPointer(window);
            data.Width = width;
            data.Height = height;
@@ -117,7 +120,7 @@ void WindowsWindow::Init(const WindowProps &props)
 
            MouseMovedEvent event((float)xPos, (float)yPos);
            data.EventCallback(event);
-       });*/
+       });
 }
 
 void WindowsWindow::Shutdown()
