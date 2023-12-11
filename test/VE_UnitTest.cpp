@@ -1,6 +1,10 @@
+#include "Platform/Windows/WindowsWindow.h"
 #include <Application.h>
 #include <Core.h>
+#include <GLFW/glfw3.h>
 #include <Timer.h>
+#include <Window.h>
+
 #include <gtest/gtest.h>
 
 // Demonstrate some basic assertions.
@@ -57,4 +61,57 @@ TEST(CoreTest, TimerStart)
 
     // Expect equality.
     EXPECT_EQ(timer.DeltaTime() > 1 && timer.DeltaTime() < 1.1, true);
+}
+
+TEST(CoreTest, CreateApplicationHeight)
+{
+
+    // Expect equality.
+    EXPECT_EQ(Core::Window::Create()->GetHeight() == 600, true);
+}
+
+TEST(CoreTest, CreateApplicationWidth)
+{
+
+    // Expect equality.
+    EXPECT_EQ(Core::Window::Create()->GetWidth() == 800, true);
+}
+
+TEST(CoreTest, CreateApplicationIsVSync)
+{
+
+    // Expect equality.
+    EXPECT_EQ(Core::Window::Create()->IsVSync(), true);
+}
+
+TEST(CoreTest, WindowsWindowHeight)
+{
+    std::unique_ptr<Core::WindowsWindow> window = std::make_unique<Core::WindowsWindow>(Core::WindowProps());
+
+    // Expect equality.
+    EXPECT_EQ(window->GetHeight() == 600, true);
+}
+
+TEST(CoreTest, WindowsWindowWidth)
+{
+    std::unique_ptr<Core::WindowsWindow> window = std::make_unique<Core::WindowsWindow>(Core::WindowProps());
+
+    // Expect equality.
+    EXPECT_EQ(window->GetWidth() == 800, true);
+}
+
+TEST(CoreTest, WindowsWindowIsVSync)
+{
+    std::unique_ptr<Core::WindowsWindow> window = std::make_unique<Core::WindowsWindow>(Core::WindowProps());
+
+    // Expect equality.
+    EXPECT_EQ(window->IsVSync(), true);
+}
+
+TEST(CoreTest, WindowsWindowNativeWindow)
+{
+    std::unique_ptr<Core::WindowsWindow> window = std::make_unique<Core::WindowsWindow>(Core::WindowProps());
+
+    // Expect equality.
+    EXPECT_EQ(static_cast<GLFWwindow *>(window->GetNativeWindow()) != nullptr, true);
 }

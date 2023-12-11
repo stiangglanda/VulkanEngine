@@ -12,10 +12,9 @@
 #include "../../vendor/stb_image.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION
-#include "Application.h"
-
 #include <tiny_obj_loader.h>
 
+#include <Application.h>
 #include <Core.h>
 #include <EntryPoint.h>
 
