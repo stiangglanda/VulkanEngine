@@ -123,18 +123,9 @@ TEST(CoreTest, WindowsWindowIsVSync)
 
 TEST(CoreTest, WindowsWindowNativeWindow)
 {
+    DisableOnGithubActions;
 
-    const char *githubActions = std::getenv("GITHUB_ACTIONS");
-
-    if (githubActions && std::string(githubActions) == "true")
-    {
-        GTEST_SKIP();
-    }
-    else
-    {
-        std::unique_ptr<Core::WindowsWindow> window = std::make_unique<Core::WindowsWindow>(Core::WindowProps());
-
-        // Expect equality.
-        EXPECT_EQ(static_cast<GLFWwindow *>(window->GetNativeWindow()) != nullptr, true);
-    }
+    std::unique_ptr<Core::WindowsWindow> window = std::make_unique<Core::WindowsWindow>(Core::WindowProps());
+    // Expect equality.
+    EXPECT_EQ(static_cast<GLFWwindow *>(window->GetNativeWindow()) != nullptr, true);
 }
