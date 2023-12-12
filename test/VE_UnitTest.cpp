@@ -7,7 +7,7 @@
 
 #include <gtest/gtest.h>
 
-void DisableOnGithubActions()
+inline void DisableOnGithubActions()
 {
     const char *githubActions = std::getenv("GITHUB_ACTIONS");
 
