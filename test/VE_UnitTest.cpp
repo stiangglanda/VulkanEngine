@@ -7,6 +7,16 @@
 
 #include <gtest/gtest.h>
 
+void DisableOnGithubActions()
+{
+    const char *githubActions = std::getenv("GITHUB_ACTIONS");
+
+    if (githubActions && std::string(githubActions) == "true")
+    {
+        GTEST_SKIP();
+    }
+}
+
 // Demonstrate some basic assertions.
 TEST(CoreTest, HelloWorldExpectTrue)
 {
@@ -65,36 +75,28 @@ TEST(CoreTest, TimerStart)
 
 TEST(CoreTest, CreateApplicationHeight)
 {
-#ifdef GITHUB_ACTIONS
-    GTEST_SKIP();
-#endif
+    DisableOnGithubActions();
     // Expect equality.
     EXPECT_EQ(Core::Window::Create()->GetHeight() == 600, true);
 }
 
 TEST(CoreTest, CreateApplicationWidth)
 {
-#ifdef GITHUB_ACTIONS
-    GTEST_SKIP();
-#endif
+    DisableOnGithubActions();
     // Expect equality.
     EXPECT_EQ(Core::Window::Create()->GetWidth() == 800, true);
 }
 
 TEST(CoreTest, CreateApplicationIsVSync)
 {
-#ifdef GITHUB_ACTIONS
-    GTEST_SKIP();
-#endif
+    DisableOnGithubActions();
     // Expect equality.
     EXPECT_EQ(Core::Window::Create()->IsVSync(), true);
 }
 
 TEST(CoreTest, WindowsWindowHeight)
 {
-#ifdef GITHUB_ACTIONS
-    GTEST_SKIP();
-#endif
+    DisableOnGithubActions();
     std::unique_ptr<Core::WindowsWindow> window = std::make_unique<Core::WindowsWindow>(Core::WindowProps());
 
     // Expect equality.
@@ -103,9 +105,7 @@ TEST(CoreTest, WindowsWindowHeight)
 
 TEST(CoreTest, WindowsWindowWidth)
 {
-#ifdef GITHUB_ACTIONS
-    GTEST_SKIP();
-#endif
+    DisableOnGithubActions();
     std::unique_ptr<Core::WindowsWindow> window = std::make_unique<Core::WindowsWindow>(Core::WindowProps());
 
     // Expect equality.
@@ -114,9 +114,7 @@ TEST(CoreTest, WindowsWindowWidth)
 
 TEST(CoreTest, WindowsWindowIsVSync)
 {
-#ifdef GITHUB_ACTIONS
-    GTEST_SKIP();
-#endif
+    DisableOnGithubActions();
     std::unique_ptr<Core::WindowsWindow> window = std::make_unique<Core::WindowsWindow>(Core::WindowProps());
 
     // Expect equality.
@@ -125,11 +123,18 @@ TEST(CoreTest, WindowsWindowIsVSync)
 
 TEST(CoreTest, WindowsWindowNativeWindow)
 {
-#ifdef GITHUB_ACTIONS
-    GTEST_SKIP();
-#endif
-    std::unique_ptr<Core::WindowsWindow> window = std::make_unique<Core::WindowsWindow>(Core::WindowProps());
 
-    // Expect equality.
-    EXPECT_EQ(static_cast<GLFWwindow *>(window->GetNativeWindow()) != nullptr, true);
+    const char *githubActions = std::getenv("GITHUB_ACTIONS");
+
+    if (githubActions && std::string(githubActions) == "true")
+    {
+        GTEST_SKIP();
+    }
+    else
+    {
+        std::unique_ptr<Core::WindowsWindow> window = std::make_unique<Core::WindowsWindow>(Core::WindowProps());
+
+        // Expect equality.
+        EXPECT_EQ(static_cast<GLFWwindow *>(window->GetNativeWindow()) != nullptr, true);
+    }
 }
