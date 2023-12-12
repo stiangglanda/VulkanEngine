@@ -7,15 +7,15 @@
 
 #include <gtest/gtest.h>
 
-inline void DisableOnGithubActions()
-{
-    const char *githubActions = std::getenv("GITHUB_ACTIONS");
-
-    if (githubActions && std::string(githubActions) == "true")
-    {
-        GTEST_SKIP();
+#define DisableOnGithubActions                                                                                         \
+    {                                                                                                                  \
+        const char *githubActions = std::getenv("GITHUB_ACTIONS");                                                     \
+                                                                                                                       \
+        if (githubActions && std::string(githubActions) == "true")                                                     \
+        {                                                                                                              \
+            GTEST_SKIP();                                                                                              \
+        }                                                                                                              \
     }
-}
 
 // Demonstrate some basic assertions.
 TEST(CoreTest, HelloWorldExpectTrue)
@@ -75,28 +75,28 @@ TEST(CoreTest, TimerStart)
 
 TEST(CoreTest, CreateApplicationHeight)
 {
-    DisableOnGithubActions();
+    DisableOnGithubActions;
     // Expect equality.
     EXPECT_EQ(Core::Window::Create()->GetHeight() == 600, true);
 }
 
 TEST(CoreTest, CreateApplicationWidth)
 {
-    DisableOnGithubActions();
+    DisableOnGithubActions;
     // Expect equality.
     EXPECT_EQ(Core::Window::Create()->GetWidth() == 800, true);
 }
 
 TEST(CoreTest, CreateApplicationIsVSync)
 {
-    DisableOnGithubActions();
+    DisableOnGithubActions;
     // Expect equality.
     EXPECT_EQ(Core::Window::Create()->IsVSync(), true);
 }
 
 TEST(CoreTest, WindowsWindowHeight)
 {
-    DisableOnGithubActions();
+    DisableOnGithubActions;
     std::unique_ptr<Core::WindowsWindow> window = std::make_unique<Core::WindowsWindow>(Core::WindowProps());
 
     // Expect equality.
@@ -105,7 +105,7 @@ TEST(CoreTest, WindowsWindowHeight)
 
 TEST(CoreTest, WindowsWindowWidth)
 {
-    DisableOnGithubActions();
+    DisableOnGithubActions;
     std::unique_ptr<Core::WindowsWindow> window = std::make_unique<Core::WindowsWindow>(Core::WindowProps());
 
     // Expect equality.
@@ -114,7 +114,7 @@ TEST(CoreTest, WindowsWindowWidth)
 
 TEST(CoreTest, WindowsWindowIsVSync)
 {
-    DisableOnGithubActions();
+    DisableOnGithubActions;
     std::unique_ptr<Core::WindowsWindow> window = std::make_unique<Core::WindowsWindow>(Core::WindowProps());
 
     // Expect equality.
