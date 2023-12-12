@@ -65,27 +65,36 @@ TEST(CoreTest, TimerStart)
 
 TEST(CoreTest, CreateApplicationHeight)
 {
-
+#ifdef GITHUB_ACTIONS
+    GTEST_SKIP();
+#endif
     // Expect equality.
     EXPECT_EQ(Core::Window::Create()->GetHeight() == 600, true);
 }
 
 TEST(CoreTest, CreateApplicationWidth)
 {
-
+#ifdef GITHUB_ACTIONS
+    GTEST_SKIP();
+#endif
     // Expect equality.
     EXPECT_EQ(Core::Window::Create()->GetWidth() == 800, true);
 }
 
 TEST(CoreTest, CreateApplicationIsVSync)
 {
-
+#ifdef GITHUB_ACTIONS
+    GTEST_SKIP();
+#endif
     // Expect equality.
     EXPECT_EQ(Core::Window::Create()->IsVSync(), true);
 }
 
 TEST(CoreTest, WindowsWindowHeight)
 {
+#ifdef GITHUB_ACTIONS
+    GTEST_SKIP();
+#endif
     std::unique_ptr<Core::WindowsWindow> window = std::make_unique<Core::WindowsWindow>(Core::WindowProps());
 
     // Expect equality.
@@ -94,6 +103,9 @@ TEST(CoreTest, WindowsWindowHeight)
 
 TEST(CoreTest, WindowsWindowWidth)
 {
+#ifdef GITHUB_ACTIONS
+    GTEST_SKIP();
+#endif
     std::unique_ptr<Core::WindowsWindow> window = std::make_unique<Core::WindowsWindow>(Core::WindowProps());
 
     // Expect equality.
@@ -102,6 +114,9 @@ TEST(CoreTest, WindowsWindowWidth)
 
 TEST(CoreTest, WindowsWindowIsVSync)
 {
+#ifdef GITHUB_ACTIONS
+    GTEST_SKIP();
+#endif
     std::unique_ptr<Core::WindowsWindow> window = std::make_unique<Core::WindowsWindow>(Core::WindowProps());
 
     // Expect equality.
@@ -110,6 +125,9 @@ TEST(CoreTest, WindowsWindowIsVSync)
 
 TEST(CoreTest, WindowsWindowNativeWindow)
 {
+#ifdef GITHUB_ACTIONS
+    GTEST_SKIP();
+#endif
     std::unique_ptr<Core::WindowsWindow> window = std::make_unique<Core::WindowsWindow>(Core::WindowProps());
 
     // Expect equality.
