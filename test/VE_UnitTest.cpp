@@ -5,6 +5,8 @@
 #include <Timer.h>
 #include <Window.h>
 
+#include <Events/ApplicationEvent.h>
+#include <Events/Event.h>
 #include <gtest/gtest.h>
 
 #define DisableOnGithubActions                                                                                         \
@@ -128,4 +130,11 @@ TEST(CoreTest, WindowsWindowNativeWindow)
     std::unique_ptr<Core::WindowsWindow> window = std::make_unique<Core::WindowsWindow>(Core::WindowProps());
     // Expect equality.
     EXPECT_EQ(static_cast<GLFWwindow *>(window->GetNativeWindow()) != nullptr, true);
+}
+
+TEST(CoreTest, EventSystemBase)
+{
+    Core::WindowResizeEvent event(800, 600);
+    // Expect equality.
+    EXPECT_EQ(event.ToString(), "WindowResizeEvent: 800, 600");
 }
