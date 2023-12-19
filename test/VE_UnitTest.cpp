@@ -132,9 +132,63 @@ TEST(CoreTest, WindowsWindowNativeWindow)
     EXPECT_EQ(static_cast<GLFWwindow *>(window->GetNativeWindow()) != nullptr, true);
 }
 
-TEST(CoreTest, EventSystemBase)
+TEST(CoreTest, WindowResizeEvent)
 {
     Core::WindowResizeEvent event(800, 600);
     // Expect equality.
+    EXPECT_EQ(event.GetCategoryFlags(), Core::EventCategory::EventCategoryApplication);
+    EXPECT_EQ(event.GetEventType(), Core::EventType::WindowResize);
+    EXPECT_EQ(event.Handled, false);
     EXPECT_EQ(event.ToString(), "WindowResizeEvent: 800, 600");
+}
+
+TEST(CoreTest, WindowCloseEvent)
+{
+    Core::WindowCloseEvent event;
+    // Expect equality.
+    EXPECT_EQ(event.GetCategoryFlags(), Core::EventCategory::EventCategoryApplication);
+    EXPECT_EQ(event.GetEventType(), Core::EventType::WindowClose);
+    EXPECT_EQ(event.Handled, false);
+    EXPECT_EQ(event.ToString(), "WindowClose");
+}
+
+TEST(CoreTest, AppTickEvent)
+{
+    Core::AppTickEvent event;
+    // Expect equality.
+    EXPECT_EQ(event.GetCategoryFlags(), Core::EventCategory::EventCategoryApplication);
+    EXPECT_EQ(event.GetEventType(), Core::EventType::AppTick);
+    EXPECT_EQ(event.Handled, false);
+    EXPECT_EQ(event.ToString(), "AppTick");
+}
+
+TEST(CoreTest, AppUpdateEvent)
+{
+    Core::AppUpdateEvent event;
+    // Expect equality.
+    EXPECT_EQ(event.GetCategoryFlags(), Core::EventCategory::EventCategoryApplication);
+    EXPECT_EQ(event.GetEventType(), Core::EventType::AppUpdate);
+    EXPECT_EQ(event.Handled, false);
+    EXPECT_EQ(event.ToString(), "AppUpdate");
+}
+
+TEST(CoreTest, AppRenderEvent)
+{
+    Core::AppRenderEvent event;
+    // Expect equality.
+    EXPECT_EQ(event.GetCategoryFlags(), Core::EventCategory::EventCategoryApplication);
+    EXPECT_EQ(event.GetEventType(), Core::EventType::AppRender);
+    EXPECT_EQ(event.Handled, false);
+    EXPECT_EQ(event.ToString(), "AppRender");
+}
+
+TEST(CoreTest, IsInCategory)
+{
+    Core::AppRenderEvent event;
+    // Expect equality.
+    EXPECT_EQ(event.GetCategoryFlags(), Core::EventCategory::EventCategoryApplication);
+    EXPECT_EQ(event.GetEventType(), Core::EventType::AppRender);
+    EXPECT_EQ(event.Handled, false);
+    EXPECT_EQ(event.ToString(), "AppRender");
+    EXPECT_EQ(event.IsInCategory(Core::EventCategory::EventCategoryApplication), true);
 }
