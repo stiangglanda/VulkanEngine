@@ -1,8 +1,8 @@
 #pragma once
 
 #include <functional>
-#include <string>
 #include <sstream>
+#include <string>
 
 namespace Core
 {
@@ -93,7 +93,7 @@ class EventDispatcher
     }
 
     // F will be deduced by the compiler
-    template <typename T, typename F> bool Dispatch(const F &func)
+    template <typename T, typename F> bool Dispatch(const F &func)//Dispatch returns true when the function is called if the event is handeled is irrelavant
     {
         if (m_Event.GetEventType() == T::GetStaticType())
         {

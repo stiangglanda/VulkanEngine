@@ -29,8 +29,8 @@ namespace Core {
 		std::string ToString() const override 
 		{
 			std::stringstream ss;
-			ss << "KeyPressedEvent: " << m_KeyCode << " (repeat = " << m_IsRepeat << ")";
-			return ss.str();
+            ss << "KeyPressedEvent: " << m_KeyCode << " (repeat = " << m_IsRepeat << ")";
+            return ss.str();
 		}
 
 		EVENT_CLASS_TYPE(KeyPressed)

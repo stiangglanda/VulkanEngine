@@ -47,7 +47,7 @@ bool Application::OnWindowResize(WindowResizeEvent &e)
 
     mMinimized = false;
 
-    return false;
+    return true;
 }
 
 void Application::Shutdown()
