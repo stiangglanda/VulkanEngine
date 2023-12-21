@@ -81,8 +81,8 @@ enable_testing()
 
 add_executable(
   VE_Test
-  "test/VE_UnitTest.cpp"
-)
+  "test/TimerUnitTests.cpp"
+ "test/EventUnitTests.cpp" "test/WindowingUnitTests.cpp")
 
 target_include_directories(VE_Test PUBLIC src/Core)
 
