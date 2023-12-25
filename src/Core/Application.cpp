@@ -1,7 +1,5 @@
 #include "Application.h"
 
-#include <iostream>
-
 namespace Core
 {
 

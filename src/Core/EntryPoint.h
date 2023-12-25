@@ -1,6 +1,6 @@
 #pragma once
 #include "Application.h"
-#include "PlatformDetection.h"
+#include "vepch.h"
 
 #ifdef VE_PLATFORM_WINDOWS
 

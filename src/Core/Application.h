@@ -2,8 +2,7 @@
 #define GLFW_INCLUDE_VULKAN
 #include "Window.h"
 #include <GLFW/glfw3.h>
-
-#include <memory>
+#include "vepch.h"
 #include "Events/Event.h"
 #include "Events/ApplicationEvent.h"
 

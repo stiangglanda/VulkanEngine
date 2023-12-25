@@ -1,11 +1,6 @@
-#include "Window.h"
-#include "PlatformDetection.h"
-
 #ifdef VE_PLATFORM_WINDOWS
 #include "Platform/Windows/WindowsWindow.h"
 #endif
-
-#include <memory>
 
 namespace Core
 {

@@ -1,9 +1,6 @@
 #pragma once
+#include "vepch.h"
 #include "Events/Event.h"
-
-#include <functional>
-#include <memory>
-#include <string>
 
 namespace Core
 {

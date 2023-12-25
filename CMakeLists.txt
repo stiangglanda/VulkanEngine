@@ -1,10 +1,9 @@
 ﻿# CMakeList.txt : CMake project for VulkanEngine, include source and define
 # project specific logic here.
 #
-cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required (VERSION 3.16)
 
 # Enable Hot Reload for MSVC compilers if supported.
-set(CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API aa1f7df0-828a-4fcd-9afc-2dc80491aca7)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED On)
 
@@ -24,11 +23,13 @@ add_library(Core "src/Core/Core.cpp" "src/Core/Timer.h" "src/Core/Timer.cpp"
 "src/Core/Platform/Windows/WindowsWindow.h" 
 "src/Core/Platform/Windows/WindowsWindow.cpp" 
 "src/Core/Platform/Windows/WindowsInput.cpp" 
-"src/Core/PlatformDetection.h" "src/Core/EntryPoint.h"
+"src/Core/PlatformDetection.h" "src/Core/EntryPoint.h" 
 "src/Core/Events/ApplicationEvent.h"
 "src/Core/Events/Event.h"
 "src/Core/Events/KeyEvent.h"
-"src/Core/Events/MouseEvent.h")
+"src/Core/Events/MouseEvent.h" "src/Core/vepch.h" "src/Core/vepch.cpp")
+
+target_precompile_headers(Core PRIVATE "src/Core/vepch.h")
 
 target_include_directories(Core 
 	PUBLIC vendor/glfw/include 

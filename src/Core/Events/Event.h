@@ -1,8 +1,5 @@
 #pragma once
-
-#include <functional>
-#include <sstream>
-#include <string>
+#include "../vepch.h"
 
 namespace Core
 {
