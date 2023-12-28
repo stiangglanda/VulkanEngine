@@ -10,6 +10,7 @@ Timer::Timer()
 
 void Timer::Reset()
 {
+    VE_CORE_INFO("Timer Reset");
     mStart = std::chrono::high_resolution_clock::now();
     mPrevTime = mStart;
     mStopped = false;
@@ -29,6 +30,7 @@ float Timer::DeltaTime() const
 
 void Timer::Stop()
 {
+    VE_CORE_INFO("Timer Stop");
     if (!mStopped)
     {
         mStopTime = std::chrono::high_resolution_clock::now();
@@ -38,6 +40,7 @@ void Timer::Stop()
 
 void Timer::Start()
 {
+    VE_CORE_INFO("Timer Start");
     if (mStopped)
     {
         std::chrono::time_point<std::chrono::high_resolution_clock> currTime =

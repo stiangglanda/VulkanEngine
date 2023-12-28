@@ -7,12 +7,14 @@ Application *Application::s_Instance = nullptr;
 
 Application::Application(const ApplicationSpecification &specification) : m_Specification(specification)
 {
+    VE_CORE_INFO("Application Constructor start");
     s_Instance = this;
     // if (!m_Specification.WorkingDirectory.empty())
     //     std::filesystem::current_path(m_Specification.WorkingDirectory);
 
     mWindow = Window::Create(WindowProps(m_Specification.Name));
     mWindow->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+    VE_CORE_INFO("Application Constructor end");
 }
 
 Application::~Application()
@@ -31,12 +33,14 @@ void Application::OnEvent(Event &e)
 
 bool Application::OnWindowClose(WindowCloseEvent &e)
 {
+    VE_CORE_INFO("OnWindowClose");
     mRunning = false;
     return true;
 }
 
 bool Application::OnWindowResize(WindowResizeEvent &e)
 {
+    VE_CORE_INFO("OnWindowResize");
     if (e.GetWidth() == 0 || e.GetHeight() == 0)
     {
         mMinimized = true;
@@ -50,11 +54,12 @@ bool Application::OnWindowResize(WindowResizeEvent &e)
 
 void Application::Shutdown()
 {
+    VE_CORE_INFO("Shutdown");
 }
 
 void Application::Run()
 {
-
+    VE_CORE_INFO("Application Run Start");
     while (mRunning)
     {
 
@@ -67,5 +72,6 @@ void Application::Run()
 
         mWindow->OnUpdate();
     }
+    VE_CORE_INFO("Application Run End");
 }
 } // namespace Core
