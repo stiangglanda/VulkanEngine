@@ -14,6 +14,7 @@ project ("VulkanEngine")
 add_subdirectory("vendor/glfw")
 add_subdirectory("vendor/glm")
 add_subdirectory("vendor/tinyobjloader")
+add_subdirectory("vendor/spdlog")
 
 find_package(Vulkan REQUIRED)
 # Add source to this project's executable. 
@@ -29,23 +30,26 @@ add_library(Core "src/Core/Core.cpp" "src/Core/Timer.h" "src/Core/Timer.cpp"
 "src/Core/Events/ApplicationEvent.h"
 "src/Core/Events/Event.h"
 "src/Core/Events/KeyEvent.h"
-"src/Core/Events/MouseEvent.h" "src/Core/vepch.h" "src/Core/vepch.cpp")
+"src/Core/Events/MouseEvent.h" "src/Core/vepch.h" "src/Core/vepch.cpp" "src/Core/Log.cpp")
 
 target_precompile_headers(Core PRIVATE "src/Core/vepch.h")
 
 target_include_directories(Core 
 	PUBLIC vendor/glfw/include 
 	PUBLIC vendor/glm/glm 
+	PUBLIC vendor/spdlog/include 
 )
 
 target_link_directories(Core 
 	PUBLIC vendor/glfw/src 
 	PUBLIC vendor/glm/glm 
+	PUBLIC vendor/spdlog/src 
 )
 
 target_link_libraries(Core Vulkan::Vulkan)
 target_link_libraries(Core glfw)
 target_link_libraries(Core glm::glm)
+target_link_libraries(Core spdlog::spdlog)
 
 add_executable(Client "src/Client/main.cpp" "vendor/stb_image.h")
 

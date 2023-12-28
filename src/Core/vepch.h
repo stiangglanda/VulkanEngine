@@ -3,11 +3,11 @@
 #include "PlatformDetection.h"
 
 #include <algorithm>
+#include <chrono>
 #include <functional>
 #include <iostream>
 #include <memory>
 #include <utility>
-#include <chrono>
 
 #include <array>
 #include <sstream>
@@ -15,6 +15,8 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+
+#include "Log.h"
 
 #ifdef VE_PLATFORM_WINDOWS
 #include <Windows.h>

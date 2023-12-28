@@ -8,6 +8,8 @@ extern Core::Application *Core::CreateApplication(ApplicationCommandLineArgs arg
 
 int main(int argc, char **argv)
 {
+    Core::Log::Init();
+
     auto app = Core::CreateApplication({argc, argv});
     app->Run();
     delete app;
