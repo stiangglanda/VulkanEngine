@@ -53,7 +53,16 @@ inline OStream &operator<<(OStream &os, glm::qua<T, Q> quaternion)
 
 // Core log macros
 #define VE_CORE_TRACE(...) ::Core::Log::GetCoreLogger()->trace(__VA_ARGS__)
-#define VE_CORE_INFO(...) ::Core::Log::GetCoreLogger()->info(__VA_ARGS__)
+
+// TODO if the logger is nullptr we could initialize the logger
+#define VE_CORE_INFO(...)                                                                                              \
+    {                                                                                                                  \
+        if (Core::Log::GetCoreLogger() != nullptr)                                                                     \
+        {                                                                                                              \
+            Core::Log::GetCoreLogger()->info(__VA_ARGS__);                                                             \
+        }                                                                                                              \
+    }
+
 #define VE_CORE_WARN(...) ::Core::Log::GetCoreLogger()->warn(__VA_ARGS__)
 #define VE_CORE_ERROR(...) ::Core::Log::GetCoreLogger()->error(__VA_ARGS__)
 #define VE_CORE_CRITICAL(...) ::Core::Log::GetCoreLogger()->critical(__VA_ARGS__)
