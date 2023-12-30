@@ -30,7 +30,7 @@ add_library(Core "src/Core/Core.cpp" "src/Core/Timer.h" "src/Core/Timer.cpp"
 "src/Core/Events/ApplicationEvent.h"
 "src/Core/Events/Event.h"
 "src/Core/Events/KeyEvent.h"
-"src/Core/Events/MouseEvent.h" "src/Core/vepch.h" "src/Core/vepch.cpp" "src/Core/Log.cpp")
+"src/Core/Events/MouseEvent.h" "src/Core/vepch.h" "src/Core/vepch.cpp" "src/Core/Log.cpp" "src/Core/Renderer/RenderAPI.cpp" "src/Core/Renderer/RenderAPI.h")
 
 target_precompile_headers(Core PRIVATE "src/Core/vepch.h")
 
