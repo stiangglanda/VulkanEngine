@@ -93,7 +93,7 @@ add_executable(
   "test/WindowingUnitTests.cpp")
 
   
-gtest_discover_tests(VE_Test DISCOVERY_MODE PRE_TEST)
+gtest_discover_tests(VE_Test DISCOVERY_MODE POST_BUILD)
 
 target_link_libraries(VE_Test GTest::gtest_main GTest::gtest)
 
