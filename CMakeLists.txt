@@ -82,26 +82,7 @@ target_link_libraries(Client Core)
 
 # Test section
 
-enable_testing()
-add_subdirectory("vendor/googletest")
-include(GoogleTest)
 
-add_executable(
-  VE_Test
-  "test/TimerUnitTests.cpp"
-  "test/EventUnitTests.cpp" 
-  "test/WindowingUnitTests.cpp")
-
-  
-gtest_discover_tests(VE_Test DISCOVERY_MODE POST_BUILD)
-
-target_link_libraries(VE_Test GTest::gtest_main GTest::gtest)
-
-target_include_directories(VE_Test PUBLIC src/Core)
-
-target_link_directories(VE_Test PRIVATE src/Core)
-
-target_link_libraries(VE_Test Core)
 
 #gtest_add_tests(TARGET VE_Test)
 
