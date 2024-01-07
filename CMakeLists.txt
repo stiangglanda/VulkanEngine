@@ -99,7 +99,11 @@ target_link_directories(VE_Test PRIVATE src/Core)
 target_link_libraries(VE_Test GTest::gtest_main)
 target_link_libraries(VE_Test Core)
 
-# target_link_libraries(VE_Test gtest gmock gtest_main)
-gtest_discover_tests(VE_Test)
+gtest_add_tests(TARGET      VE_Test
+                TEST_SUFFIX .noArgs
+                TEST_LIST   noArgsTests
+)
+
+# gtest_discover_tests(VE_Test DISCOVERY_MODE PRE_TEST)
 
 # TODO: Add tests and install targets if needed.
