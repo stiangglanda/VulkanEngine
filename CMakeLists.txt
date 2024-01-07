@@ -30,9 +30,14 @@ add_library(Core "src/Core/Core.cpp" "src/Core/Timer.h" "src/Core/Timer.cpp"
 "src/Core/Events/Event.h"
 "src/Core/Events/KeyEvent.h"
 "src/Core/Events/MouseEvent.h" "src/Core/vepch.h" "src/Core/vepch.cpp" 
-"src/Core/Log.cpp" "src/Core/Renderer/RenderAPI.cpp" "src/Core/Renderer/RenderAPI.h" "src/Core/Renderer/RenderAPI/Vulkan/VulkanAPI.h" "src/Core/Renderer/RenderAPI/Vulkan/VulkanAPI.cpp" "src/Core/Renderer/GraphicsContext.cpp" "src/Core/Renderer/GraphicsContext.h" "src/Core/Renderer/RenderAPI/Vulkan/VulkanContext.h" "src/Core/Renderer/RenderAPI/Vulkan/VulkanContext.cpp")
+"src/Core/Log.cpp" "src/Core/Renderer/RenderAPI.cpp" "src/Core/Renderer/RenderAPI.h" 
+"src/Core/Renderer/RenderAPI/Vulkan/VulkanAPI.h" "src/Core/Renderer/RenderAPI/Vulkan/VulkanAPI.cpp" 
+"src/Core/Renderer/GraphicsContext.cpp" "src/Core/Renderer/GraphicsContext.h" 
+"src/Core/Renderer/RenderAPI/Vulkan/VulkanContext.h" "src/Core/Renderer/RenderAPI/Vulkan/VulkanContext.cpp")
 
 target_precompile_headers(Core PRIVATE "src/Core/vepch.h")
+
+target_compile_definitions(Core PUBLIC RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/") # This is useful to get an ASSETS_PATH in your IDE during development but you should comment this if you compile a release version and uncomment the next line
 
 target_include_directories(Core 
 	PUBLIC vendor/glfw/include 
