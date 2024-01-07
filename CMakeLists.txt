@@ -80,26 +80,17 @@ target_link_libraries(Client glm::glm)
 target_link_libraries(Client tinyobjloader)
 target_link_libraries(Client Core)
 
-include(FetchContent)
-FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
-)
-# For Windows: Prevent overriding the parent project's compiler/linker settings
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
+# Test section
 
 enable_testing()
+include(GoogleTest)
+add_subdirectory("vendor/googletest")
 
 add_executable(
   VE_Test
   "test/TimerUnitTests.cpp"
   "test/EventUnitTests.cpp" 
   "test/WindowingUnitTests.cpp")
-  
-include(GoogleTest)
-
-gtest_discover_tests(VE_Test)
 
 target_include_directories(VE_Test PUBLIC src/Core)
 
@@ -108,5 +99,7 @@ target_link_directories(VE_Test PRIVATE src/Core)
 target_link_libraries(VE_Test GTest::gtest_main)
 target_link_libraries(VE_Test Core)
 
+# target_link_libraries(VE_Test gtest gmock gtest_main)
+gtest_discover_tests(VE_Test)
 
 # TODO: Add tests and install targets if needed.
