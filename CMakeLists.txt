@@ -99,10 +99,7 @@ target_link_directories(VE_Test PRIVATE src/Core)
 target_link_libraries(VE_Test GTest::gtest_main)
 target_link_libraries(VE_Test Core)
 
-gtest_add_tests(TARGET      VE_Test
-                TEST_SUFFIX .noArgs
-                TEST_LIST   noArgsTests
-)
+gtest_add_tests(TARGET VE_Test)
 
 # gtest_discover_tests(VE_Test DISCOVERY_MODE PRE_TEST)
 
