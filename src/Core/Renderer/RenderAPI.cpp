@@ -19,6 +19,10 @@ std::unique_ptr<RenderAPI> RenderAPI::Create()
         VE_CORE_ERROR("RenderAPI::Create None API");
         return nullptr;
         break;
+    default:
+        VE_CORE_ERROR("RenderAPI::Create API unknown");
+        return nullptr;
+        break;
     }
 }
 } // namespace Core
