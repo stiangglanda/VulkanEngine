@@ -96,6 +96,10 @@ add_executable(
   "test/TimerUnitTests.cpp"
   "test/EventUnitTests.cpp" 
   "test/WindowingUnitTests.cpp")
+  
+include(GoogleTest)
+
+gtest_discover_tests(VE_Test)
 
 target_include_directories(VE_Test PUBLIC src/Core)
 
@@ -104,7 +108,5 @@ target_link_directories(VE_Test PRIVATE src/Core)
 target_link_libraries(VE_Test GTest::gtest_main)
 target_link_libraries(VE_Test Core)
 
-include(GoogleTest)
-gtest_discover_tests(VE_Test DISCOVERY_MODE PRE_TEST)
 
 # TODO: Add tests and install targets if needed.
