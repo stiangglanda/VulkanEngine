@@ -21,4 +21,4 @@ std::unique_ptr<GraphicsContext> GraphicsContext::Create(void *window)
     return nullptr;
 }
 
-} // namespace Hazel
+} // namespace Core

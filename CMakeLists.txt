@@ -105,6 +105,6 @@ target_link_libraries(VE_Test GTest::gtest_main)
 target_link_libraries(VE_Test Core)
 
 include(GoogleTest)
-gtest_discover_tests(VE_Test)
+gtest_discover_tests(VE_Test DISCOVERY_MODE PRE_TEST)
 
 # TODO: Add tests and install targets if needed.
