@@ -83,8 +83,8 @@ target_link_libraries(Client Core)
 # Test section
 
 enable_testing()
-include(GoogleTest)
 add_subdirectory("vendor/googletest")
+include(GoogleTest)
 
 add_executable(
   VE_Test
@@ -93,7 +93,9 @@ add_executable(
   "test/WindowingUnitTests.cpp")
 
   
-target_link_libraries(VE_Test gtest gtest_main)
+gtest_discover_tests(VE_Test DISCOVERY_MODE PRE_TEST)
+
+target_link_libraries(VE_Test GTest::gtest_main)
 
 target_include_directories(VE_Test PUBLIC src/Core)
 
@@ -103,6 +105,5 @@ target_link_libraries(VE_Test Core)
 
 #gtest_add_tests(TARGET VE_Test)
 
-gtest_discover_tests(VE_Test DISCOVERY_MODE PRE_TEST)
 
 # TODO: Add tests and install targets if needed.
