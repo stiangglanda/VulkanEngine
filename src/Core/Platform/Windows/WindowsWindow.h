@@ -1,9 +1,10 @@
 #pragma once
 #include "../../Window.h"
 
+#include "../../Events/Event.h"
+#include "../../Renderer/GraphicsContext.h"
 #include "../../vepch.h"
 #include <GLFW/glfw3.h>
-#include "../../Events/Event.h"
 
 namespace Core
 {
@@ -44,7 +45,7 @@ class WindowsWindow : public Window
 
   private:
     GLFWwindow *m_Window;
-    //Scope<GraphicsContext> m_Context;
+    std::unique_ptr<GraphicsContext> m_Context;
 
     struct WindowData
     {
@@ -58,4 +59,4 @@ class WindowsWindow : public Window
     WindowData m_Data;
 };
 
-} // namespace Hazel
+} // namespace Core

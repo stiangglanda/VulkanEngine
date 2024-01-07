@@ -1,6 +1,6 @@
 #pragma once
-#include "vepch.h"
 #include "Events/Event.h"
+#include "vepch.h"
 
 namespace Core
 {
@@ -21,7 +21,6 @@ struct WindowProps
 class Window
 {
   public:
-
     virtual ~Window() = default;
 
     virtual void OnUpdate() = 0;

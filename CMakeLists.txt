@@ -7,7 +7,6 @@ cmake_minimum_required (VERSION 3.16)
 # set(CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API 2182bf5c-ef0d-489a-91da-49dbc3090d2a)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED On)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 
 project ("VulkanEngine") 
 
@@ -30,7 +29,8 @@ add_library(Core "src/Core/Core.cpp" "src/Core/Timer.h" "src/Core/Timer.cpp"
 "src/Core/Events/ApplicationEvent.h"
 "src/Core/Events/Event.h"
 "src/Core/Events/KeyEvent.h"
-"src/Core/Events/MouseEvent.h" "src/Core/vepch.h" "src/Core/vepch.cpp" "src/Core/Log.cpp" "src/Core/Renderer/RenderAPI.cpp" "src/Core/Renderer/RenderAPI.h")
+"src/Core/Events/MouseEvent.h" "src/Core/vepch.h" "src/Core/vepch.cpp" 
+"src/Core/Log.cpp" "src/Core/Renderer/RenderAPI.cpp" "src/Core/Renderer/RenderAPI.h" "src/Core/Renderer/RenderAPI/Vulkan/VulkanAPI.h" "src/Core/Renderer/RenderAPI/Vulkan/VulkanAPI.cpp" "src/Core/Renderer/GraphicsContext.cpp" "src/Core/Renderer/GraphicsContext.h" "src/Core/Renderer/RenderAPI/Vulkan/VulkanContext.h" "src/Core/Renderer/RenderAPI/Vulkan/VulkanContext.cpp")
 
 target_precompile_headers(Core PRIVATE "src/Core/vepch.h")
 
@@ -89,7 +89,8 @@ enable_testing()
 add_executable(
   VE_Test
   "test/TimerUnitTests.cpp"
- "test/EventUnitTests.cpp" "test/WindowingUnitTests.cpp")
+  "test/EventUnitTests.cpp" 
+  "test/WindowingUnitTests.cpp")
 
 target_include_directories(VE_Test PUBLIC src/Core)
 

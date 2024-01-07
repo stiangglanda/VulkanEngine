@@ -1,5 +1,7 @@
 #include "RenderAPI.h"
 
+#include "RenderAPI/Vulkan/VulkanAPI.h"
+
 namespace Core
 {
 
@@ -11,11 +13,10 @@ std::unique_ptr<RenderAPI> RenderAPI::Create()
     {
     case API::Vulkan:
         VE_CORE_INFO("RenderAPI::Create Vulkan API");
-        // return std::make_unique<VulkanAPI>();
-        return nullptr;
+        return std::make_unique<VulkanAPI>();
         break;
-    case API::none:
-        VE_CORE_ERROR("RenderAPI::Create none API");
+    case API::None:
+        VE_CORE_ERROR("RenderAPI::Create None API");
         return nullptr;
         break;
     }

@@ -9,13 +9,11 @@ class RenderAPI
   public:
     enum class API
     {
-        none = 0,
+        None = 0,
         Vulkan = 1
     };
 
     virtual ~RenderAPI() = default;
-    virtual bool Init() = 0;
-    virtual bool Shutdown() = 0;
 
     static API GetAPI()
     {
