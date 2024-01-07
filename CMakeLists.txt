@@ -93,7 +93,7 @@ add_executable(
   "test/WindowingUnitTests.cpp")
 
   
-target_link_libraries(VE_Test GTest::gtest_main)
+target_link_libraries(VE_Test gtest gtest_main)
 
 target_include_directories(VE_Test PUBLIC src/Core)
 
