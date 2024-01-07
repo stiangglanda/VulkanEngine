@@ -95,7 +95,7 @@ add_executable(
   
 gtest_discover_tests(VE_Test DISCOVERY_MODE PRE_TEST)
 
-target_link_libraries(VE_Test GTest::gtest_main)
+target_link_libraries(VE_Test GTest::gtest_main GTest::gtest)
 
 target_include_directories(VE_Test PUBLIC src/Core)
 
