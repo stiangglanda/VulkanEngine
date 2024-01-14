@@ -41,8 +41,8 @@ void WindowsWindow::Init(const WindowProps &props)
     m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
     ++s_GLFWWindowCount;
 
-    // m_Context = GraphicsContext::Create(m_Window);
-    // m_Context->Init();
+    //m_RenderAPI = RenderAPI::Create(m_Window);
+    //m_RenderAPI->Init();
 
     glfwSetWindowUserPointer(m_Window, &m_Data);
     SetVSync(true);
@@ -130,7 +130,7 @@ void WindowsWindow::Init(const WindowProps &props)
 
 void WindowsWindow::Shutdown()
 {
-    // m_Context->Shutdown();
+    //m_RenderAPI->Shutdown();
 
     VE_CORE_INFO("WindowsWindow Shutdown");
     glfwDestroyWindow(m_Window);
@@ -145,7 +145,7 @@ void WindowsWindow::Shutdown()
 void WindowsWindow::OnUpdate()
 {
     glfwPollEvents();
-    // m_Context->drawFrame();
+    //m_RenderAPI->drawFrame();
     //  m_Context->SwapBuffers();
 }
 

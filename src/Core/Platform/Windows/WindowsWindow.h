@@ -2,7 +2,7 @@
 #include "../../Window.h"
 
 #include "../../Events/Event.h"
-#include "../../Renderer/GraphicsContext.h"
+#include "../../Renderer/RenderAPI.h"
 #include "../../vepch.h"
 #include <GLFW/glfw3.h>
 
@@ -45,7 +45,7 @@ class WindowsWindow : public Window
 
   private:
     GLFWwindow *m_Window;
-    //std::unique_ptr<GraphicsContext> m_Context;
+    // std::unique_ptr<RenderAPI> m_RenderAPI;
 
     struct WindowData
     {

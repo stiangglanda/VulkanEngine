@@ -32,8 +32,8 @@ add_library(Core "src/Core/Core.cpp" "src/Core/Timer.h" "src/Core/Timer.cpp"
 "src/Core/Events/MouseEvent.h" "src/Core/vepch.h" "src/Core/vepch.cpp" 
 "src/Core/Log.cpp" "src/Core/Renderer/RenderAPI.cpp" "src/Core/Renderer/RenderAPI.h" 
 "src/Core/Renderer/RenderAPI/Vulkan/VulkanAPI.h" "src/Core/Renderer/RenderAPI/Vulkan/VulkanAPI.cpp" 
-"src/Core/Renderer/GraphicsContext.cpp" "src/Core/Renderer/GraphicsContext.h" 
-"src/Core/Renderer/RenderAPI/Vulkan/VulkanContext.h" "src/Core/Renderer/RenderAPI/Vulkan/VulkanContext.cpp")
+  
+ )
 
 target_precompile_headers(Core PRIVATE "src/Core/vepch.h")
 

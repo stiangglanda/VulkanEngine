@@ -7,13 +7,13 @@ namespace Core
 
 RenderAPI::API RenderAPI::s_graphicsAPI = RenderAPI::API::Vulkan;
 
-std::unique_ptr<RenderAPI> RenderAPI::Create()
+std::unique_ptr<RenderAPI> RenderAPI::Create(void *window)
 {
     switch (s_graphicsAPI)
     {
     case API::Vulkan:
         VE_CORE_INFO("RenderAPI::Create Vulkan API");
-        return std::make_unique<VulkanAPI>();
+        return std::make_unique<VulkanAPI>(static_cast<GLFWwindow *>(window));
         break;
     case API::None:
         VE_CORE_ERROR("RenderAPI::Create None API");
