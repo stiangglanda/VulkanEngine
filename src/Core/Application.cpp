@@ -13,6 +13,8 @@ Application::Application(const ApplicationSpecification &specification) : m_Spec
     //     std::filesystem::current_path(m_Specification.WorkingDirectory);
 
     mWindow = Window::Create(WindowProps(m_Specification.Name));
+    m_RenderAPI = RenderAPI::Create(mWindow->GetNativeWindow());
+    m_RenderAPI->Init();
     mWindow->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
     VE_CORE_INFO("Application Constructor end");
 }
@@ -55,6 +57,7 @@ bool Application::OnWindowResize(WindowResizeEvent &e)
 void Application::Shutdown()
 {
     VE_CORE_INFO("Shutdown");
+    m_RenderAPI->Shutdown();
 }
 
 void Application::Run()
@@ -71,6 +74,8 @@ void Application::Run()
         }
 
         mWindow->OnUpdate();
+
+        m_RenderAPI->drawFrame();
     }
     VE_CORE_INFO("Application Run End");
 }

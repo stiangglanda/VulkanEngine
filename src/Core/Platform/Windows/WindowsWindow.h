@@ -45,7 +45,6 @@ class WindowsWindow : public Window
 
   private:
     GLFWwindow *m_Window;
-    // std::unique_ptr<RenderAPI> m_RenderAPI;
 
     struct WindowData
     {

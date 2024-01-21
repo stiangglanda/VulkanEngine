@@ -5,6 +5,7 @@
 #include "vepch.h"
 #include "Events/Event.h"
 #include "Events/ApplicationEvent.h"
+#include "Renderer/RenderAPI.h"
 
 int main(int argc, char **argv);
 
@@ -58,6 +59,7 @@ class Application
     static Application *s_Instance;
 
     std::unique_ptr<Window> mWindow;
+    std::unique_ptr<RenderAPI> m_RenderAPI;
     bool mRunning = true;
     bool mMinimized = false;
     friend int ::main(int argc, char **argv);

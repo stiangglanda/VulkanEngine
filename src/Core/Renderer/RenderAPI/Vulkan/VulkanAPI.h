@@ -66,7 +66,7 @@ class VulkanAPI : public RenderAPI
                                                         const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
                                                         void *pUserData)
     {
-        std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
+        VE_CORE_INFO("validation layer: {0}", pCallbackData->pMessage); // TODO should be split up into info warn and error
 
         return VK_FALSE;
     }
