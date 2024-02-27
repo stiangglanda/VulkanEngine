@@ -111,7 +111,7 @@ void VulkanAPI::setupDebugMessenger()
 void VulkanAPI::createSurface()
 {
 
-#ifdef VE_PLATFORM_WINDOWS
+#if defined(VE_PLATFORM_WINDOWS) || defined(VE_PLATFORM_LINUX)
     if (glfwCreateWindowSurface(instance, m_WindowHandle, nullptr, &surface) != VK_SUCCESS)
     {
         throw std::runtime_error("failed to create window surface!");
@@ -629,7 +629,7 @@ std::vector<const char *> VulkanAPI::getRequiredExtensions()
     uint32_t glfwExtensionCount = 0;
     const char **glfwExtensions;
 
-#ifdef VE_PLATFORM_WINDOWS
+#if defined(VE_PLATFORM_WINDOWS) || defined(VE_PLATFORM_LINUX)
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 #else
     return nullptr;
