@@ -2,7 +2,7 @@
 #include "Application.h"
 #include "vepch.h"
 
-#ifdef VE_PLATFORM_WINDOWS
+#if defined(VE_PLATFORM_WINDOWS) || defined(VE_PLATFORM_LINUX)
 
 extern Core::Application *Core::CreateApplication(ApplicationCommandLineArgs args);
 
