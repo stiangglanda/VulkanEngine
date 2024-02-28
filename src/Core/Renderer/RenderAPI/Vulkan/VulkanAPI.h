@@ -2,6 +2,7 @@
 #include "../../../vepch.h"
 #include "../../RenderAPI.h"
 #include <vulkan/vulkan.h>
+#include <optional>
 
 struct GLFWwindow;
 
