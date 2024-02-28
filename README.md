@@ -1,6 +1,6 @@
 # VulkanEngine
-![Build Status](https://github.com/stiangglanda/VulkanEngine/actions/workflows/cmake-single-platform.yml/badge.svg)
-![Build Status](https://github.com/stiangglanda/VulkanEngine/actions/workflows/cmake-build-linux.yml/badge.svg)
+![Build Status Windows](https://github.com/stiangglanda/VulkanEngine/actions/workflows/cmake-build-windows.yml/badge.svg)
+![Build Status Linux](https://github.com/stiangglanda/VulkanEngine/actions/workflows/cmake-build-linux.yml/badge.svg)
 
 A graphics engine that uses the Vulkan API.
 Currently, there is only the project set up with CMake, Github Actions and some basic dependencies.
