@@ -27,14 +27,15 @@ add_library(Core "src/Core/Core.cpp" "src/Core/Timer.h" "src/Core/Timer.cpp"
 "src/Core/Platform/Windows/WindowsWindow.cpp" 
 "src/Core/Platform/Windows/WindowsInput.cpp" 
 "src/Core/PlatformDetection.h" "src/Core/EntryPoint.h" 
-"src/Core/Events/ApplicationEvent.h"
-"src/Core/Events/Event.h"
-"src/Core/Events/KeyEvent.h"
+"src/Core/Events/ApplicationEvent.h" "src/Core/Events/Event.h" "src/Core/Events/KeyEvent.h"
 "src/Core/Events/MouseEvent.h" "src/Core/vepch.h" "src/Core/vepch.cpp" 
 "src/Core/Log.cpp" "src/Core/Renderer/RenderAPI.cpp" "src/Core/Renderer/RenderAPI.h" 
 "src/Core/Renderer/RenderAPI/Vulkan/VulkanAPI.h" "src/Core/Renderer/RenderAPI/Vulkan/VulkanAPI.cpp" 
-  
- )
+"src/Core/Renderer/RenderAPI/Vulkan/vk_types.h" "src/Core/Renderer/RenderAPI/Vulkan/vk_pipelines.h" 
+"src/Core/Renderer/RenderAPI/Vulkan/vk_pipelines.cpp" "src/Core/Renderer/RenderAPI/Vulkan/vk_initializers.h" 
+"src/Core/Renderer/RenderAPI/Vulkan/vk_initializers.cpp"  
+"src/Core/Renderer/RenderAPI/Vulkan/vk_descriptors.h" "src/Core/Renderer/RenderAPI/Vulkan/vk_descriptors.cpp"   
+"src/Core/Renderer/RenderAPI/Vulkan/meshes.h" "src/Core/Renderer/RenderAPI/Vulkan/meshes.cpp"  )
 
 set_property(TARGET Core PROPERTY CXX_STANDARD 20)
 
