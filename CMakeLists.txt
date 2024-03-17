@@ -14,7 +14,6 @@ add_subdirectory("vendor/glfw")
 add_subdirectory("vendor/glm")
 add_subdirectory("vendor/tinyobjloader")
 add_subdirectory("vendor/spdlog")
-add_subdirectory("vendor/VulkanMemoryAllocator")
 
 find_package(Vulkan REQUIRED)
 # Add source to this project's executable. 
@@ -52,7 +51,6 @@ target_link_libraries(Core Vulkan::Vulkan)
 target_link_libraries(Core glfw)
 target_link_libraries(Core glm::glm)
 target_link_libraries(Core spdlog::spdlog)
-target_link_libraries(Core GPUOpen::VulkanMemoryAllocator)
 
 add_executable(Client "src/Client/main.cpp" "vendor/stb_image.h")
 
