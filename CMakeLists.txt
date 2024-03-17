@@ -14,6 +14,7 @@ add_subdirectory("vendor/glfw")
 add_subdirectory("vendor/glm")
 add_subdirectory("vendor/tinyobjloader")
 add_subdirectory("vendor/spdlog")
+add_subdirectory("vendor/VulkanMemoryAllocator")
 
 find_package(Vulkan REQUIRED)
 # Add source to this project's executable. 
@@ -35,6 +36,8 @@ add_library(Core "src/Core/Core.cpp" "src/Core/Timer.h" "src/Core/Timer.cpp"
   
  )
 
+set_property(TARGET Core PROPERTY CXX_STANDARD 20)
+
 target_precompile_headers(Core PRIVATE "src/Core/vepch.h")
 
 target_compile_definitions(Core PUBLIC RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/") # This is useful to get an ASSETS_PATH in your IDE during development but you should comment this if you compile a release version and uncomment the next line
@@ -45,16 +48,11 @@ target_include_directories(Core
 	PUBLIC vendor/spdlog/include 
 )
 
-target_link_directories(Core 
-	PUBLIC vendor/glfw/src 
-	PUBLIC vendor/glm/glm 
-	PUBLIC vendor/spdlog/src 
-)
-
 target_link_libraries(Core Vulkan::Vulkan)
 target_link_libraries(Core glfw)
 target_link_libraries(Core glm::glm)
 target_link_libraries(Core spdlog::spdlog)
+target_link_libraries(Core GPUOpen::VulkanMemoryAllocator)
 
 add_executable(Client "src/Client/main.cpp" "vendor/stb_image.h")
 
