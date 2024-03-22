@@ -36,7 +36,7 @@ add_library(Core "src/Core/Core.cpp" "src/Core/Timer.h" "src/Core/Timer.cpp"
 "src/Core/Renderer/RenderAPI/Vulkan/vk_initializers.cpp"  
 "src/Core/Renderer/RenderAPI/Vulkan/vk_descriptors.h" "src/Core/Renderer/RenderAPI/Vulkan/vk_descriptors.cpp"   
 "src/Core/Renderer/RenderAPI/Vulkan/meshes.h" "src/Core/Renderer/RenderAPI/Vulkan/meshes.cpp"
-"src/Core/Renderer/RenderAPI/Vulkan/vk_images.h" "src/Core/Renderer/RenderAPI/Vulkan/vk_images.cpp")
+"src/Core/Renderer/RenderAPI/Vulkan/vk_images.h" "src/Core/Renderer/RenderAPI/Vulkan/vk_images.cpp" "src/Core/Renderer/RenderAPI/Vulkan/camera.cpp")
 
 set_property(TARGET Core PROPERTY CXX_STANDARD 20)
 

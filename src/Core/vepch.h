@@ -19,5 +19,6 @@
 #include "Log.h"
 
 #ifdef VE_PLATFORM_WINDOWS
+#define NOMINMAX
 #include <Windows.h>
 #endif
