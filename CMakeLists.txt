@@ -16,10 +16,17 @@ add_subdirectory("vendor/tinyobjloader")
 add_subdirectory("vendor/spdlog")
 add_subdirectory("vendor/VulkanMemoryAllocator")
 
+set(IMGUI_SOURCES
+    "vendor/imgui/imgui.cpp"
+    "vendor/imgui/imgui_demo.cpp"
+    "vendor/imgui/imgui_draw.cpp"
+    "vendor/imgui/imgui_widgets.cpp"
+)
+
 find_package(Vulkan REQUIRED)
 # Add source to this project's executable. 
 
-add_library(Core "src/Core/Core.cpp" "src/Core/Timer.h" "src/Core/Timer.cpp"
+add_library(Core ${IMGUI_SOURCES} "src/Core/Core.cpp" "src/Core/Timer.h" "src/Core/Timer.cpp"
 "src/Core/Application.cpp" "src/Core/Application.h" "src/Core/Window.h" 
 "src/Core/Window.cpp" "src/Core/Input.h"
 "src/Core/KeyCodes.h" "src/Core/MouseCodes.h" 
@@ -49,6 +56,7 @@ target_include_directories(Core
 	PUBLIC vendor/glm/glm 
 	PUBLIC vendor/spdlog/include 
 	PUBLIC vendor/VulkanMemoryAllocator/include 
+	PRIVATE vendor/imgui
 )
 
 target_link_libraries(Core Vulkan::Vulkan)
