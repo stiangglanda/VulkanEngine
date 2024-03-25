@@ -16,6 +16,7 @@ add_subdirectory("vendor/tinyobjloader")
 add_subdirectory("vendor/spdlog")
 add_subdirectory("vendor/VulkanMemoryAllocator")
 add_subdirectory("vendor/vk-bootstrap")
+add_subdirectory("vendor/fastgltf")
 
 set(IMGUI_SOURCES
     "vendor/imgui/imgui.cpp"
@@ -57,6 +58,7 @@ target_include_directories(Core
 	PUBLIC vendor/glm/glm 
 	PUBLIC vendor/spdlog/include 
 	PUBLIC vendor/VulkanMemoryAllocator/include 
+	PUBLIC vendor/fastgltf/include 
 	PRIVATE vendor/imgui
 )
 
@@ -66,6 +68,7 @@ target_link_libraries(Core glm::glm)
 target_link_libraries(Core spdlog::spdlog)
 target_link_libraries(Core GPUOpen::VulkanMemoryAllocator)
 target_link_libraries(Core vk-bootstrap::vk-bootstrap)
+target_link_libraries(Core fastgltf::fastgltf)
 
 add_executable(Client "src/Client/main.cpp" "vendor/stb_image.h")
 
