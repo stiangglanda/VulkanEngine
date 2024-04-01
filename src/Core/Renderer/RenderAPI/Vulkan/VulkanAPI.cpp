@@ -50,6 +50,13 @@ bool VulkanAPI::Init()
     createDescriptorSets();
     createCommandBuffers();
     createSyncObjects();
+     //glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    Camera.velocity = glm::vec3(0.f);
+
+    Camera.position = glm::vec3(2.0f, 2.0f, 2.0f);
+
+    Camera.pitch = 0;
+    Camera.yaw = 0;
     return true;
 }
 
@@ -1084,15 +1091,32 @@ void VulkanAPI::createSyncObjects()
     }
 }
 
+void VulkanAPI::OnEvent(Core::Event &e)
+{
+    //if (e.IsInCategory(Core::EventCategory::EventCategoryApplication))
+    //{
+    //    if (e.GetEventType() == Core::EventType::WindowResize)
+    //    {
+    //        resize_requested = true;
+    //        e.Handled = true;
+    //    }
+    //}
+    Camera.processEvent(e);
+}
+
 void VulkanAPI::updateUniformBuffer(uint32_t currentImage) // TODO use actual camera
 {
     static auto startTime = std::chrono::high_resolution_clock::now();
     auto currentTime = std::chrono::high_resolution_clock::now();
     float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
+    Camera.update();
     UniformBufferObject ubo{};
+
+    ubo.view = Camera.getViewMatrix();
+
     ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    // ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     ubo.proj =
         glm::perspective(glm::radians(45.0f), swapChainExtent.width / (float)swapChainExtent.height, 0.1f, 10.0f);
     ubo.proj[1][1] *= -1;

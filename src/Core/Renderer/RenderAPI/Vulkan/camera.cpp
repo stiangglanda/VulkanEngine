@@ -80,8 +80,8 @@ void Camera::processEvent(Core::Event &e)
     {
         if (e.GetEventType() == Core::EventType::MouseMoved)
         {
-            yaw += static_cast<Core::MouseMovedEvent &>(e).GetX() / 200.f;
-            pitch -= static_cast<Core::MouseMovedEvent &>(e).GetY() / 200.f;
+            yaw += static_cast<Core::MouseMovedEvent &>(e).GetX() / 200.000000;
+            pitch -= static_cast<Core::MouseMovedEvent &>(e).GetY() / 200.000000;
             e.Handled = true;
         }
     }

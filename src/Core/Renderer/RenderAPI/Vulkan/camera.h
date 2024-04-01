@@ -1,5 +1,6 @@
-#include "vk_types.h"
+#pragma once
 #include "../../../Events/Event.h"
+#include "vk_types.h"
 
 class Camera
 {

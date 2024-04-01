@@ -780,6 +780,7 @@ void VulkanEngine::update_scene()
     mainCamera.update();
 
     glm::mat4 view = mainCamera.getViewMatrix();
+    // view = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
     // camera projection
     glm::mat4 projection =
@@ -1247,7 +1248,7 @@ void VulkanEngine::init_sync_structures()
 
 void VulkanEngine::init_renderables()
 {
-    std::string structurePath = {RESOURCES_PATH "shaders/Sponza/Sponza.gltf"};
+    std::string structurePath = {RESOURCES_PATH "shaders/Sponza.gltf"};
     auto structureFile = loadGltf(this, structurePath);
 
     assert(structureFile.has_value());
