@@ -195,7 +195,7 @@ class VulkanAPI : public RenderAPI
     VkQueue graphicsQueue;
     VkQueue presentQueue;
 
-    Camera Camera;
+    Camera Cam;
 
     VkSwapchainKHR swapChain;
     std::vector<VkImage> swapChainImages;
