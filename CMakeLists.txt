@@ -19,16 +19,18 @@ add_subdirectory("vendor/vk-bootstrap")
 add_subdirectory("vendor/fastgltf")
 
 set(IMGUI_SOURCES
+    "vendor/imgui/imgui.h"
     "vendor/imgui/imgui.cpp"
     "vendor/imgui/imgui_demo.cpp"
     "vendor/imgui/imgui_draw.cpp"
     "vendor/imgui/imgui_widgets.cpp"
+    "vendor/imgui/imgui_tables.cpp"
 )
 
 find_package(Vulkan REQUIRED)
 # Add source to this project's executable. 
 
-add_library(Core ${IMGUI_SOURCES} "src/Core/Core.cpp" "src/Core/Timer.h" "src/Core/Timer.cpp"
+add_library(Core ${IMGUI_SOURCES} "vendor/stb_image.h" "src/Core/Core.cpp" "src/Core/Timer.h" "src/Core/Timer.cpp"
 "src/Core/Application.cpp" "src/Core/Application.h" "src/Core/Window.h" 
 "src/Core/Window.cpp" "src/Core/Input.h"
 "src/Core/KeyCodes.h" "src/Core/MouseCodes.h" 
@@ -45,7 +47,7 @@ add_library(Core ${IMGUI_SOURCES} "src/Core/Core.cpp" "src/Core/Timer.h" "src/Co
 "src/Core/Renderer/RenderAPI/Vulkan/vk_initializers.cpp"  
 "src/Core/Renderer/RenderAPI/Vulkan/vk_descriptors.h" "src/Core/Renderer/RenderAPI/Vulkan/vk_descriptors.cpp"   
 "src/Core/Renderer/RenderAPI/Vulkan/meshes.h" "src/Core/Renderer/RenderAPI/Vulkan/meshes.cpp"
-"src/Core/Renderer/RenderAPI/Vulkan/vk_images.h" "src/Core/Renderer/RenderAPI/Vulkan/vk_images.cpp" "src/Core/Renderer/RenderAPI/Vulkan/camera.cpp")
+"src/Core/Renderer/RenderAPI/Vulkan/vk_images.h" "src/Core/Renderer/RenderAPI/Vulkan/vk_images.cpp" "src/Core/Renderer/RenderAPI/Vulkan/camera.cpp" "src/Core/Renderer/RenderAPI/Vulkan/vk_loader.h" "src/Core/Renderer/RenderAPI/Vulkan/vk_loader.cpp" "src/Core/Renderer/RenderAPI/Vulkan/vk_engine.h" "src/Core/Renderer/RenderAPI/Vulkan/vk_engine.cpp" "src/Core/Renderer/RenderAPI/Vulkan/imgui/imgui_impl_vulkan.h" "src/Core/Renderer/RenderAPI/Vulkan/imgui/imgui_impl_vulkan.cpp" "src/Core/Renderer/RenderAPI/Vulkan/imgui/imgui_impl_glfw.h" "src/Core/Renderer/RenderAPI/Vulkan/imgui/imgui_impl_glfw.cpp")
 
 set_property(TARGET Core PROPERTY CXX_STANDARD 20)
 
@@ -60,6 +62,7 @@ target_include_directories(Core
 	PUBLIC vendor/VulkanMemoryAllocator/include 
 	PUBLIC vendor/fastgltf/include 
 	PRIVATE vendor/imgui
+	PUBLIC vendor/tinyobjloader 
 )
 
 target_link_libraries(Core Vulkan::Vulkan)
@@ -69,6 +72,7 @@ target_link_libraries(Core spdlog::spdlog)
 target_link_libraries(Core GPUOpen::VulkanMemoryAllocator)
 target_link_libraries(Core vk-bootstrap::vk-bootstrap)
 target_link_libraries(Core fastgltf::fastgltf)
+target_link_libraries(Core tinyobjloader)
 
 add_executable(Client "src/Client/main.cpp" "vendor/stb_image.h")
 

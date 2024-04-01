@@ -1,4 +1,6 @@
 #include "camera.h"
+#include "../../../Events/KeyEvent.h"
+#include "../../../Events/MouseEvent.h"
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/transform.hpp>
 
@@ -21,6 +23,68 @@ glm::mat4 Camera::getRotationMatrix() const
     glm::quat yawRotation = glm::angleAxis(yaw, glm::vec3{0.f, -1.f, 0.f});
 
     return glm::toMat4(yawRotation) * glm::toMat4(pitchRotation);
+}
+
+void Camera::processEvent(Core::Event &e)
+{
+    if (e.IsInCategory(Core::EventCategory::EventCategoryKeyboard))
+    {
+        if (e.GetEventType() == Core::EventType::KeyPressed)
+        {
+            if (static_cast<Core::KeyPressedEvent &>(e).GetKeyCode() == Core::Key::W)
+            {
+                velocity.z = -1;
+                e.Handled = true;
+            }
+            if (static_cast<Core::KeyPressedEvent &>(e).GetKeyCode() == Core::Key::S)
+            {
+                velocity.z = 1;
+                e.Handled = true;
+            }
+            if (static_cast<Core::KeyPressedEvent &>(e).GetKeyCode() == Core::Key::A)
+            {
+                velocity.x = -1;
+                e.Handled = true;
+            }
+            if (static_cast<Core::KeyPressedEvent &>(e).GetKeyCode() == Core::Key::D)
+            {
+                velocity.x = 1;
+                e.Handled = true;
+            }
+        }
+        if (e.GetEventType() == Core::EventType::KeyReleased)
+        {
+            if (static_cast<Core::KeyReleasedEvent &>(e).GetKeyCode() == Core::Key::W)
+            {
+                velocity.z = 0;
+                e.Handled = true;
+            }
+            if (static_cast<Core::KeyReleasedEvent &>(e).GetKeyCode() == Core::Key::S)
+            {
+                velocity.z = 0;
+                e.Handled = true;
+            }
+            if (static_cast<Core::KeyReleasedEvent &>(e).GetKeyCode() == Core::Key::A)
+            {
+                velocity.x = 0;
+                e.Handled = true;
+            }
+            if (static_cast<Core::KeyReleasedEvent &>(e).GetKeyCode() == Core::Key::D)
+            {
+                velocity.x = 0;
+                e.Handled = true;
+            }
+        }
+    }
+    if (e.IsInCategory(Core::EventCategory::EventCategoryMouse))
+    {
+        if (e.GetEventType() == Core::EventType::MouseMoved)
+        {
+            yaw += static_cast<Core::MouseMovedEvent &>(e).GetX() / 200.f;
+            pitch -= static_cast<Core::MouseMovedEvent &>(e).GetY() / 200.f;
+            e.Handled = true;
+        }
+    }
 }
 
 // void Camera::processSDLEvent(SDL_Event &e)
