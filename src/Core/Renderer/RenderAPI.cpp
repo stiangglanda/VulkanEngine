@@ -14,8 +14,8 @@ std::unique_ptr<RenderAPI> RenderAPI::Create(void *window)
     {
     case API::Vulkan:
         VE_CORE_INFO("RenderAPI::Create Vulkan API");
-        return std::make_unique<VulkanAPI>(static_cast<GLFWwindow *>(window));
-        // return std::make_unique<VulkanEngine>(static_cast<GLFWwindow *>(window));
+         return std::make_unique<VulkanAPI>(static_cast<GLFWwindow *>(window));
+        //return std::make_unique<VulkanEngine>(static_cast<GLFWwindow *>(window));
         break;
     case API::None:
         VE_CORE_ERROR("RenderAPI::Create None API");

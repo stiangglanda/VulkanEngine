@@ -51,7 +51,7 @@ bool VulkanEngine::Shutdown()
     return true;
 }
 
-void VulkanEngine::OnEvent(Core::Event &e)
+void VulkanEngine::OnEvent(Core::Event &e, float delta)
 {
     if (e.IsInCategory(Core::EventCategory::EventCategoryApplication))
     {
@@ -61,11 +61,15 @@ void VulkanEngine::OnEvent(Core::Event &e)
             e.Handled = true;
         }
     }
-    mainCamera.processEvent(e);
+    mainCamera.processEvent(e, delta);
     // ImGui_ImplSDL2_ProcessEvent(&e);
 }
 
-void VulkanEngine::drawFrame()
+void VulkanEngine::Update(float delta)
+{
+}
+
+void VulkanEngine::Draw()
 {
 
     //        mainCamera.processSDLEvent(e);
@@ -103,7 +107,7 @@ void VulkanEngine::drawFrame()
 
         ImGui::SliderInt("Effect Index", &currentBackgroundEffect, 0, backgroundEffects.size() - 1);
 
-        ImGui::InputFloat3("data1", (float *)&mainCamera.position);
+        // ImGui::InputFloat3("data1", (float *)&mainCamera.position);
         ImGui::InputFloat4("data2", (float *)&selected.data.data2);
         ImGui::InputFloat4("data3", (float *)&selected.data.data3);
         ImGui::InputFloat4("data4", (float *)&selected.data.data4);
@@ -167,11 +171,11 @@ void VulkanEngine::init()
     // everything went fine
     _isInitialized = true;
 
-    mainCamera.velocity = glm::vec3(0.f);
-    mainCamera.position = glm::vec3(0.f, 0.f, 0.f);
+    // mainCamera.velocity = glm::vec3(0.f);
+    // mainCamera.position = glm::vec3(0.f, 0.f, 0.f);
 
-    mainCamera.pitch = 0;
-    mainCamera.yaw = 0;
+    // mainCamera.pitch = 0;
+    // mainCamera.yaw = 0;
 }
 
 void VulkanEngine::init_default_data()
@@ -777,7 +781,7 @@ void VulkanEngine::run()
 
 void VulkanEngine::update_scene()
 {
-    mainCamera.update();
+    // mainCamera.update();
 
     glm::mat4 view = mainCamera.getViewMatrix();
     // view = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
@@ -1248,7 +1252,7 @@ void VulkanEngine::init_sync_structures()
 
 void VulkanEngine::init_renderables()
 {
-    std::string structurePath = {RESOURCES_PATH "shaders/Sponza.gltf"};
+    std::string structurePath = {RESOURCES_PATH "shaders/sponza/Sponza.gltf"};
     auto structureFile = loadGltf(this, structurePath);
 
     assert(structureFile.has_value());

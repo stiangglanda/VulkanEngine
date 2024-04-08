@@ -1,11 +1,12 @@
 #pragma once
 #define GLFW_INCLUDE_VULKAN
-#include "Window.h"
-#include <GLFW/glfw3.h>
-#include "vepch.h"
-#include "Events/Event.h"
 #include "Events/ApplicationEvent.h"
+#include "Events/Event.h"
 #include "Renderer/RenderAPI.h"
+#include "Timer.h"
+#include "Window.h"
+#include "vepch.h"
+#include <GLFW/glfw3.h>
 
 int main(int argc, char **argv);
 
@@ -59,6 +60,7 @@ class Application
     static Application *s_Instance;
 
     std::unique_ptr<Window> mWindow;
+    std::unique_ptr<Timer> mTimer;
     std::unique_ptr<RenderAPI> m_RenderAPI;
     bool mRunning = true;
     bool mMinimized = false;

@@ -16,6 +16,8 @@ Application::Application(const ApplicationSpecification &specification) : m_Spec
     m_RenderAPI = RenderAPI::Create(mWindow->GetNativeWindow());
     m_RenderAPI->Init();
     mWindow->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+    mTimer = std::make_unique<Timer>();
+    mTimer->Start();
     VE_CORE_INFO("Application Constructor end");
 }
 
@@ -29,7 +31,7 @@ void Application::OnEvent(Event &e)
     EventDispatcher dispatcher(e);
     dispatcher.Dispatch<WindowCloseEvent>(std::bind(&Application::OnWindowClose, this, std::placeholders::_1));
     dispatcher.Dispatch<WindowResizeEvent>(std::bind(&Application::OnWindowResize, this, std::placeholders::_1));
-    m_RenderAPI->OnEvent(e);
+    m_RenderAPI->OnEvent(e, mTimer->DeltaTime());
 
     // event hendling here
 }
@@ -76,7 +78,9 @@ void Application::Run()
 
         mWindow->OnUpdate();
 
-        m_RenderAPI->drawFrame();
+        m_RenderAPI->Update(mTimer->DeltaTime());
+        m_RenderAPI->Draw();
+        mTimer->Tick();
     }
     VE_CORE_INFO("Application Run End");
 }

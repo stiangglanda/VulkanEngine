@@ -62,8 +62,11 @@ void Timer::Tick()
 
     // Time difference between this frame and the previous.
     std::chrono::time_point<std::chrono::high_resolution_clock> currTime = std::chrono::high_resolution_clock::now();
-    auto tDiff = std::chrono::duration<double, std::milli>(currTime - mPrevTime).count();
-    mDeltaTime = (float)tDiff / 1000.0f;
+    // auto tDiff = std::chrono::duration<double, std::milli>(currTime - mPrevTime).count();
+    // mDeltaTime = (float)tDiff / 1000.0f;
+
+    auto tDiff = std::chrono::duration_cast<std::chrono::microseconds>(currTime - mPrevTime);
+    mDeltaTime = tDiff.count() / 1000.f;
 
     // Prepare for next frame.
     mPrevTime = currTime;

@@ -51,12 +51,12 @@ bool VulkanAPI::Init()
     createCommandBuffers();
     createSyncObjects();
      //glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    Cam.velocity = glm::vec3(0.f);
+    // Cam.velocity = glm::vec3(0.f);
 
-    Cam.position = glm::vec3(2.0f, 2.0f, 2.0f);
+    // Cam.position = glm::vec3(2.0f, 2.0f, 2.0f);
 
-    Cam.pitch = 0;
-    Cam.yaw = 0;
+    // Cam.pitch = 0;
+    // Cam.yaw = 0;
     return true;
 }
 
@@ -1091,7 +1091,7 @@ void VulkanAPI::createSyncObjects()
     }
 }
 
-void VulkanAPI::OnEvent(Core::Event &e)
+void VulkanAPI::OnEvent(Core::Event &e, float delta)
 {
     //if (e.IsInCategory(Core::EventCategory::EventCategoryApplication))
     //{
@@ -1101,7 +1101,7 @@ void VulkanAPI::OnEvent(Core::Event &e)
     //        e.Handled = true;
     //    }
     //}
-    Cam.processEvent(e);
+    Cam.processEvent(e, delta);
 }
 
 void VulkanAPI::updateUniformBuffer(uint32_t currentImage) // TODO use actual camera
@@ -1110,7 +1110,7 @@ void VulkanAPI::updateUniformBuffer(uint32_t currentImage) // TODO use actual ca
     auto currentTime = std::chrono::high_resolution_clock::now();
     float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
-    Cam.update();
+    //Cam.update();
     UniformBufferObject ubo{};
 
     ubo.view = Cam.getViewMatrix();
@@ -1359,7 +1359,12 @@ std::vector<char> VulkanAPI::readFile(const std::string &filename)
     return buffer;
 }
 
-void VulkanAPI::drawFrame()
+void VulkanAPI::Update(float delta)
+{
+
+}
+
+void VulkanAPI::Draw()
 {
     vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 

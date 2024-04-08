@@ -18,10 +18,11 @@ class RenderAPI
 
     virtual bool Init() = 0;
     virtual bool Shutdown() = 0;
-    virtual void drawFrame() = 0;
-    virtual void OnEvent(Event &e)
+    virtual void Update(float delta) = 0;
+    virtual void Draw() = 0;
+    virtual void OnEvent(Event &e, float delta)
     {
-        VE_CORE_INFO("Yea we are getting womewhere");
+        VE_CORE_INFO("Yea we are getting somewhere");
         // event hendling here
     }
 

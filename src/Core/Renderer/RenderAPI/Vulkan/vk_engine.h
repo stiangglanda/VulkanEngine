@@ -156,8 +156,9 @@ class VulkanEngine : public Core::RenderAPI
 
     virtual bool Init() override;
     virtual bool Shutdown() override;
-    virtual void drawFrame() override;
-    virtual void OnEvent(Core::Event &e) override;
+    virtual void Update(float delta) override;
+    virtual void Draw() override;
+    virtual void OnEvent(Core::Event &e, float delta) override;
 
   private:
     GLFWwindow *m_WindowHandle;
