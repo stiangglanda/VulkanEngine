@@ -31,7 +31,6 @@ void Application::OnEvent(Event &e)
     EventDispatcher dispatcher(e);
     dispatcher.Dispatch<WindowCloseEvent>(std::bind(&Application::OnWindowClose, this, std::placeholders::_1));
     dispatcher.Dispatch<WindowResizeEvent>(std::bind(&Application::OnWindowResize, this, std::placeholders::_1));
-    m_RenderAPI->OnEvent(e, mTimer->DeltaTime());
 
     // event hendling here
 }

@@ -61,12 +61,13 @@ void VulkanEngine::OnEvent(Core::Event &e, float delta)
             e.Handled = true;
         }
     }
-    mainCamera.processEvent(e, delta);
+
     // ImGui_ImplSDL2_ProcessEvent(&e);
 }
 
 void VulkanEngine::Update(float delta)
 {
+    mainCamera.processEvent(delta);
 }
 
 void VulkanEngine::Draw()

@@ -1093,15 +1093,14 @@ void VulkanAPI::createSyncObjects()
 
 void VulkanAPI::OnEvent(Core::Event &e, float delta)
 {
-    //if (e.IsInCategory(Core::EventCategory::EventCategoryApplication))
+    // if (e.IsInCategory(Core::EventCategory::EventCategoryApplication))
     //{
-    //    if (e.GetEventType() == Core::EventType::WindowResize)
-    //    {
-    //        resize_requested = true;
-    //        e.Handled = true;
-    //    }
-    //}
-    Cam.processEvent(e, delta);
+    //     if (e.GetEventType() == Core::EventType::WindowResize)
+    //     {
+    //         resize_requested = true;
+    //         e.Handled = true;
+    //     }
+    // }
 }
 
 void VulkanAPI::updateUniformBuffer(uint32_t currentImage) // TODO use actual camera
@@ -1362,7 +1361,7 @@ std::vector<char> VulkanAPI::readFile(const std::string &filename)
 
 void VulkanAPI::Update(float delta)
 {
-
+    Cam.processEvent(delta);
 }
 
 void VulkanAPI::Draw()
