@@ -19,7 +19,7 @@ enum Camera_Movement
 const float YAW = -90.0f;
 const float PITCH = 0.0f;
 const float SPEED = 20.0f;
-const float SENSITIVITY = 0.001f;
+const float SENSITIVITY = 0.1f;
 const float ZOOM = 45.0f;
 
 // An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for
@@ -28,11 +28,15 @@ class Camera
 {
   public:
     // camera Attributes
+    bool firstMouse = true;
     glm::vec3 Position;
     glm::vec3 Front;
     glm::vec3 Up;
     glm::vec3 Right;
     glm::vec3 WorldUp;
+
+    float lastX;
+    float lastY;
     // euler Angles
     float Yaw;
     float Pitch;
@@ -87,8 +91,20 @@ class Camera
     }
 
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
-    void ProcessMouseMovement(float xoffset, float yoffset, bool constrainPitch = true)
+    void ProcessMouseMovement(float xpos, float ypos, bool constrainPitch = true)
     {
+        if (firstMouse)
+        {
+            lastX = xpos;
+            lastY = ypos;
+            firstMouse = false;
+        }
+
+        float xoffset = xpos - lastX;
+        float yoffset = lastY - ypos;
+        lastX = xpos;
+        lastY = ypos;
+
         xoffset *= MouseSensitivity;
         yoffset *= MouseSensitivity;
 

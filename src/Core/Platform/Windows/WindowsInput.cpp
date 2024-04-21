@@ -1,5 +1,5 @@
-#include "../../Input.h"
 #include "../../Application.h"
+#include "../../Input.h"
 #include <GLFW/glfw3.h>
 
 namespace Core
@@ -38,4 +38,4 @@ float Input::GetMouseY()
     return GetMousePosition().y;
 }
 
-} // namespace Code
+} // namespace Core

@@ -37,26 +37,29 @@ void Camera::processEvent(Core::Event &e, float delta)
                 cm = Camera_Movement::FORWARD;
                 // velocity.z = -1;
                 e.Handled = true;
+                ProcessKeyboard(cm, delta); // TODO this needs delta
             }
             if (static_cast<Core::KeyPressedEvent &>(e).GetKeyCode() == Core::Key::S)
             {
                 cm = Camera_Movement::BACKWARD;
                 // velocity.z = 1;
                 e.Handled = true;
+                ProcessKeyboard(cm, delta); // TODO this needs delta
             }
             if (static_cast<Core::KeyPressedEvent &>(e).GetKeyCode() == Core::Key::A)
             {
                 cm = Camera_Movement::LEFT;
                 // velocity.x = -1;
                 e.Handled = true;
+                ProcessKeyboard(cm, delta); // TODO this needs delta
             }
             if (static_cast<Core::KeyPressedEvent &>(e).GetKeyCode() == Core::Key::D)
             {
                 cm = Camera_Movement::RIGHT;
                 // velocity.x = 1;
                 e.Handled = true;
+                ProcessKeyboard(cm, delta); // TODO this needs delta
             }
-            ProcessKeyboard(cm, delta); // TODO this needs delta
         }
         // if (e.GetEventType() == Core::EventType::KeyReleased)
         //{

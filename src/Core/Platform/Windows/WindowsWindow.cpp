@@ -43,7 +43,7 @@ void WindowsWindow::Init(const WindowProps &props)
 
     glfwSetWindowUserPointer(m_Window, &m_Data);
     SetVSync(true);
-
+    glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     // Set GLFW callbacks
     glfwSetWindowSizeCallback(m_Window, [](GLFWwindow *window, int width, int height) {
         WindowData &data = *(WindowData *)glfwGetWindowUserPointer(window);
