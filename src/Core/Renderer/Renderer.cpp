@@ -2,31 +2,31 @@
 
 namespace Core {
 
-	std::unique_ptr<RenderAPI> Renderer::mRenderAPI = RenderAPI::Create();
+	std::unique_ptr<RenderAPI> Renderer::s_RenderAPI = RenderAPI::Create();
 
 	void Renderer::Init()
 	{
-        mRenderAPI->Init();
+        s_RenderAPI->Init();
 	}
 
 	void Renderer::Shutdown()
 	{
-		mRenderAPI->Shutdown();
+		s_RenderAPI->Shutdown();
 	}
 
     void Renderer::OnEvent(Event &e, float delta)
 	{
-        mRenderAPI->OnEvent(e, delta);
+        s_RenderAPI->OnEvent(e, delta);
 	}
 
     void Renderer::Draw()
 	{
-        mRenderAPI->Draw();
+        s_RenderAPI->Draw();
 	}
 
     void Renderer::Update(float delta)
 	{
-        mRenderAPI->Update(delta);
+        s_RenderAPI->Update(delta);
 	}
 
 	void Renderer::OnWindowResize(uint32_t width, uint32_t height)

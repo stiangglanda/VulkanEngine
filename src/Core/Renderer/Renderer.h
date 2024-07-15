@@ -22,6 +22,6 @@ namespace Core {
 
 		static RenderAPI::API GetAPI() { return RenderAPI::GetAPI(); }
     private:
-        static std::unique_ptr<RenderAPI> mRenderAPI;
+        static std::unique_ptr<RenderAPI> s_RenderAPI;
 	};
 }
