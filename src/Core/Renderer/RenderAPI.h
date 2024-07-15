@@ -30,7 +30,7 @@ class RenderAPI
     {
         return s_graphicsAPI;
     }
-    static std::unique_ptr<RenderAPI> Create(void *window);
+    static std::unique_ptr<RenderAPI> Create();
 
   private:
     static API s_graphicsAPI;

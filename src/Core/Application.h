@@ -61,7 +61,7 @@ class Application
 
     std::unique_ptr<Window> mWindow;
     std::unique_ptr<Timer> mTimer;
-    std::unique_ptr<RenderAPI> m_RenderAPI;
+    //std::unique_ptr<RenderAPI> m_RenderAPI;
     bool mRunning = true;
     bool mMinimized = false;
     friend int ::main(int argc, char **argv);

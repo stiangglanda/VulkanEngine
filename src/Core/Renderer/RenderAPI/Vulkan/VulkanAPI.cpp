@@ -10,18 +10,16 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
 
+#include "../../../Application.h"
+
 const std::string MODEL_PATH = RESOURCES_PATH "viking_room.obj";
 const std::string TEXTURE_PATH = RESOURCES_PATH "viking_room.png";
 
 namespace Core
 {
 
-VulkanAPI::VulkanAPI(GLFWwindow *windowHandle) : m_WindowHandle(windowHandle)
+VulkanAPI::VulkanAPI()
 {
-    if (windowHandle == nullptr)
-    {
-        VE_CORE_ERROR("Window handle is null!");
-    }
 }
 
 bool VulkanAPI::Init()
@@ -123,7 +121,7 @@ void VulkanAPI::createSurface()
 {
 
 #if defined(VE_PLATFORM_WINDOWS) || defined(VE_PLATFORM_LINUX)
-    if (glfwCreateWindowSurface(instance, m_WindowHandle, nullptr, &surface) != VK_SUCCESS)
+    if (glfwCreateWindowSurface(instance, static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), nullptr, &surface) != VK_SUCCESS)
     {
         throw std::runtime_error("failed to create window surface!");
     }
@@ -304,7 +302,7 @@ VkExtent2D VulkanAPI::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilit
     else
     {
         int width, height;
-        glfwGetFramebufferSize(m_WindowHandle, &width, &height);
+        glfwGetFramebufferSize(static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), &width, &height);
 
         VkExtent2D actualExtent = {static_cast<uint32_t>(width), static_cast<uint32_t>(height)};
 
@@ -1440,10 +1438,10 @@ void VulkanAPI::Draw()
 void VulkanAPI::recreateSwapChain()
 {
     int width = 0, height = 0;
-    glfwGetFramebufferSize(m_WindowHandle, &width, &height);
+    glfwGetFramebufferSize(static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), &width, &height);
     while (width == 0 || height == 0)
     {
-        glfwGetFramebufferSize(m_WindowHandle, &width, &height);
+        glfwGetFramebufferSize(static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), &width, &height);
         glfwWaitEvents();
     }
 

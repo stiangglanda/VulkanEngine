@@ -87,7 +87,7 @@ struct SwapChainSupportDetails
 class VulkanAPI : public RenderAPI
 {
   public:
-    VulkanAPI(GLFWwindow *windowHandle);
+    VulkanAPI();
     virtual ~VulkanAPI() = default;
 
     virtual bool Init() override;
@@ -97,7 +97,6 @@ class VulkanAPI : public RenderAPI
     virtual void OnEvent(Core::Event &e, float delta) override;
 
   private:
-    GLFWwindow *m_WindowHandle;
 
     void createInstance();
     void setupDebugMessenger();

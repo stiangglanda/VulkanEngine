@@ -47,7 +47,13 @@ add_library(Core ${IMGUI_SOURCES} "vendor/stb_image.h" "src/Core/Core.cpp" "src/
 "src/Core/Renderer/RenderAPI/Vulkan/vk_initializers.cpp"  
 "src/Core/Renderer/RenderAPI/Vulkan/vk_descriptors.h" "src/Core/Renderer/RenderAPI/Vulkan/vk_descriptors.cpp"   
 "src/Core/Renderer/RenderAPI/Vulkan/meshes.h" "src/Core/Renderer/RenderAPI/Vulkan/meshes.cpp"
-"src/Core/Renderer/RenderAPI/Vulkan/vk_images.h" "src/Core/Renderer/RenderAPI/Vulkan/vk_images.cpp" "src/Core/Renderer/RenderAPI/Vulkan/camera.cpp" "src/Core/Renderer/RenderAPI/Vulkan/vk_loader.h" "src/Core/Renderer/RenderAPI/Vulkan/vk_loader.cpp" "src/Core/Renderer/RenderAPI/Vulkan/vk_engine.h" "src/Core/Renderer/RenderAPI/Vulkan/vk_engine.cpp" "src/Core/Renderer/RenderAPI/Vulkan/imgui/imgui_impl_vulkan.h" "src/Core/Renderer/RenderAPI/Vulkan/imgui/imgui_impl_vulkan.cpp" "src/Core/Renderer/RenderAPI/Vulkan/imgui/imgui_impl_glfw.h" "src/Core/Renderer/RenderAPI/Vulkan/imgui/imgui_impl_glfw.cpp")
+"src/Core/Renderer/RenderAPI/Vulkan/vk_images.h" "src/Core/Renderer/RenderAPI/Vulkan/vk_images.cpp" 
+"src/Core/Renderer/RenderAPI/Vulkan/camera.cpp" "src/Core/Renderer/RenderAPI/Vulkan/vk_loader.h" 
+"src/Core/Renderer/RenderAPI/Vulkan/vk_loader.cpp" "src/Core/Renderer/RenderAPI/Vulkan/vk_engine.h" 
+"src/Core/Renderer/RenderAPI/Vulkan/vk_engine.cpp" "src/Core/Renderer/RenderAPI/Vulkan/imgui/imgui_impl_vulkan.h" 
+"src/Core/Renderer/RenderAPI/Vulkan/imgui/imgui_impl_vulkan.cpp" "src/Core/Renderer/RenderAPI/Vulkan/imgui/imgui_impl_glfw.h" 
+"src/Core/Renderer/RenderAPI/Vulkan/imgui/imgui_impl_glfw.cpp" "src/Core/Renderer/Renderer.cpp"
+"src/Core/Renderer/Renderer.h")
 
 set_property(TARGET Core PROPERTY CXX_STANDARD 20)
 

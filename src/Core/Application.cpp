@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "Renderer/Renderer.h"
 
 namespace Core
 {
@@ -13,8 +14,11 @@ Application::Application(const ApplicationSpecification &specification) : m_Spec
     //     std::filesystem::current_path(m_Specification.WorkingDirectory);
 
     mWindow = Window::Create(WindowProps(m_Specification.Name));
-    m_RenderAPI = RenderAPI::Create(mWindow->GetNativeWindow());
-    m_RenderAPI->Init();
+    //m_RenderAPI = RenderAPI::Create();
+
+    Renderer::Init();
+
+    //m_RenderAPI->Init();
     mWindow->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
     mTimer = std::make_unique<Timer>();
     mTimer->Start();
@@ -50,6 +54,7 @@ bool Application::OnWindowResize(WindowResizeEvent &e)
         mMinimized = true;
         return false;
     }
+    Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
 
     mMinimized = false;
 
@@ -59,7 +64,8 @@ bool Application::OnWindowResize(WindowResizeEvent &e)
 void Application::Shutdown()
 {
     VE_CORE_INFO("Shutdown");
-    m_RenderAPI->Shutdown();
+    //m_RenderAPI->Shutdown();
+    Renderer::Shutdown();
 }
 
 void Application::Run()
@@ -76,9 +82,9 @@ void Application::Run()
         }
 
         mWindow->OnUpdate();
-
-        m_RenderAPI->Update(mTimer->DeltaTime());
-        m_RenderAPI->Draw();
+        
+        Renderer::Update(mTimer->DeltaTime());
+        Renderer::Draw();
         mTimer->Tick();
     }
     VE_CORE_INFO("Application Run End");
