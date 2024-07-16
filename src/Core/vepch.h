@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PlatformDetection.h"
+#include <vulkan/vulkan.h>
 
 #include <algorithm>
 #include <chrono>
@@ -22,3 +23,13 @@
 #define NOMINMAX
 #include <Windows.h>
 #endif
+
+namespace Core
+{
+struct SwapChainSupportDetails
+{
+    VkSurfaceCapabilitiesKHR capabilities;
+    std::vector<VkSurfaceFormatKHR> formats;
+    std::vector<VkPresentModeKHR> presentModes;
+};
+}

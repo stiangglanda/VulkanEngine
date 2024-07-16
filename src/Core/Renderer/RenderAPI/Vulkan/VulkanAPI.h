@@ -5,7 +5,7 @@
 #include "VulkanDebug.h"
 #include "VulkanSurface.h"
 #include "camera.h"
-#include <optional>
+// #include <optional>
 #include <vulkan/vulkan.h>
 
 #define GLM_FORCE_RADIANS
@@ -14,6 +14,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/hash.hpp>
+#include "VulkanDevice.h"
 
 struct GLFWwindow;
 
@@ -69,23 +70,18 @@ struct UniformBufferObject
     alignas(16) glm::mat4 proj;
 };
 
-struct QueueFamilyIndices
-{
-    std::optional<uint32_t> graphicsFamily;
-    std::optional<uint32_t> presentFamily;
+// struct QueueFamilyIndices
+// {
+//     std::optional<uint32_t> graphicsFamily;
+//     std::optional<uint32_t> presentFamily;
 
-    bool isComplete()
-    {
-        return graphicsFamily.has_value() && presentFamily.has_value();
-    }
-};
+//     bool isComplete()
+//     {
+//         return graphicsFamily.has_value() && presentFamily.has_value();
+//     }
+// };
 
-struct SwapChainSupportDetails
-{
-    VkSurfaceCapabilitiesKHR capabilities;
-    std::vector<VkSurfaceFormatKHR> formats;
-    std::vector<VkPresentModeKHR> presentModes;
-};
+
 
 class VulkanAPI : public RenderAPI
 {
@@ -101,9 +97,8 @@ class VulkanAPI : public RenderAPI
 
   private:
 
-    //void createSurface(); // needs window
-    void pickPhysicalDevice();
-    void createLogicalDevice();
+    // void pickPhysicalDevice();
+    // void createLogicalDevice();
     void createSwapChain(); // needs Window and should be its own file called SwapChain
     void createImageViews();
     void createRenderPass();       // should be in its own file called RenderPass
@@ -139,9 +134,9 @@ class VulkanAPI : public RenderAPI
     void createCommandBuffers();
     void createSyncObjects();
     void updateUniformBuffer(uint32_t currentImage);
-    QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-    bool isDeviceSuitable(VkPhysicalDevice device);
-    bool checkDeviceExtensionSupport(VkPhysicalDevice device);
+    // QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
+    // bool isDeviceSuitable(VkPhysicalDevice device);
+    // bool checkDeviceExtensionSupport(VkPhysicalDevice device);
     SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
     VkShaderModule createShaderModule(const std::vector<char> &code);
     void cleanupSwapChain();
@@ -160,18 +155,17 @@ class VulkanAPI : public RenderAPI
 #endif
 
     const std::vector<const char *> validationLayers = {"VK_LAYER_KHRONOS_validation"};
-    const std::vector<const char *> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+    // const std::vector<const char *> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
     const int MAX_FRAMES_IN_FLIGHT = 2;
 
     VulkanInstance instance;// Vulkan library handle
     VulkanDebug vkDebug;// Vulkan debug output handle
     VulkanSurface surface;// Vulkan window surface
+    VulkanDevice device;// Vulkan device for commands
 
-    //VkSurfaceKHR surface;                    // Vulkan window surface
-
-    VkPhysicalDevice physicalDevice = VK_NULL_HANDLE; // GPU chosen as the default device
-    VkDevice device;                                  // Vulkan device for commands
+    // VkPhysicalDevice physicalDevice = VK_NULL_HANDLE; // GPU chosen as the default device
+    // VkDevice device;                                  // Vulkan device for commands
 
     VkQueue graphicsQueue;
     VkQueue presentQueue;
