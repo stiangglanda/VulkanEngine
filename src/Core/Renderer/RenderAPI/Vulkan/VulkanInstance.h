@@ -15,7 +15,7 @@ namespace Core
 
         void Shutdown();
 
-        VkInstance getInstance() 
+        VkInstance getInstance() const
         {
             return instance;
         }

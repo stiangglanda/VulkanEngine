@@ -22,7 +22,8 @@ bool VulkanAPI::Init()
 {
     instance.Init(enableValidationLayers, validationLayers);
     vkDebug.Init(instance.getInstance(), enableValidationLayers);
-    createSurface();
+    surface.Init(instance.getInstance());
+    // createSurface();
     pickPhysicalDevice();
     createLogicalDevice();
     createSwapChain();
@@ -54,18 +55,18 @@ bool VulkanAPI::Init()
     return true;
 }
 
-void VulkanAPI::createSurface()
-{
+// void VulkanAPI::createSurface()
+// {
 
-#if defined(VE_PLATFORM_WINDOWS) || defined(VE_PLATFORM_LINUX)
-    if (glfwCreateWindowSurface(instance.getInstance(), static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), nullptr, &surface) != VK_SUCCESS)
-    {
-        throw std::runtime_error("failed to create window surface!");
-    }
-#else
-    return nullptr;
-#endif
-}
+// #if defined(VE_PLATFORM_WINDOWS) || defined(VE_PLATFORM_LINUX)
+//     if (glfwCreateWindowSurface(instance.getInstance(), static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), nullptr, &surface) != VK_SUCCESS)
+//     {
+//         throw std::runtime_error("failed to create window surface!");
+//     }
+// #else
+//     return nullptr;
+// #endif
+// }
 
 void VulkanAPI::pickPhysicalDevice()
 {
@@ -162,7 +163,7 @@ void VulkanAPI::createSwapChain()
 
     VkSwapchainCreateInfoKHR createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-    createInfo.surface = surface;
+    createInfo.surface = surface.getSurface();
 
     createInfo.minImageCount = imageCount;
     createInfo.imageFormat = surfaceFormat.format;
@@ -1077,7 +1078,7 @@ QueueFamilyIndices VulkanAPI::findQueueFamilies(VkPhysicalDevice device)
         }
 
         VkBool32 presentSupport = false;
-        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
+        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface.getSurface(), &presentSupport);
 
         if (presentSupport)
         {
@@ -1136,24 +1137,24 @@ SwapChainSupportDetails VulkanAPI::querySwapChainSupport(VkPhysicalDevice device
 {
     SwapChainSupportDetails details;
 
-    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface.getSurface(), &details.capabilities);
 
     uint32_t formatCount;
-    vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, nullptr);
+    vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface.getSurface(), &formatCount, nullptr);
 
     if (formatCount != 0)
     {
         details.formats.resize(formatCount);
-        vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, details.formats.data());
+        vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface.getSurface(), &formatCount, details.formats.data());
     }
 
     uint32_t presentModeCount;
-    vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, nullptr);
+    vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface.getSurface(), &presentModeCount, nullptr);
 
     if (presentModeCount != 0)
     {
         details.presentModes.resize(presentModeCount);
-        vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, details.presentModes.data());
+        vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface.getSurface(), &presentModeCount, details.presentModes.data());
     }
 
     return details;
@@ -1350,8 +1351,9 @@ bool VulkanAPI::Shutdown()
     vkDestroyDevice(device, nullptr);
 
     vkDebug.Shutdown(instance.getInstance());
+    surface.Shutdown(instance.getInstance());
 
-    vkDestroySurfaceKHR(instance.getInstance(), surface, nullptr);
+    // vkDestroySurfaceKHR(instance.getInstance(), surface, nullptr);
     instance.Shutdown();
 
     return true;

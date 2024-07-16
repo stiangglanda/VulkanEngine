@@ -3,6 +3,7 @@
 #include "../../RenderAPI.h"
 #include "VulkanInstance.h"
 #include "VulkanDebug.h"
+#include "VulkanSurface.h"
 #include "camera.h"
 #include <optional>
 #include <vulkan/vulkan.h>
@@ -100,7 +101,7 @@ class VulkanAPI : public RenderAPI
 
   private:
 
-    void createSurface(); // needs window
+    //void createSurface(); // needs window
     void pickPhysicalDevice();
     void createLogicalDevice();
     void createSwapChain(); // needs Window and should be its own file called SwapChain
@@ -165,8 +166,9 @@ class VulkanAPI : public RenderAPI
 
     VulkanInstance instance;// Vulkan library handle
     VulkanDebug vkDebug;// Vulkan debug output handle
+    VulkanSurface surface;// Vulkan window surface
 
-    VkSurfaceKHR surface;                    // Vulkan window surface
+    //VkSurfaceKHR surface;                    // Vulkan window surface
 
     VkPhysicalDevice physicalDevice = VK_NULL_HANDLE; // GPU chosen as the default device
     VkDevice device;                                  // Vulkan device for commands

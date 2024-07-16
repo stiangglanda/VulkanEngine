@@ -9,6 +9,7 @@ void VulkanDebug::Shutdown(VkInstance instance)
     {
         DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
         mInitialised=false;
+        VE_CORE_INFO("Shutdown Vulkan Debug");
     }
 }
 
@@ -26,7 +27,7 @@ void VulkanDebug::Init(VkInstance instance, const bool enableValidationLayers)
     }
     else
     {
-        VE_CORE_INFO("Successful: set up debug messenger");
+        VE_CORE_INFO("Successful: set up Vulkan Debug");
         mInitialised=true;
     }
 }

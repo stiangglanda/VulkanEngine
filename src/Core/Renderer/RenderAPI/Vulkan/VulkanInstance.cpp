@@ -8,6 +8,7 @@ namespace Core
 void VulkanInstance::Shutdown()
 {
     vkDestroyInstance(instance, nullptr);
+    VE_CORE_INFO("Shutdown Vulkan Instance");
 }
 
 void VulkanInstance::Init(const bool enableValidationLayers, const std::vector<const char *> validationLayers)
@@ -55,7 +56,7 @@ void VulkanInstance::Init(const bool enableValidationLayers, const std::vector<c
     }
     else
     {
-        VE_CORE_INFO("Successful: create instance");
+        VE_CORE_INFO("Successful: Init Vulkan Instance");
     }
 }
 
