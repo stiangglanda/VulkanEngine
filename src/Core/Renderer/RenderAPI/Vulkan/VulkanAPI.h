@@ -5,7 +5,6 @@
 #include "VulkanDebug.h"
 #include "VulkanSurface.h"
 #include "camera.h"
-// #include <optional>
 #include <vulkan/vulkan.h>
 
 #define GLM_FORCE_RADIANS
@@ -70,19 +69,6 @@ struct UniformBufferObject
     alignas(16) glm::mat4 proj;
 };
 
-// struct QueueFamilyIndices
-// {
-//     std::optional<uint32_t> graphicsFamily;
-//     std::optional<uint32_t> presentFamily;
-
-//     bool isComplete()
-//     {
-//         return graphicsFamily.has_value() && presentFamily.has_value();
-//     }
-// };
-
-
-
 class VulkanAPI : public RenderAPI
 {
   public:
@@ -96,9 +82,6 @@ class VulkanAPI : public RenderAPI
     virtual void OnEvent(Core::Event &e, float delta) override;
 
   private:
-
-    // void pickPhysicalDevice();
-    // void createLogicalDevice();
     void createSwapChain(); // needs Window and should be its own file called SwapChain
     void createImageViews();
     void createRenderPass();       // should be in its own file called RenderPass
@@ -134,9 +117,6 @@ class VulkanAPI : public RenderAPI
     void createCommandBuffers();
     void createSyncObjects();
     void updateUniformBuffer(uint32_t currentImage);
-    // QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-    // bool isDeviceSuitable(VkPhysicalDevice device);
-    // bool checkDeviceExtensionSupport(VkPhysicalDevice device);
     SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
     VkShaderModule createShaderModule(const std::vector<char> &code);
     void cleanupSwapChain();
@@ -155,17 +135,13 @@ class VulkanAPI : public RenderAPI
 #endif
 
     const std::vector<const char *> validationLayers = {"VK_LAYER_KHRONOS_validation"};
-    // const std::vector<const char *> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
     const int MAX_FRAMES_IN_FLIGHT = 2;
 
     VulkanInstance instance;// Vulkan library handle
     VulkanDebug vkDebug;// Vulkan debug output handle
     VulkanSurface surface;// Vulkan window surface
-    VulkanDevice device;// Vulkan device for commands
-
-    // VkPhysicalDevice physicalDevice = VK_NULL_HANDLE; // GPU chosen as the default device
-    // VkDevice device;                                  // Vulkan device for commands
+    VulkanDevice device;// Vulkan device for commands // GPU chosen as the default device
 
     VkQueue graphicsQueue;
     VkQueue presentQueue;

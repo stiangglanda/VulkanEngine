@@ -3,7 +3,7 @@
 #include "../../../vepch.h"
 #include <optional>
 
-namespace Core 
+namespace Core
 {
     struct QueueFamilyIndices
     {
