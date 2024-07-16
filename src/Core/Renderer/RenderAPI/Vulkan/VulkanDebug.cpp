@@ -77,17 +77,17 @@ VKAPI_ATTR VkBool32 VKAPI_CALL VulkanDebug::debugCallback(VkDebugUtilsMessageSev
         {
             switch(messageType) 
             {
-                case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-                    VE_CORE_INFO("validation layer: {0}", pCallbackData->pMessage);
+                case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
+                    VE_CORE_ERROR("validation layer error: {0}", pCallbackData->pMessage);
                 break;
                 case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
-                    VE_CORE_WARN("validation layer: {0}", pCallbackData->pMessage);
+                    VE_CORE_WARN("validation layer warn: {0}", pCallbackData->pMessage);
                 break;
-                case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
-                    VE_CORE_ERROR("validation layer: {0}", pCallbackData->pMessage);
+                case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
+                    VE_CORE_INFO("validation layer info: {0}", pCallbackData->pMessage);
                 break;
                 default:
-                    VE_CORE_INFO("validation layer: {0}", pCallbackData->pMessage);
+                    VE_CORE_INFO("validation layer default: {0}", pCallbackData->pMessage);
             }
             return VK_FALSE;
         }

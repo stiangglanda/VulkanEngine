@@ -16,8 +16,6 @@ namespace Core
         static void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo);
 
     private:
-
-        void setupDebugMessenger(const bool enableValidationLayers);
         VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
                                       const VkAllocationCallbacks *pAllocator,
                                       VkDebugUtilsMessengerEXT *pDebugMessenger);
@@ -29,6 +27,6 @@ namespace Core
                                                         void *pUserData);
     private:
         VkDebugUtilsMessengerEXT debugMessenger; // Vulkan debug output handle
-        bool mInitialised;
+        bool mInitialised=false;
     };
 } // namespace Core
