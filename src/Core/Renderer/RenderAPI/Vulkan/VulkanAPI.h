@@ -1,6 +1,8 @@
 #pragma once
 #include "../../../vepch.h"
 #include "../../RenderAPI.h"
+#include "VulkanInstance.h"
+#include "VulkanDebug.h"
 #include "camera.h"
 #include <optional>
 #include <vulkan/vulkan.h>
@@ -98,8 +100,8 @@ class VulkanAPI : public RenderAPI
 
   private:
 
-    void createInstance();
-    void setupDebugMessenger();
+    // void createInstance();
+    // void setupDebugMessenger();
     void createSurface(); // needs window
     void pickPhysicalDevice();
     void createLogicalDevice();
@@ -138,24 +140,24 @@ class VulkanAPI : public RenderAPI
     void createCommandBuffers();
     void createSyncObjects();
     void updateUniformBuffer(uint32_t currentImage);
-    VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
-                                          const VkAllocationCallbacks *pAllocator,
-                                          VkDebugUtilsMessengerEXT *pDebugMessenger);
-    void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo);
+    // VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
+    //                                       const VkAllocationCallbacks *pAllocator,
+    //                                       VkDebugUtilsMessengerEXT *pDebugMessenger);
+    // void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo);
 
-    bool checkValidationLayerSupport();
-    std::vector<const char *> getRequiredExtensions();
+    // bool checkValidationLayerSupport();
+    // std::vector<const char *> getRequiredExtensions();
 
-    static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-                                                        VkDebugUtilsMessageTypeFlagsEXT messageType,
-                                                        const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
-                                                        void *pUserData)
-    {
-        VE_CORE_INFO("validation layer: {0}",
-                     pCallbackData->pMessage); // TODO should be split up into info warn and error
+    // static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+    //                                                     VkDebugUtilsMessageTypeFlagsEXT messageType,
+    //                                                     const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
+    //                                                     void *pUserData)
+    // {
+    //     VE_CORE_INFO("validation layer: {0}",
+    //                  pCallbackData->pMessage); // TODO should be split up into info warn and error
 
-        return VK_FALSE;
-    }
+    //     return VK_FALSE;
+    // }
     QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
     bool isDeviceSuitable(VkPhysicalDevice device);
     bool checkDeviceExtensionSupport(VkPhysicalDevice device);
@@ -166,27 +168,30 @@ class VulkanAPI : public RenderAPI
     void recreateSwapChain();
     void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
-    void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger,
-                                       const VkAllocationCallbacks *pAllocator);
+    // void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger,
+    //                                    const VkAllocationCallbacks *pAllocator);
 
     VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats);
     VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes);
     VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
 
 #ifdef NDEBUG
-    const bool enableValidationLayers = false;
+    const bool enableValidationLayers = true;//false
 #else
     const bool enableValidationLayers = true;
 #endif
 
-    const int MAX_FRAMES_IN_FLIGHT = 2;
-
     const std::vector<const char *> validationLayers = {"VK_LAYER_KHRONOS_validation"};
-
     const std::vector<const char *> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
-    VkInstance instance;                     // Vulkan library handle
-    VkDebugUtilsMessengerEXT debugMessenger; // Vulkan debug output handle
+    const int MAX_FRAMES_IN_FLIGHT = 2;
+
+    VulkanInstance instance;
+    VulkanDebug vkDebug;
+    //VkInstance instance;                     // Vulkan library handle
+
+    //VkInstance instance;                     // Vulkan library handle
+    //VkDebugUtilsMessengerEXT debugMessenger; // Vulkan debug output handle
     VkSurfaceKHR surface;                    // Vulkan window surface
 
     VkPhysicalDevice physicalDevice = VK_NULL_HANDLE; // GPU chosen as the default device

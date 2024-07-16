@@ -2,7 +2,8 @@
 #include "RenderAPI.h"
 #include "../vepch.h"
 
-namespace Core {
+namespace Core 
+{
 
 	class Renderer
 	{

@@ -63,8 +63,12 @@ inline OStream &operator<<(OStream &os, glm::qua<T, Q> quaternion)
         }                                                                                                              \
     }
 
-#define VE_CORE_WARN(...) ::Core::Log::GetCoreLogger()->warn(__VA_ARGS__)
-#define VE_CORE_ERROR(...) ::Core::Log::GetCoreLogger()->error(__VA_ARGS__)
+#define VE_CORE_WARN(...) \
+    (Core::Log::GetCoreLogger() ? Core::Log::GetCoreLogger()->warn(__VA_ARGS__) : (void)0)
+
+#define VE_CORE_ERROR(...) \
+    (Core::Log::GetCoreLogger() ? Core::Log::GetCoreLogger()->error(__VA_ARGS__) : (void)0)
+
 #define VE_CORE_CRITICAL(...) ::Core::Log::GetCoreLogger()->critical(__VA_ARGS__)
 
 // Client log macros
