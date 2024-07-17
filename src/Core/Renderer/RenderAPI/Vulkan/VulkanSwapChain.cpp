@@ -12,10 +12,10 @@ void VulkanSwapChain::Init(const VulkanDevice& device, VkSurfaceKHR surface)
     VE_CORE_INFO("Init Vulkan Swap Chain");
 }
 
-void VulkanSwapChain::createDepthResourcesAndFramebuffers(const VkDevice device, VkRenderPass renderPass, VkPhysicalDevice PhysicalDevice)
+void VulkanSwapChain::createDepthResourcesAndFramebuffers(const VulkanDevice& device, VkRenderPass renderPass)
 {
-    createDepthResources(device,PhysicalDevice);
-    createFramebuffers(device, renderPass);
+    createDepthResources(device.getDevice(),device.getPhysicalDevice());
+    createFramebuffers(device.getDevice(), renderPass);
     VE_CORE_INFO("Vulkan Swap Chain DepthResources and Framebuffers created");
 }
 

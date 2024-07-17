@@ -20,7 +20,7 @@ namespace Core
         ~VulkanSwapChain() {}
         
         void Init(const VulkanDevice& device, VkSurfaceKHR surface);
-        void createDepthResourcesAndFramebuffers(const VkDevice device, VkRenderPass renderPass, VkPhysicalDevice PhysicalDevice);
+        void createDepthResourcesAndFramebuffers(const VulkanDevice& device, VkRenderPass renderPass);
         void Shutdown(VkDevice device);
         static const SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR surface);
         
@@ -41,9 +41,15 @@ namespace Core
 
         VkFramebuffer getFramebuffer(unsigned int index) const
         {
-
+            if(swapChainFramebuffers.size()>index)
+            {
                 return swapChainFramebuffers[index];
-
+            }
+            else
+            {
+                VE_CORE_ERROR("VulkanSwapChain.getFramebuffer index out of bounds");
+                return nullptr;
+            }
         }
 
         void recreateSwapChain(const VulkanDevice& device, VkSurfaceKHR surface, VkRenderPass renderPass);
