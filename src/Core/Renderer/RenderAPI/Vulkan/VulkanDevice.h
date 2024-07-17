@@ -35,9 +35,8 @@ namespace Core
             return device;
         }
 
-        static QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);
-        QueueFamilyIndices findQueueFamilies(VkSurfaceKHR surface);
-        static SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR surface);
+        static const QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);
+        const QueueFamilyIndices findQueueFamilies(VkSurfaceKHR surface) const;
     private:
         void pickPhysicalDevice(VkInstance instance, VkSurfaceKHR surface);
         void createLogicalDevice(const bool enableValidationLayers, const std::vector<const char *> validationLayers, VkSurfaceKHR surface, VkQueue* graphicsQueue, VkQueue* presentQueue);

@@ -52,6 +52,7 @@ void VulkanInstance::Init(const bool enableValidationLayers, const std::vector<c
 
     if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS)
     {
+        VE_CORE_ERROR("failed to create instance!");
         throw std::runtime_error("failed to create instance!");
     }
     else

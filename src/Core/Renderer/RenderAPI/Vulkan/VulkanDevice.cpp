@@ -1,6 +1,7 @@
 #include "VulkanDevice.h"
 #include "../../../Application.h"
 #include <set>
+#include "VulkanSwapChain.h"
 
 namespace Core 
 {
@@ -99,7 +100,7 @@ void VulkanDevice::createLogicalDevice(const bool enableValidationLayers, const 
     vkGetDeviceQueue(device, indices.presentFamily.value(), 0, presentQueue);
 }
 
-QueueFamilyIndices VulkanDevice::findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface)
+const QueueFamilyIndices VulkanDevice::findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface)
 {
     QueueFamilyIndices indices;
 
@@ -136,7 +137,7 @@ QueueFamilyIndices VulkanDevice::findQueueFamilies(VkPhysicalDevice device, VkSu
     return indices;
 }
 
-QueueFamilyIndices VulkanDevice::findQueueFamilies(VkSurfaceKHR surface)
+const QueueFamilyIndices VulkanDevice::findQueueFamilies(VkSurfaceKHR surface) const
 {
     return findQueueFamilies(physicalDevice, surface);
 }
@@ -150,7 +151,7 @@ bool VulkanDevice::isDeviceSuitable(VkPhysicalDevice device, VkSurfaceKHR surfac
     bool swapChainAdequate = false;
     if (extensionsSupported)
     {
-        SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device, surface);//should be in VulkanSwapChain
+        SwapChainSupportDetails swapChainSupport = VulkanSwapChain::querySwapChainSupport(device, surface);//should be in VulkanSwapChain
         swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
     }
 
@@ -158,33 +159,6 @@ bool VulkanDevice::isDeviceSuitable(VkPhysicalDevice device, VkSurfaceKHR surfac
     vkGetPhysicalDeviceFeatures(device, &supportedFeatures);
 
     return indices.isComplete() && extensionsSupported && swapChainAdequate && supportedFeatures.samplerAnisotropy;
-}
-
-SwapChainSupportDetails VulkanDevice::querySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR surface)
-{
-    SwapChainSupportDetails details;
-
-    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
-
-    uint32_t formatCount;
-    vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, nullptr);
-
-    if (formatCount != 0)
-    {
-        details.formats.resize(formatCount);
-        vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, details.formats.data());
-    }
-
-    uint32_t presentModeCount;
-    vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, nullptr);
-
-    if (presentModeCount != 0)
-    {
-        details.presentModes.resize(presentModeCount);
-        vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, details.presentModes.data());
-    }
-
-    return details;
 }
 
 bool VulkanDevice::checkDeviceExtensionSupport(VkPhysicalDevice device)

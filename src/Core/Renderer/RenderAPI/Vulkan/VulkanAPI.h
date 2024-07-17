@@ -14,6 +14,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/hash.hpp>
 #include "VulkanDevice.h"
+#include "VulkanSwapChain.h"
 
 struct GLFWwindow;
 
@@ -82,14 +83,14 @@ class VulkanAPI : public RenderAPI
     virtual void OnEvent(Core::Event &e, float delta) override;
 
   private:
-    void createSwapChain(); // needs Window and should be its own file called SwapChain
-    void createImageViews();
+    // void createSwapChain(); // needs Window and should be its own file called SwapChain
+    // void createImageViews();
     void createRenderPass();       // should be in its own file called RenderPass
     void createGraphicsPipeline(); // should be in its own file called GraphicsPipeline
     void createDescriptorSetLayout();
-    void createFramebuffers();
+    // void createFramebuffers();
     void createCommandPool();
-    void createDepthResources();
+    // void createDepthResources();
     VkFormat findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling,
                                  VkFormatFeatureFlags features);
     VkFormat findDepthFormat();
@@ -117,19 +118,19 @@ class VulkanAPI : public RenderAPI
     void createCommandBuffers();
     void createSyncObjects();
     void updateUniformBuffer(uint32_t currentImage);
-    SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
+    // SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
     VkShaderModule createShaderModule(const std::vector<char> &code);
-    void cleanupSwapChain();
+    // void cleanupSwapChain();
     static std::vector<char> readFile(const std::string &filename);
-    void recreateSwapChain();
+    // void recreateSwapChain();
     void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
-    VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats);
-    VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes);
-    VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
+    // VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats);
+    // VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes);
+    // VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
 
 #ifdef NDEBUG
-    const bool enableValidationLayers = false;
+    const bool enableValidationLayers = true;
 #else
     const bool enableValidationLayers = true;
 #endif
@@ -148,12 +149,14 @@ class VulkanAPI : public RenderAPI
 
     Camera Cam;
 
-    VkSwapchainKHR swapChain;
-    std::vector<VkImage> swapChainImages;
-    VkFormat swapChainImageFormat;
-    VkExtent2D swapChainExtent;
-    std::vector<VkImageView> swapChainImageViews;
-    std::vector<VkFramebuffer> swapChainFramebuffers;
+    VulkanSwapChain swapChain;
+
+    // VkSwapchainKHR swapChain;
+    // std::vector<VkImage> swapChainImages;
+    // VkFormat swapChainImageFormat;
+    // VkExtent2D swapChainExtent;
+    // std::vector<VkImageView> swapChainImageViews;
+    // std::vector<VkFramebuffer> swapChainFramebuffers;
 
     VkRenderPass renderPass;
     VkDescriptorSetLayout descriptorSetLayout;
@@ -161,9 +164,9 @@ class VulkanAPI : public RenderAPI
     VkPipeline graphicsPipeline;
 
     VkCommandPool commandPool;
-    VkImage depthImage;
-    VkDeviceMemory depthImageMemory;
-    VkImageView depthImageView;
+    // VkImage depthImage;
+    // VkDeviceMemory depthImageMemory;
+    // VkImageView depthImageView;
     VkImage textureImage;
     VkDeviceMemory textureImageMemory;
     VkImageView textureImageView;
