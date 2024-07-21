@@ -83,24 +83,20 @@ class VulkanAPI : public RenderAPI
     virtual void OnEvent(Core::Event &e, float delta) override;
 
   private:
-    // void createSwapChain(); // needs Window and should be its own file called SwapChain
-    // void createImageViews();
     void createRenderPass();       // should be in its own file called RenderPass
     void createGraphicsPipeline(); // should be in its own file called GraphicsPipeline
     void createDescriptorSetLayout();
-    // void createFramebuffers();
     void createCommandPool();
-    // void createDepthResources();
     VkFormat findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling,
                                  VkFormatFeatureFlags features);
     VkFormat findDepthFormat();
     bool hasStencilComponent(VkFormat format);
-    void createTextureImage();
-    void createTextureImageView();
-    void createTextureSampler();
-    VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
-    void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
-                     VkMemoryPropertyFlags properties, VkImage &image, VkDeviceMemory &imageMemory);
+    // void createTextureImage();
+    // void createTextureImageView();
+    // void createTextureSampler();
+    // VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
+    // void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
+    //                  VkMemoryPropertyFlags properties, VkImage &image, VkDeviceMemory &imageMemory);
     void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
     void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
     void loadModel();
@@ -118,16 +114,9 @@ class VulkanAPI : public RenderAPI
     void createCommandBuffers();
     void createSyncObjects();
     void updateUniformBuffer(uint32_t currentImage);
-    // SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
     VkShaderModule createShaderModule(const std::vector<char> &code);
-    // void cleanupSwapChain();
     static std::vector<char> readFile(const std::string &filename);
-    // void recreateSwapChain();
     void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
-
-    // VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats);
-    // VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes);
-    // VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
 
 #ifdef NDEBUG
     const bool enableValidationLayers = true;
@@ -151,26 +140,16 @@ class VulkanAPI : public RenderAPI
 
     VulkanSwapChain swapChain;
 
-    // VkSwapchainKHR swapChain;
-    // std::vector<VkImage> swapChainImages;
-    // VkFormat swapChainImageFormat;
-    // VkExtent2D swapChainExtent;
-    // std::vector<VkImageView> swapChainImageViews;
-    // std::vector<VkFramebuffer> swapChainFramebuffers;
-
     VkRenderPass renderPass;
     VkDescriptorSetLayout descriptorSetLayout;
     VkPipelineLayout pipelineLayout;
     VkPipeline graphicsPipeline;
 
     VkCommandPool commandPool;
-    // VkImage depthImage;
-    // VkDeviceMemory depthImageMemory;
-    // VkImageView depthImageView;
-    VkImage textureImage;
-    VkDeviceMemory textureImageMemory;
-    VkImageView textureImageView;
-    VkSampler textureSampler;
+    // VkImage textureImage;
+    // VkDeviceMemory textureImageMemory;
+    // VkImageView textureImageView;
+    // VkSampler textureSampler;
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
     VkBuffer vertexBuffer;

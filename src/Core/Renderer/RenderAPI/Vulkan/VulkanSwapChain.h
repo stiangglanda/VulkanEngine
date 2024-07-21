@@ -63,6 +63,7 @@ namespace Core
         void createImageViews(const VkDevice device);
         void createFramebuffers(const VkDevice device, VkRenderPass renderPass);
         void createDepthResources(const VkDevice device, VkPhysicalDevice PhysicalDevice);
+        
         static VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, VkDevice device);
         static void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling,
                             VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage &image,
