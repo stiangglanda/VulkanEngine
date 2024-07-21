@@ -5,6 +5,7 @@
 
 namespace Core
 {
+// TODO look up how to restructure VulkanImage
 class VulkanImage
 {
   public:
@@ -37,9 +38,13 @@ class VulkanImage
                             VkQueue graphicsQueue);
     void createTextureImageView();
     void createTextureSampler();
+    static VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, VkDevice device);
     VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
-    void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
-                     VkMemoryPropertyFlags properties, VkImage &image, VkDeviceMemory &imageMemory);
+    static void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage &image,
+                            VkDeviceMemory &imageMemory, const VulkanDevice &device);
+    void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling,
+                            VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage &image,
+                            VkDeviceMemory &imageMemory);
 
   private:
     void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height,
@@ -50,7 +55,7 @@ class VulkanImage
 
 
     //TODO remove these functions
-    uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+    //static uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);//TODO find flace for this function
     VkCommandBuffer beginSingleTimeCommands(VkCommandPool commandPool); // TODO should be in VulkanCommand
     void endSingleTimeCommands(VkCommandBuffer commandBuffer, VkCommandPool commandPool,
                                VkQueue graphicsQueue); // TODO should be in VulkanCommand
@@ -63,6 +68,6 @@ class VulkanImage
     VkImage textureImage;
     VkDeviceMemory textureImageMemory;
     VkImageView textureImageView;
-    VkSampler textureSampler;
+    VkSampler textureSampler;//TODO this should not be here
 };
 } // namespace Core

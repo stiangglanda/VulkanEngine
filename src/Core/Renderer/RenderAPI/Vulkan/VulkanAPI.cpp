@@ -956,6 +956,7 @@ bool VulkanAPI::Shutdown()
     }
 
     vkDestroyDescriptorPool(device.getDevice(), descriptorPool, nullptr);
+    texture->Shutdown();
     // vkDestroySampler(device.getDevice(), textureSampler, nullptr);
     // vkDestroyImageView(device.getDevice(), textureImageView, nullptr);
     // vkDestroyImage(device.getDevice(), textureImage, nullptr);
