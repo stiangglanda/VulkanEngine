@@ -15,6 +15,7 @@
 #include <glm/gtx/hash.hpp>
 #include "VulkanDevice.h"
 #include "VulkanSwapChain.h"
+#include "VulkanImage.h"
 
 struct GLFWwindow;
 
@@ -97,8 +98,8 @@ class VulkanAPI : public RenderAPI
     // VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
     // void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
     //                  VkMemoryPropertyFlags properties, VkImage &image, VkDeviceMemory &imageMemory);
-    void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
-    void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
+    //void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+    //void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
     void loadModel();
     void createVertexBuffer();
     void createIndexBuffer();
@@ -132,6 +133,7 @@ class VulkanAPI : public RenderAPI
     VulkanDebug vkDebug;// Vulkan debug output handle
     VulkanSurface surface;// Vulkan window surface
     VulkanDevice device;// Vulkan device for commands // GPU chosen as the default device
+    std::unique_ptr<VulkanImage> texture;
 
     VkQueue graphicsQueue;
     VkQueue presentQueue;
