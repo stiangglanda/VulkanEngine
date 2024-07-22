@@ -63,15 +63,6 @@ namespace Core
         void createImageViews(const VkDevice device);
         void createFramebuffers(const VkDevice device, VkRenderPass renderPass);
         void createDepthResources(const VulkanDevice &device);
-        
-        //static VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, VkDevice device);
-        //static void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling,
-        //                    VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage &image,
-        //                    VkDeviceMemory &imageMemory, VkDevice device, VkPhysicalDevice PhysicalDevice);
-        //static VkFormat findDepthFormat(VkPhysicalDevice device);//TODO find flace for this function schould proboly be in VulkanDevice
-        //static VkFormat findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling,//TODO find flace for this function schould proboly be in VulkanDevice
-        //                                VkFormatFeatureFlags features, VkPhysicalDevice device);//TODO find flace for this function schould proboly be in VulkanDevice
-        //static uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties, VkPhysicalDevice device);
 
     private:
         VkSwapchainKHR swapChain;

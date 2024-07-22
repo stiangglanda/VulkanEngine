@@ -92,14 +92,6 @@ class VulkanAPI : public RenderAPI
                                  VkFormatFeatureFlags features);
     VkFormat findDepthFormat();
     bool hasStencilComponent(VkFormat format);
-    // void createTextureImage();
-    // void createTextureImageView();
-    // void createTextureSampler();
-    // VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
-    // void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
-    //                  VkMemoryPropertyFlags properties, VkImage &image, VkDeviceMemory &imageMemory);
-    //void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
-    //void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
     void loadModel();
     void createVertexBuffer();
     void createIndexBuffer();
@@ -148,10 +140,6 @@ class VulkanAPI : public RenderAPI
     VkPipeline graphicsPipeline;
 
     VkCommandPool commandPool;
-    // VkImage textureImage;
-    // VkDeviceMemory textureImageMemory;
-    // VkImageView textureImageView;
-    // VkSampler textureSampler;
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
     VkBuffer vertexBuffer;

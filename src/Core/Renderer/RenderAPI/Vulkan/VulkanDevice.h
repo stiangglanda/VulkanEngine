@@ -43,18 +43,17 @@ class VulkanDevice
     static const QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);
     const QueueFamilyIndices findQueueFamilies(VkSurfaceKHR surface) const;
 
-    const uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) const; // TODO find flace for this function
-    const VkFormat findDepthFormat() const; // TODO find flace for this function schould proboly be in VulkanDevice
+    const uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) const; 
+    const VkFormat findDepthFormat() const;
     const VkFormat findSupportedFormat(
         const std::vector<VkFormat> &candidates, VkImageTiling tiling,
-        VkFormatFeatureFlags features) const; // TODO find flace for this function schould proboly be in VulkanDevice
+        VkFormatFeatureFlags features) const;
   private:
     void pickPhysicalDevice(VkInstance instance, VkSurfaceKHR surface);
     void createLogicalDevice(const bool enableValidationLayers, const std::vector<const char *> validationLayers,
                              VkSurfaceKHR surface, VkQueue *graphicsQueue, VkQueue *presentQueue);
     bool isDeviceSuitable(VkPhysicalDevice device, VkSurfaceKHR surface);
     bool checkDeviceExtensionSupport(VkPhysicalDevice device);
-    // uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);//not shure
 
   private:
     VkPhysicalDevice physicalDevice = VK_NULL_HANDLE; // GPU chosen as the default device

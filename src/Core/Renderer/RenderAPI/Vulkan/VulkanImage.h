@@ -55,7 +55,6 @@ class VulkanImage
 
 
     //TODO remove these functions
-    //static uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);//TODO find flace for this function
     VkCommandBuffer beginSingleTimeCommands(VkCommandPool commandPool); // TODO should be in VulkanCommand
     void endSingleTimeCommands(VkCommandBuffer commandBuffer, VkCommandPool commandPool,
                                VkQueue graphicsQueue); // TODO should be in VulkanCommand
