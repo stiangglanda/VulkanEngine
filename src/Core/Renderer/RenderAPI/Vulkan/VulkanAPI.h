@@ -88,9 +88,7 @@ class VulkanAPI : public RenderAPI
     void createGraphicsPipeline(); // should be in its own file called GraphicsPipeline
     void createDescriptorSetLayout();
     void createCommandPool();
-    VkFormat findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling,
-                                 VkFormatFeatureFlags features);
-    VkFormat findDepthFormat();
+
     bool hasStencilComponent(VkFormat format);
     void loadModel();
     void createVertexBuffer();
@@ -103,7 +101,7 @@ class VulkanAPI : public RenderAPI
     VkCommandBuffer beginSingleTimeCommands();
     void endSingleTimeCommands(VkCommandBuffer commandBuffer);
     void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
-    uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+    
     void createCommandBuffers();
     void createSyncObjects();
     void updateUniformBuffer(uint32_t currentImage);
