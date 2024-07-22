@@ -31,7 +31,16 @@ class VulkanImage
 
     VkSampler getSampler() const
     {
-        return textureSampler;
+        if(textureSampler!=nullptr)
+        {
+            return textureSampler;
+        }
+        else
+        {
+            VE_CORE_ERROR("VulkanImage.getSampler tryed to access not initailised sampler");
+            throw std::runtime_error("VulkanImage.getSampler tryed to access not initailised sampler");
+            return nullptr;
+        }
     }
 
     void createTextureImage(const std::string TEXTURE_PATH, VkCommandPool commandPool,
@@ -67,6 +76,6 @@ class VulkanImage
     VkImage textureImage;
     VkDeviceMemory textureImageMemory;
     VkImageView textureImageView;
-    VkSampler textureSampler;//TODO this should not be here
+    VkSampler textureSampler=nullptr;//TODO this should not be here
 };
 } // namespace Core
