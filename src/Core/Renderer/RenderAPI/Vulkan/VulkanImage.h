@@ -62,11 +62,6 @@ class VulkanImage
                                std::weak_ptr<VulkanCommandBuffer> command);
 
 
-
-    //TODO remove these functions
-    // VkCommandBuffer beginSingleTimeCommands(VkCommandPool commandPool); // TODO should be in VulkanCommand
-    // void endSingleTimeCommands(VkCommandBuffer commandBuffer, VkCommandPool commandPool,
-    //                            VkQueue graphicsQueue); // TODO should be in VulkanCommand
     void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
                       VkMemoryPropertyFlags properties, // TODO should be in VulkanBuffer
                       VkBuffer &buffer, VkDeviceMemory &bufferMemory);

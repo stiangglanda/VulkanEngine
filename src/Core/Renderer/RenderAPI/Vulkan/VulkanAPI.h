@@ -88,7 +88,6 @@ class VulkanAPI : public RenderAPI
     void createRenderPass();       // should be in its own file called RenderPass
     void createGraphicsPipeline(); // should be in its own file called GraphicsPipeline
     void createDescriptorSetLayout();
-    // void createCommandPool();
 
     bool hasStencilComponent(VkFormat format);
     void loadModel();
@@ -99,11 +98,8 @@ class VulkanAPI : public RenderAPI
     void createDescriptorSets();
     void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer &buffer,
                       VkDeviceMemory &bufferMemory);
-    // VkCommandBuffer beginSingleTimeCommands();
-    // void endSingleTimeCommands(VkCommandBuffer commandBuffer);
     void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
     
-    // void createCommandBuffers();
     void createSyncObjects();
     void updateUniformBuffer(uint32_t currentImage);
     VkShaderModule createShaderModule(const std::vector<char> &code);
@@ -127,9 +123,6 @@ class VulkanAPI : public RenderAPI
     std::unique_ptr<VulkanImage> texture;
     std::shared_ptr<VulkanCommandBuffer> command;
 
-    // VkQueue graphicsQueue;
-    // VkQueue presentQueue;
-
     Camera Cam;
 
     VulkanSwapChain swapChain;
@@ -139,7 +132,6 @@ class VulkanAPI : public RenderAPI
     VkPipelineLayout pipelineLayout;
     VkPipeline graphicsPipeline;
 
-    // VkCommandPool commandPool;
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
     VkBuffer vertexBuffer;
@@ -151,7 +143,6 @@ class VulkanAPI : public RenderAPI
     std::vector<void *> uniformBuffersMapped;
     VkDescriptorPool descriptorPool;
     std::vector<VkDescriptorSet> descriptorSets;
-    // std::vector<VkCommandBuffer> commandBuffers;
 
     std::vector<VkSemaphore> imageAvailableSemaphores;
     std::vector<VkSemaphore> renderFinishedSemaphores;

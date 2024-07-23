@@ -25,7 +25,6 @@ bool VulkanAPI::Init()
     createRenderPass();
     createDescriptorSetLayout();
     createGraphicsPipeline();
-    // createCommandPool();
     command = std::make_shared<VulkanCommandBuffer>(device);
     command->createCommandPool(surface.getSurface(), MAX_FRAMES_IN_FLIGHT);
 
@@ -42,7 +41,6 @@ bool VulkanAPI::Init()
     createUniformBuffers();
     createDescriptorPool();
     createDescriptorSets();
-    // createCommandBuffers();
 
     command->createCommandBuffers(MAX_FRAMES_IN_FLIGHT);
 
@@ -273,26 +271,6 @@ void VulkanAPI::createGraphicsPipeline()
     vkDestroyShaderModule(device.getDevice(), vertShaderModule, nullptr);
 }
 
-// void VulkanAPI::createCommandPool()
-// {
-//     QueueFamilyIndices queueFamilyIndices = device.findQueueFamilies(surface.getSurface());
-
-//     VkCommandPoolCreateInfo poolInfo{};
-//     poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-//     poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-//     poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
-
-//     if (vkCreateCommandPool(device.getDevice(), &poolInfo, nullptr, &commandPool) != VK_SUCCESS)
-//     {
-//         throw std::runtime_error("failed to create graphics command pool!");
-//     }
-// }
-
-// bool VulkanAPI::hasStencilComponent(VkFormat format)
-// {
-//     return format == VK_FORMAT_D32_SFLOAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT;
-// }
-
 void VulkanAPI::loadModel()
 {
     tinyobj::attrib_t attrib;
@@ -481,38 +459,6 @@ void VulkanAPI::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemo
     vkBindBufferMemory(device.getDevice(), buffer, bufferMemory, 0);
 }
 
-// VkCommandBuffer VulkanAPI::beginSingleTimeCommands()
-// {
-//     VkCommandBufferAllocateInfo allocInfo{};
-//     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-//     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-//     allocInfo.commandPool = commandPool;
-//     allocInfo.commandBufferCount = 1;
-
-//     VkCommandBuffer commandBuffer;
-//     vkAllocateCommandBuffers(device.getDevice(), &allocInfo, &commandBuffer);
-
-//     VkCommandBufferBeginInfo beginInfo{};
-//     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-//     beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-
-//     vkBeginCommandBuffer(commandBuffer, &beginInfo);
-
-//     return commandBuffer;
-// }
-
-// void VulkanAPI::endSingleTimeCommands(VkCommandBuffer commandBuffer)
-// {
-//     vkEndCommandBuffer(commandBuffer);
-//     VkSubmitInfo submitInfo{};
-//     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-//     submitInfo.commandBufferCount = 1;
-//     submitInfo.pCommandBuffers = &commandBuffer;
-//     vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-//     vkQueueWaitIdle(graphicsQueue);
-//     vkFreeCommandBuffers(device.getDevice(), commandPool, 1, &commandBuffer);
-// }
-
 void VulkanAPI::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
 {
     VkCommandBuffer commandBuffer = command->beginSingleTimeCommands();
@@ -521,22 +467,6 @@ void VulkanAPI::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize 
     vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
     command->endSingleTimeCommands(commandBuffer);
 }
-
-// void VulkanAPI::createCommandBuffers()
-// {
-//     commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-
-//     VkCommandBufferAllocateInfo allocInfo{};
-//     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-//     allocInfo.commandPool = commandPool;
-//     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-//     allocInfo.commandBufferCount = (uint32_t)commandBuffers.size();
-
-//     if (vkAllocateCommandBuffers(device.getDevice(), &allocInfo, commandBuffers.data()) != VK_SUCCESS)
-//     {
-//         throw std::runtime_error("failed to allocate command buffers!");
-//     }
-// }
 
 void VulkanAPI::createSyncObjects()
 {
@@ -659,31 +589,8 @@ void VulkanAPI::Draw()
 
     vkResetFences(device.getDevice(), 1, &inFlightFences[currentFrame]);
 
-    // vkResetCommandBuffer(commandBuffers[currentFrame], /*VkCommandBufferResetFlagBits*/ 0);
     command->ResetCommandBuffer(currentFrame);
     recordCommandBuffer(currentFrame, imageIndex);
-
-    //TODO replace with commandBuffers submit
-    // VkSubmitInfo submitInfo{};
-    // submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-
-    VkSemaphore waitSemaphores[] = {imageAvailableSemaphores[currentFrame]};
-    // VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
-    // submitInfo.waitSemaphoreCount = 1;
-    // submitInfo.pWaitSemaphores = waitSemaphores;
-    // submitInfo.pWaitDstStageMask = waitStages;
-
-    // submitInfo.commandBufferCount = 1;
-    // submitInfo.pCommandBuffers = &commandBuffers[currentFrame];
-
-    // VkSemaphore signalSemaphores[] = {renderFinishedSemaphores[currentFrame]};
-    // submitInfo.signalSemaphoreCount = 1;
-    // submitInfo.pSignalSemaphores = signalSemaphores;
-
-    // if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame]) != VK_SUCCESS)
-    // {
-    //     throw std::runtime_error("failed to submit draw command buffer!");
-    // }
 
     command->submit(currentFrame, inFlightFences[currentFrame], imageAvailableSemaphores[currentFrame], renderFinishedSemaphores[currentFrame]);
 
@@ -744,8 +651,7 @@ bool VulkanAPI::Shutdown()
         vkDestroySemaphore(device.getDevice(), imageAvailableSemaphores[i], nullptr);
         vkDestroyFence(device.getDevice(), inFlightFences[i], nullptr);
     }
-
-    // vkDestroyCommandPool(device.getDevice(), commandPool, nullptr);
+    command->Shutdown();
 
     device.Shutdown();
 
@@ -762,13 +668,6 @@ bool VulkanAPI::Shutdown()
 void VulkanAPI::recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex)
 {
     command->begin(currentFrame);
-    // VkCommandBufferBeginInfo beginInfo{};
-    // beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-
-    // if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS)
-    // {
-    //     throw std::runtime_error("failed to begin recording command buffer!");
-    // }
 
     VkRenderPassBeginInfo renderPassInfo{};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -812,10 +711,6 @@ void VulkanAPI::recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex)
     vkCmdEndRenderPass(command->getCommandBuffer(currentFrame));
 
     command->end(currentFrame);
-    // if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
-    // {
-    //     throw std::runtime_error("failed to record command buffer!");
-    // }
 }
 
 } // namespace Core

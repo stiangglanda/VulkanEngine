@@ -27,6 +27,10 @@ void VulkanCommandBuffer::createCommandPool(VkSurfaceKHR surface, const int MAX_
     {
         throw std::runtime_error("failed to create graphics command pool!");
     }
+    else
+    {
+        VE_CORE_INFO("Init VulkanCommandBuffer createCommandPool");
+    }
 }
 
 void VulkanCommandBuffer::createCommandBuffers(const int MAX_FRAMES_IN_FLIGHT)
@@ -42,6 +46,10 @@ void VulkanCommandBuffer::createCommandBuffers(const int MAX_FRAMES_IN_FLIGHT)
     if (vkAllocateCommandBuffers(device.getDevice(), &allocInfo, commandBuffers.data()) != VK_SUCCESS)
     {
         throw std::runtime_error("failed to allocate command buffers!");
+    }
+    else
+    {
+        VE_CORE_INFO("Init VulkanCommandBuffer createCommandBuffers");
     }
 }
 
