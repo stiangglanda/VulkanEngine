@@ -5,10 +5,10 @@
 
 namespace Core 
 {
-void VulkanDevice::Init(VkInstance instance, VkSurfaceKHR surface, const bool enableValidationLayers, const std::vector<const char *> validationLayers, VkQueue* graphicsQueue, VkQueue* presentQueue)
+void VulkanDevice::Init(VkInstance instance, VkSurfaceKHR surface, const bool enableValidationLayers, const std::vector<const char *> validationLayers)
 {
     pickPhysicalDevice(instance, surface);
-    createLogicalDevice(enableValidationLayers, validationLayers, surface, graphicsQueue, presentQueue);
+    createLogicalDevice(enableValidationLayers, validationLayers, surface);
 }
 
 void VulkanDevice::Shutdown()
@@ -45,7 +45,7 @@ void VulkanDevice::pickPhysicalDevice(VkInstance instance, VkSurfaceKHR surface)
     }
 }
 
-void VulkanDevice::createLogicalDevice(const bool enableValidationLayers, const std::vector<const char *> validationLayers, VkSurfaceKHR surface, VkQueue* graphicsQueue, VkQueue* presentQueue)
+void VulkanDevice::createLogicalDevice(const bool enableValidationLayers, const std::vector<const char *> validationLayers, VkSurfaceKHR surface)
 {
     QueueFamilyIndices indices = findQueueFamilies(surface);
 
@@ -96,8 +96,8 @@ void VulkanDevice::createLogicalDevice(const bool enableValidationLayers, const 
         VE_CORE_INFO("Successful: Init Vulkan Device");
     }
 
-    vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, graphicsQueue);
-    vkGetDeviceQueue(device, indices.presentFamily.value(), 0, presentQueue);
+    vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
+    vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
 }
 
 const QueueFamilyIndices VulkanDevice::findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface)

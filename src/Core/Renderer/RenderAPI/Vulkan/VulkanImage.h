@@ -1,6 +1,7 @@
 #pragma once
 #include "../../../vepch.h"
 #include "VulkanDevice.h"
+#include "VulkanCommandBuffer.h"
 #include <vulkan/vulkan.h>
 
 namespace Core
@@ -43,8 +44,7 @@ class VulkanImage
         }
     }
 
-    void createTextureImage(const std::string TEXTURE_PATH, VkCommandPool commandPool,
-                            VkQueue graphicsQueue);
+    void createTextureImage(const std::string TEXTURE_PATH, std::weak_ptr<VulkanCommandBuffer> command);
     void createTextureImageView();
     void createTextureSampler();
     static VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, VkDevice device);
@@ -57,16 +57,16 @@ class VulkanImage
 
   private:
     void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height,
-                           VkCommandPool commandPool, VkQueue graphicsQueue);
+                           std::weak_ptr<VulkanCommandBuffer> command);
     void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, 
-                               VkCommandPool commandPool, VkQueue graphicsQueue);
+                               std::weak_ptr<VulkanCommandBuffer> command);
 
 
 
     //TODO remove these functions
-    VkCommandBuffer beginSingleTimeCommands(VkCommandPool commandPool); // TODO should be in VulkanCommand
-    void endSingleTimeCommands(VkCommandBuffer commandBuffer, VkCommandPool commandPool,
-                               VkQueue graphicsQueue); // TODO should be in VulkanCommand
+    // VkCommandBuffer beginSingleTimeCommands(VkCommandPool commandPool); // TODO should be in VulkanCommand
+    // void endSingleTimeCommands(VkCommandBuffer commandBuffer, VkCommandPool commandPool,
+    //                            VkQueue graphicsQueue); // TODO should be in VulkanCommand
     void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
                       VkMemoryPropertyFlags properties, // TODO should be in VulkanBuffer
                       VkBuffer &buffer, VkDeviceMemory &bufferMemory);

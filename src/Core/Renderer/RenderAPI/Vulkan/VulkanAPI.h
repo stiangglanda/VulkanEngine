@@ -16,6 +16,7 @@
 #include "VulkanDevice.h"
 #include "VulkanSwapChain.h"
 #include "VulkanImage.h"
+#include "VulkanCommandBuffer.h"
 
 struct GLFWwindow;
 
@@ -87,7 +88,7 @@ class VulkanAPI : public RenderAPI
     void createRenderPass();       // should be in its own file called RenderPass
     void createGraphicsPipeline(); // should be in its own file called GraphicsPipeline
     void createDescriptorSetLayout();
-    void createCommandPool();
+    // void createCommandPool();
 
     bool hasStencilComponent(VkFormat format);
     void loadModel();
@@ -98,16 +99,16 @@ class VulkanAPI : public RenderAPI
     void createDescriptorSets();
     void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer &buffer,
                       VkDeviceMemory &bufferMemory);
-    VkCommandBuffer beginSingleTimeCommands();
-    void endSingleTimeCommands(VkCommandBuffer commandBuffer);
+    // VkCommandBuffer beginSingleTimeCommands();
+    // void endSingleTimeCommands(VkCommandBuffer commandBuffer);
     void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
     
-    void createCommandBuffers();
+    // void createCommandBuffers();
     void createSyncObjects();
     void updateUniformBuffer(uint32_t currentImage);
     VkShaderModule createShaderModule(const std::vector<char> &code);
     static std::vector<char> readFile(const std::string &filename);
-    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+    void recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex);
 
 #ifdef NDEBUG
     const bool enableValidationLayers = true;
@@ -124,9 +125,10 @@ class VulkanAPI : public RenderAPI
     VulkanSurface surface;// Vulkan window surface
     VulkanDevice device;// Vulkan device for commands // GPU chosen as the default device
     std::unique_ptr<VulkanImage> texture;
+    std::shared_ptr<VulkanCommandBuffer> command;
 
-    VkQueue graphicsQueue;
-    VkQueue presentQueue;
+    // VkQueue graphicsQueue;
+    // VkQueue presentQueue;
 
     Camera Cam;
 
@@ -137,7 +139,7 @@ class VulkanAPI : public RenderAPI
     VkPipelineLayout pipelineLayout;
     VkPipeline graphicsPipeline;
 
-    VkCommandPool commandPool;
+    // VkCommandPool commandPool;
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
     VkBuffer vertexBuffer;
@@ -149,7 +151,7 @@ class VulkanAPI : public RenderAPI
     std::vector<void *> uniformBuffersMapped;
     VkDescriptorPool descriptorPool;
     std::vector<VkDescriptorSet> descriptorSets;
-    std::vector<VkCommandBuffer> commandBuffers;
+    // std::vector<VkCommandBuffer> commandBuffers;
 
     std::vector<VkSemaphore> imageAvailableSemaphores;
     std::vector<VkSemaphore> renderFinishedSemaphores;

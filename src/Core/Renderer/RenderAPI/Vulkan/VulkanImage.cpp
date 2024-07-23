@@ -1,4 +1,5 @@
 #include "VulkanImage.h"
+#include "VulkanCommandBuffer.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../../vendor/stb_image.h"
@@ -17,11 +18,10 @@ void VulkanImage::Shutdown()
 
 void VulkanImage::Init()
 {
-
     VE_CORE_INFO("Successful: Init Vulkan Image");
 }
 
-void VulkanImage::createTextureImage(const std::string TEXTURE_PATH, VkCommandPool commandPool, VkQueue graphicsQueue)
+void VulkanImage::createTextureImage(const std::string TEXTURE_PATH, std::weak_ptr<VulkanCommandBuffer> command)
 {
     int texWidth, texHeight, texChannels;
     stbi_uc *pixels = stbi_load(TEXTURE_PATH.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
@@ -45,11 +45,11 @@ void VulkanImage::createTextureImage(const std::string TEXTURE_PATH, VkCommandPo
                 VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                 textureImage, textureImageMemory);
     transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED,
-                          VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, commandPool, graphicsQueue);
+                          VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, command);
     copyBufferToImage(stagingBuffer, textureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight),
-                      commandPool, graphicsQueue);
+                      command);
     transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                          VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, commandPool, graphicsQueue);
+                          VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, command);
     vkDestroyBuffer(device.getDevice(), stagingBuffer, nullptr);
     vkFreeMemory(device.getDevice(), stagingBufferMemory, nullptr);
 }
@@ -159,9 +159,19 @@ void VulkanImage::createImage(uint32_t width, uint32_t height, VkFormat format, 
 }
 
 void VulkanImage::transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout,
-                                        VkImageLayout newLayout, VkCommandPool commandPool, VkQueue graphicsQueue)
+                                        VkImageLayout newLayout, std::weak_ptr<VulkanCommandBuffer> command)
 {
-    VkCommandBuffer commandBuffer = beginSingleTimeCommands(commandPool);
+    VkCommandBuffer commandBuffer;
+
+    if(auto tmp = command.lock())
+    {
+        commandBuffer=tmp->beginSingleTimeCommands();
+    }
+    else
+    {
+        VE_CORE_ERROR("VulkanImage::transitionImageLayout VulkanCommandBuffer ptr expired");
+    }
+
     VkImageMemoryBarrier barrier{};
     barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
     barrier.oldLayout = oldLayout;
@@ -199,13 +209,30 @@ void VulkanImage::transitionImageLayout(VkImage image, VkFormat format, VkImageL
 
     vkCmdPipelineBarrier(commandBuffer, sourceStage, destinationStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
 
-    endSingleTimeCommands(commandBuffer, commandPool, graphicsQueue);
+    if(auto tmp = command.lock())
+    {
+        tmp->endSingleTimeCommands(commandBuffer);
+    }
+    else
+    {
+        VE_CORE_ERROR("VulkanImage::transitionImageLayout VulkanCommandBuffer ptr expired");
+    }
 }
 
 void VulkanImage::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height,
-                                    VkCommandPool commandPool, VkQueue graphicsQueue)
+                                    std::weak_ptr<VulkanCommandBuffer> command)
 {
-    VkCommandBuffer commandBuffer = beginSingleTimeCommands(commandPool);
+    VkCommandBuffer commandBuffer;
+
+    if(auto tmp = command.lock())
+    {
+        commandBuffer=tmp->beginSingleTimeCommands();
+    }
+    else
+    {
+        VE_CORE_ERROR("VulkanImage::copyBufferToImage VulkanCommandBuffer ptr expired");
+    }
+
     VkBufferImageCopy region{};
     region.bufferOffset = 0;
     region.bufferRowLength = 0;
@@ -218,42 +245,50 @@ void VulkanImage::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t wid
     region.imageExtent = {width, height, 1};
 
     vkCmdCopyBufferToImage(commandBuffer, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
-    endSingleTimeCommands(commandBuffer, commandPool, graphicsQueue);
+
+    if(auto tmp = command.lock())
+    {
+        tmp->endSingleTimeCommands(commandBuffer);
+    }
+    else
+    {
+        VE_CORE_ERROR("VulkanImage::copyBufferToImage VulkanCommandBuffer ptr expired");
+    }
 }
 
 // TODO should be in VulkanCommand
 
-VkCommandBuffer VulkanImage::beginSingleTimeCommands(VkCommandPool commandPool)
-{
-    VkCommandBufferAllocateInfo allocInfo{};
-    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    allocInfo.commandPool = commandPool;
-    allocInfo.commandBufferCount = 1;
+// VkCommandBuffer VulkanImage::beginSingleTimeCommands(VkCommandPool commandPool)
+// {
+//     VkCommandBufferAllocateInfo allocInfo{};
+//     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+//     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+//     allocInfo.commandPool = commandPool;
+//     allocInfo.commandBufferCount = 1;
 
-    VkCommandBuffer commandBuffer;
-    vkAllocateCommandBuffers(device.getDevice(), &allocInfo, &commandBuffer);
+//     VkCommandBuffer commandBuffer;
+//     vkAllocateCommandBuffers(device.getDevice(), &allocInfo, &commandBuffer);
 
-    VkCommandBufferBeginInfo beginInfo{};
-    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-    beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+//     VkCommandBufferBeginInfo beginInfo{};
+//     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+//     beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
-    vkBeginCommandBuffer(commandBuffer, &beginInfo);
+//     vkBeginCommandBuffer(commandBuffer, &beginInfo);
 
-    return commandBuffer;
-}
+//     return commandBuffer;
+// }
 
-void VulkanImage::endSingleTimeCommands(VkCommandBuffer commandBuffer, VkCommandPool commandPool, VkQueue graphicsQueue)
-{
-    vkEndCommandBuffer(commandBuffer);
-    VkSubmitInfo submitInfo{};
-    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-    submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &commandBuffer;
-    vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-    vkQueueWaitIdle(graphicsQueue);
-    vkFreeCommandBuffers(device.getDevice(), commandPool, 1, &commandBuffer);
-}
+// void VulkanImage::endSingleTimeCommands(VkCommandBuffer commandBuffer, VkCommandPool commandPool, VkQueue graphicsQueue)
+// {
+//     vkEndCommandBuffer(commandBuffer);
+//     VkSubmitInfo submitInfo{};
+//     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+//     submitInfo.commandBufferCount = 1;
+//     submitInfo.pCommandBuffers = &commandBuffer;
+//     vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+//     vkQueueWaitIdle(graphicsQueue);
+//     vkFreeCommandBuffers(device.getDevice(), commandPool, 1, &commandBuffer);
+// }
 
 void VulkanImage::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties,
                                VkBuffer &buffer, VkDeviceMemory &bufferMemory) // TODO should be in VulkanBuffer
