@@ -60,7 +60,8 @@ add_library(Core ${IMGUI_SOURCES} "vendor/stb_image.h" "src/Core/Core.cpp" "src/
 "src/Core/Renderer/RenderAPI/Vulkan/VulkanDevice.cpp" "src/Core/Renderer/RenderAPI/Vulkan/VulkanSwapChain.h"
 "src/Core/Renderer/RenderAPI/Vulkan/VulkanSwapChain.cpp" "src/Core/Renderer/RenderAPI/Vulkan/VulkanImage.h"
 "src/Core/Renderer/RenderAPI/Vulkan/VulkanImage.cpp" "src/Core/Renderer/RenderAPI/Vulkan/VulkanCommandBuffer.h"
-"src/Core/Renderer/RenderAPI/Vulkan/VulkanCommandBuffer.cpp")
+"src/Core/Renderer/RenderAPI/Vulkan/VulkanCommandBuffer.cpp" "src/Core/Renderer/RenderAPI/Vulkan/VulkanBuffer.h"
+"src/Core/Renderer/RenderAPI/Vulkan/VulkanBuffer.cpp")
 
 set_property(TARGET Core PROPERTY CXX_STANDARD 20)
 
