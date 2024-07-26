@@ -256,33 +256,33 @@ void VulkanImage::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t wid
     }
 }
 
-void VulkanImage::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties,
-                               VkBuffer &buffer, VkDeviceMemory &bufferMemory) // TODO should be in VulkanBuffer
-{
-    VkBufferCreateInfo bufferInfo{};
-    bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    bufferInfo.size = size;
-    bufferInfo.usage = usage;
-    bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+// void VulkanImage::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties,
+//                                VkBuffer &buffer, VkDeviceMemory &bufferMemory) // TODO should be in VulkanBuffer
+// {
+//     VkBufferCreateInfo bufferInfo{};
+//     bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+//     bufferInfo.size = size;
+//     bufferInfo.usage = usage;
+//     bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-    if (vkCreateBuffer(device.getDevice(), &bufferInfo, nullptr, &buffer) != VK_SUCCESS)
-    {
-        throw std::runtime_error("failed to create buffer!");
-    }
+//     if (vkCreateBuffer(device.getDevice(), &bufferInfo, nullptr, &buffer) != VK_SUCCESS)
+//     {
+//         throw std::runtime_error("failed to create buffer!");
+//     }
 
-    VkMemoryRequirements memRequirements;
-    vkGetBufferMemoryRequirements(device.getDevice(), buffer, &memRequirements);
-    VkMemoryAllocateInfo allocInfo{};
-    allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-    allocInfo.allocationSize = memRequirements.size;
-    allocInfo.memoryTypeIndex = device.findMemoryType(memRequirements.memoryTypeBits, properties);
+//     VkMemoryRequirements memRequirements;
+//     vkGetBufferMemoryRequirements(device.getDevice(), buffer, &memRequirements);
+//     VkMemoryAllocateInfo allocInfo{};
+//     allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+//     allocInfo.allocationSize = memRequirements.size;
+//     allocInfo.memoryTypeIndex = device.findMemoryType(memRequirements.memoryTypeBits, properties);
 
-    if (vkAllocateMemory(device.getDevice(), &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS)
-    {
-        throw std::runtime_error("failed to allocate buffer memory!");
-    }
+//     if (vkAllocateMemory(device.getDevice(), &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS)
+//     {
+//         throw std::runtime_error("failed to allocate buffer memory!");
+//     }
 
-    vkBindBufferMemory(device.getDevice(), buffer, bufferMemory, 0);
-}
+//     vkBindBufferMemory(device.getDevice(), buffer, bufferMemory, 0);
+// }
 
 } // namespace Core

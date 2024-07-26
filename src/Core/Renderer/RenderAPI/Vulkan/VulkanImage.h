@@ -62,9 +62,9 @@ class VulkanImage
                                std::weak_ptr<VulkanCommandBuffer> command);
 
 
-    void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
-                      VkMemoryPropertyFlags properties, // TODO should be in VulkanBuffer
-                      VkBuffer &buffer, VkDeviceMemory &bufferMemory);
+    // void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
+    //                   VkMemoryPropertyFlags properties, // TODO should be in VulkanBuffer
+    //                   VkBuffer &buffer, VkDeviceMemory &bufferMemory);
 
   private:
     const VulkanDevice &device;
