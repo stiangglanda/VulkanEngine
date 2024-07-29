@@ -29,5 +29,5 @@ build the project using cmake
 - Run the Client
   - ```build/Client```
 
-
-
+## Vulkan Engine UML Diagram:
+![VulkanEngineUML](https://github.com/user-attachments/assets/2eff6537-5ae6-4a73-b7f4-e75c5e60a433)
