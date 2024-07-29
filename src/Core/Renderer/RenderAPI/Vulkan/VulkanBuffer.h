@@ -1,6 +1,9 @@
 #pragma once 
 #include <vulkan/vulkan.h>
 #include "../../../vepch.h"
+#include <vk_mem_alloc.h>
+#include "VulkanDevice.h"
+#include "VulkanCommandBuffer.h"
 
 namespace Core 
 {
@@ -13,11 +16,16 @@ namespace Core
         void Init(VkInstance instance);
         void Shutdown(VkInstance instance);
 
-    private:
-        void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
+        VulkanBuffer(const VulkanBuffer &) = delete;
+
+	    VulkanBuffer &operator=(const VulkanBuffer &) = delete;
+
+	    VulkanBuffer &operator=(VulkanBuffer &&) = delete;
+
+        static void createBuffer(const VulkanDevice &device, VkDeviceSize size, VkBufferUsageFlags usage,
                       VkMemoryPropertyFlags properties,
                       VkBuffer &buffer, VkDeviceMemory &bufferMemory);
-        void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+        static void copyBuffer(std::weak_ptr<VulkanCommandBuffer> command, VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 
     private:
         VkBuffer buffer;

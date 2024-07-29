@@ -1,5 +1,6 @@
 #include "VulkanImage.h"
 #include "VulkanCommandBuffer.h"
+#include "VulkanBuffer.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../../vendor/stb_image.h"
@@ -33,7 +34,7 @@ void VulkanImage::createTextureImage(const std::string TEXTURE_PATH, std::weak_p
     }
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
-    createBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+    VulkanBuffer::createBuffer(device, imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                  VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer,
                  stagingBufferMemory);
     void *data;

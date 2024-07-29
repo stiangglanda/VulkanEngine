@@ -15,7 +15,7 @@ void VulkanBuffer::Shutdown(VkInstance instance)
     VE_CORE_INFO("Shutdown VulkanBuffer");
 }
 
-void VulkanBuffer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties,
+void VulkanBuffer::createBuffer(const VulkanDevice &device, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties,
                                VkBuffer &buffer, VkDeviceMemory &bufferMemory) // TODO should be in VulkanBuffer
 {
     VkBufferCreateInfo bufferInfo{};
@@ -44,14 +44,54 @@ void VulkanBuffer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkM
     vkBindBufferMemory(device.getDevice(), buffer, bufferMemory, 0);
 }
 
-void VulkanBuffer::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
+void VulkanBuffer::copyBuffer(std::weak_ptr<VulkanCommandBuffer> command, VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
 {
-    VkCommandBuffer commandBuffer = command->beginSingleTimeCommands();
+    VkCommandBuffer commandBuffer;
+
+    if(auto tmp = command.lock())
+    {
+        commandBuffer=tmp->beginSingleTimeCommands();
+    }
+    else
+    {
+        VE_CORE_ERROR("VulkanBuffer::copyBuffer VulkanCommandBuffer ptr expired");
+    }
+
     VkBufferCopy copyRegion{};
     copyRegion.size = size;
     vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
-    command->endSingleTimeCommands(commandBuffer);
+
+    if(auto tmp = command.lock())
+    {
+        tmp->endSingleTimeCommands(commandBuffer);
+    }
+    else
+    {
+        VE_CORE_ERROR("VulkanBuffer::copyBuffer VulkanCommandBuffer ptr expired");
+    }
 }
 
+
+// AllocatedBuffer VulkanEngine::create_buffer(size_t allocSize, VkBufferUsageFlags usage, VmaMemoryUsage memoryUsage)
+// {
+//     // allocate buffer
+//     VkBufferCreateInfo bufferInfo = {};
+//     bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+//     bufferInfo.pNext = nullptr;
+//     bufferInfo.size = allocSize;
+
+//     bufferInfo.usage = usage;
+
+//     VmaAllocationCreateInfo vmaallocInfo = {};
+//     vmaallocInfo.usage = memoryUsage;
+//     vmaallocInfo.flags = VMA_ALLOCATION_CREATE_MAPPED_BIT;
+//     AllocatedBuffer newBuffer;
+
+//     // allocate the buffer
+//     VK_CHECK(vmaCreateBuffer(_allocator, &bufferInfo, &vmaallocInfo, &newBuffer.buffer, &newBuffer.allocation,
+//                              &newBuffer.info));
+
+//     return newBuffer;
+// }
 
 } // namespace Core
