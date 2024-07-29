@@ -16,6 +16,14 @@ The plan is to use the engine primarily for voxel rendering.
 Install:
 - [Vulkan sdk](https://vulkan.lunarg.com/#new_tab)
 - [CMake](https://cmake.org/download/)
+
+Build:
 - Clone the project with all its submodules(--recursive)
+  - ```git clone --recursive https://github.com/stiangglanda/VulkanEngine.git```
+- Build with CMake
+  - ```cmake --build ../VulkanEngine/build --config RelWithDebInfo --target all```
+- Run the Client
+  - ```build/Client```
+
 
 build the project using cmake 
