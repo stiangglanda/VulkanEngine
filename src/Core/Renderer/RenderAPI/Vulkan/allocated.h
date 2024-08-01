@@ -274,7 +274,7 @@ class AllocatedBase
 
 template <
     typename HandleType,
-    typename MemoryType = VkDeviceMemory,
+    typename MemoryType = VkDeviceMemory,//TODO maybe not nessesary
     typename ParentType = VulkanResource<HandleType>>
 class Allocated : public ParentType, public AllocatedBase
 {
