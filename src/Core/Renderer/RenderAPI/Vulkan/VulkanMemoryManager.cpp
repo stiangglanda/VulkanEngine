@@ -16,12 +16,12 @@
  * limitations under the License.
  */
 
-#include "allocated.h"
+#include "VulkanMemoryManager.h"
 
 namespace Core
 {
 
-namespace allocated
+namespace VulkanMemoryManager
 {
 
 VmaAllocator &get_memory_allocator()
@@ -106,12 +106,12 @@ void shutdown()
 	}
 }
 
-AllocatedBase::AllocatedBase(const VmaAllocationCreateInfo &alloc_create_info) :
+VulkanMemoryManagerBase::VulkanMemoryManagerBase(const VmaAllocationCreateInfo &alloc_create_info) :
     alloc_create_info(alloc_create_info)
 {
 }
 
-AllocatedBase::AllocatedBase(AllocatedBase &&other) noexcept :
+VulkanMemoryManagerBase::VulkanMemoryManagerBase(VulkanMemoryManagerBase &&other) noexcept :
     alloc_create_info(std::exchange(other.alloc_create_info, {})),
     allocation(std::exchange(other.allocation, {})),
     mapped_data(std::exchange(other.mapped_data, {})),
@@ -120,19 +120,19 @@ AllocatedBase::AllocatedBase(AllocatedBase &&other) noexcept :
 {
 }
 
-const uint8_t *AllocatedBase::get_data() const
+const uint8_t *VulkanMemoryManagerBase::get_data() const
 {
 	return mapped_data;
 }
 
-VkDeviceMemory AllocatedBase::get_memory() const
+VkDeviceMemory VulkanMemoryManagerBase::get_memory() const
 {
 	VmaAllocationInfo alloc_info;
 	vmaGetAllocationInfo(get_memory_allocator(), allocation, &alloc_info);
 	return alloc_info.deviceMemory;
 }
 
-void AllocatedBase::flush(VkDeviceSize offset, VkDeviceSize size)
+void VulkanMemoryManagerBase::flush(VkDeviceSize offset, VkDeviceSize size)
 {
 	if (!coherent)
 	{
@@ -140,20 +140,20 @@ void AllocatedBase::flush(VkDeviceSize offset, VkDeviceSize size)
 	}
 }
 
-uint8_t *AllocatedBase::map()
+uint8_t *VulkanMemoryManagerBase::map()
 {
 	if (!persistent && !mapped())
 	{
 		if(vmaMapMemory(get_memory_allocator(), allocation, reinterpret_cast<void **>(&mapped_data)) != VK_SUCCESS)
         {
-            VE_CORE_ERROR("AllocatedBase::map error");
+            VE_CORE_ERROR("VulkanMemoryManagerBase::map error");
         }
 		assert(mapped_data);
 	}
 	return mapped_data;
 }
 
-void AllocatedBase::unmap()
+void VulkanMemoryManagerBase::unmap()
 {
 	if (!persistent && mapped())
 	{
@@ -162,7 +162,7 @@ void AllocatedBase::unmap()
 	}
 }
 
-size_t AllocatedBase::update(const uint8_t *data, size_t size, size_t offset)
+size_t VulkanMemoryManagerBase::update(const uint8_t *data, size_t size, size_t offset)
 {
 	if (persistent)
 	{
@@ -179,12 +179,12 @@ size_t AllocatedBase::update(const uint8_t *data, size_t size, size_t offset)
 	return size;
 }
 
-size_t AllocatedBase::update(void const *data, size_t size, size_t offset)
+size_t VulkanMemoryManagerBase::update(void const *data, size_t size, size_t offset)
 {
 	return update(reinterpret_cast<const uint8_t *>(data), size, offset);
 }
 
-void AllocatedBase::post_create(VmaAllocationInfo const &allocation_info)
+void VulkanMemoryManagerBase::post_create(VmaAllocationInfo const &allocation_info)
 {
 	VkMemoryPropertyFlags memory_properties;
 	vmaGetAllocationMemoryProperties(get_memory_allocator(), allocation, &memory_properties);
@@ -193,7 +193,7 @@ void AllocatedBase::post_create(VmaAllocationInfo const &allocation_info)
 	persistent  = mapped();
 }
 
-[[nodiscard]] VkBuffer AllocatedBase::create_buffer(VkBufferCreateInfo const &create_info)
+[[nodiscard]] VkBuffer VulkanMemoryManagerBase::create_buffer(VkBufferCreateInfo const &create_info)
 {
 	VkBuffer          handleResult = VK_NULL_HANDLE;
 	VmaAllocationInfo allocation_info{};
@@ -214,7 +214,7 @@ void AllocatedBase::post_create(VmaAllocationInfo const &allocation_info)
 	return handleResult;
 }
 
-[[nodiscard]] VkImage AllocatedBase::create_image(VkImageCreateInfo const &create_info)
+[[nodiscard]] VkImage VulkanMemoryManagerBase::create_image(VkImageCreateInfo const &create_info)
 {
 	assert(0 < create_info.mipLevels && "Images should have at least one level");
 	assert(0 < create_info.arrayLayers && "Images should have at least one layer");
@@ -254,7 +254,7 @@ void AllocatedBase::post_create(VmaAllocationInfo const &allocation_info)
 	return handleResult;
 }
 
-void AllocatedBase::destroy_buffer(VkBuffer handle)
+void VulkanMemoryManagerBase::destroy_buffer(VkBuffer handle)
 {
 	if (handle != VK_NULL_HANDLE && allocation != VK_NULL_HANDLE)
 	{
@@ -264,7 +264,7 @@ void AllocatedBase::destroy_buffer(VkBuffer handle)
 	}
 }
 
-void AllocatedBase::destroy_image(VkImage image)
+void VulkanMemoryManagerBase::destroy_image(VkImage image)
 {
 	if (image != VK_NULL_HANDLE && allocation != VK_NULL_HANDLE)
 	{
@@ -274,12 +274,12 @@ void AllocatedBase::destroy_image(VkImage image)
 	}
 }
 
-bool AllocatedBase::mapped() const
+bool VulkanMemoryManagerBase::mapped() const
 {
 	return mapped_data != nullptr;
 }
 
-void AllocatedBase::clear()
+void VulkanMemoryManagerBase::clear()
 {
 	mapped_data       = nullptr;
 	persistent        = false;

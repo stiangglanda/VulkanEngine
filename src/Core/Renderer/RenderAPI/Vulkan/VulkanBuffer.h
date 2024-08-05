@@ -26,7 +26,7 @@
 
 #include "../../../vepch.h"
 #include <vulkan/vulkan.h>
-#include "allocated.h"
+#include "VulkanMemoryManager.h"
 #include "VulkanResource.h"
 #include "VulkanCommandBuffer.h"
 #include "VulkanDevice.h"
@@ -35,7 +35,7 @@ namespace Core
 {
 class VulkanBuffer;
 
-struct BufferBuilder : public allocated::Builder<BufferBuilder, VkBufferCreateInfo>
+struct BufferBuilder : public VulkanMemoryManager::Builder<BufferBuilder, VkBufferCreateInfo>
 {
 	BufferBuilder(VkDeviceSize size) :
 	    Builder(VkBufferCreateInfo{VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO, nullptr, 0, size})
@@ -73,7 +73,7 @@ struct BufferBuilder : public allocated::Builder<BufferBuilder, VkBufferCreateIn
 	std::unique_ptr<VulkanBuffer> build_unique(VulkanDevice &device) const;
 };
 
-class VulkanBuffer : public allocated::Allocated<VkBuffer>
+class VulkanBuffer : public VulkanMemoryManager::VulkanMemoryManager<VkBuffer>
 {
   public:
 	static VulkanBuffer create_staging_buffer(VulkanDevice &device, VkDeviceSize size, const void *data);

@@ -64,7 +64,7 @@ VulkanBuffer::VulkanBuffer(VulkanDevice                 &device,
 {}
 
 VulkanBuffer::VulkanBuffer(VulkanDevice &device, const BufferBuilder &builder) :
-    Allocated{builder.alloc_create_info, VK_NULL_HANDLE, &device}, size(builder.create_info.size)
+    VulkanMemoryManager{builder.alloc_create_info, VK_NULL_HANDLE, &device}, size(builder.create_info.size)
 {
 	set_handle(create_buffer(builder.create_info));
 	if (!builder.debug_name.empty())
@@ -74,7 +74,7 @@ VulkanBuffer::VulkanBuffer(VulkanDevice &device, const BufferBuilder &builder) :
 }
 
 VulkanBuffer::VulkanBuffer(VulkanBuffer &&other) noexcept :
-    Allocated{std::move(other)},
+    VulkanMemoryManager{std::move(other)},
     size{std::exchange(other.size, {})}
 {
 }

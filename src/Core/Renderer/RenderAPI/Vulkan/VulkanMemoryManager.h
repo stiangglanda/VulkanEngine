@@ -26,7 +26,7 @@
 namespace Core
 {
 
-namespace allocated
+namespace VulkanMemoryManager
 {
 
 template <
@@ -130,16 +130,16 @@ VmaAllocator &get_memory_allocator();
 
 void shutdown();
 
-class AllocatedBase
+class VulkanMemoryManagerBase
 {
   public:
-	AllocatedBase() = default;
-	AllocatedBase(const VmaAllocationCreateInfo &alloc_create_info);
-	AllocatedBase(AllocatedBase const &) = delete;
-	AllocatedBase(AllocatedBase &&other) noexcept;
+	VulkanMemoryManagerBase() = default;
+	VulkanMemoryManagerBase(const VmaAllocationCreateInfo &alloc_create_info);
+	VulkanMemoryManagerBase(VulkanMemoryManagerBase const &) = delete;
+	VulkanMemoryManagerBase(VulkanMemoryManagerBase &&other) noexcept;
 
-	AllocatedBase &operator=(const AllocatedBase &) = delete;
-	AllocatedBase &operator=(AllocatedBase &&)      = default;
+	VulkanMemoryManagerBase &operator=(const VulkanMemoryManagerBase &) = delete;
+	VulkanMemoryManagerBase &operator=(VulkanMemoryManagerBase &&)      = default;
 
 	const uint8_t *get_data() const;
 	VkDeviceMemory get_memory() const;
@@ -228,28 +228,28 @@ class AllocatedBase
 template <
     typename HandleType,//TODO maybe not nessesary
     typename ParentType = VulkanResource<HandleType>>
-class Allocated : public ParentType, public AllocatedBase
+class VulkanMemoryManager : public ParentType, public VulkanMemoryManagerBase
 {
   public:
 	using ParentType::ParentType;
 
-	Allocated()                                  = delete;
-	Allocated(const Allocated &)                 = delete;
-	Allocated &operator=(Allocated const &other) = delete;
-	Allocated &operator=(Allocated &&other)      = default;
+	VulkanMemoryManager()                                  = delete;
+	VulkanMemoryManager(const VulkanMemoryManager &)                 = delete;
+	VulkanMemoryManager &operator=(VulkanMemoryManager const &other) = delete;
+	VulkanMemoryManager &operator=(VulkanMemoryManager &&other)      = default;
 
 	// Import the base class constructors
 	template <typename... Args>
-	Allocated(const VmaAllocationCreateInfo &alloc_create_info, Args &&...args) :
+	VulkanMemoryManager(const VmaAllocationCreateInfo &alloc_create_info, Args &&...args) :
 	    ParentType(std::forward<Args>(args)...),
-	    AllocatedBase(alloc_create_info)
+	    VulkanMemoryManagerBase(alloc_create_info)
 	{
 	}
 
-	Allocated(Allocated &&other) noexcept
+	VulkanMemoryManager(VulkanMemoryManager &&other) noexcept
 	    :
 	    ParentType{static_cast<ParentType &&>(other)},
-	    AllocatedBase{static_cast<AllocatedBase &&>(other)}
+	    VulkanMemoryManagerBase{static_cast<VulkanMemoryManagerBase &&>(other)}
 	{
 	}
 
@@ -259,5 +259,5 @@ class Allocated : public ParentType, public AllocatedBase
 	}
 };
 
-}        // namespace allocated
+}        // namespace VulkanMemoryManager
 }        // namespace vkb

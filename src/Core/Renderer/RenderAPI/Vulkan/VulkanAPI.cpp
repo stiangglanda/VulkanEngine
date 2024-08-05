@@ -9,7 +9,7 @@
 #include "../../../Application.h"
 #include "VulkanBuffer.h"
 
-#include "allocated.h"
+#include "VulkanMemoryManager.h"
 
 const std::string MODEL_PATH = RESOURCES_PATH "viking_room.obj";
 const std::string TEXTURE_PATH = RESOURCES_PATH "viking_room.png";
@@ -23,7 +23,7 @@ bool VulkanAPI::Init()
     vkDebug.Init(instance.getInstance(), enableValidationLayers);
     surface.Init(instance.getInstance());
     device.Init(instance.getInstance(), surface.getSurface(), enableValidationLayers, validationLayers);
-    allocated::init(device, instance.getInstance());
+    VulkanMemoryManager::init(device, instance.getInstance());
     swapChain.Init(device, surface.getSurface());
 
     createRenderPass();
@@ -678,7 +678,7 @@ bool VulkanAPI::Shutdown()
     }
     command->Shutdown();
 
-    allocated::shutdown();
+    VulkanMemoryManager::shutdown();
 
     device.Shutdown();
 
