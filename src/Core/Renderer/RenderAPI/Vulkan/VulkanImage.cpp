@@ -32,27 +32,33 @@ void VulkanImage::createTextureImage(const std::string TEXTURE_PATH, std::weak_p
     {
         throw std::runtime_error("failed to load texture image!");
     }
-    VkBuffer stagingBuffer;
-    VkDeviceMemory stagingBufferMemory;
-    VulkanBuffer::createBuffer(device, imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                 VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer,
-                 stagingBufferMemory);
-    void *data;
-    vkMapMemory(device.getDevice(), stagingBufferMemory, 0, imageSize, 0, &data);
-    memcpy(data, pixels, static_cast<size_t>(imageSize));
-    vkUnmapMemory(device.getDevice(), stagingBufferMemory);
+    // VkBuffer stagingBuffer;
+    // VkDeviceMemory stagingBufferMemory;
+    // VulkanBuffer buffer=BufferBuilder(imageSize)
+    //            .with_usage(VK_BUFFER_USAGE_TRANSFER_SRC_BIT)
+    //            .with_vma_usage(VMA_MEMORY_USAGE_AUTO)
+    //            .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
+    //            .build(device);
+    VulkanBuffer stagingBuffer = VulkanBuffer::create_staging_buffer(device, imageSize, pixels);
+    // VulkanBuffer::createBuffer(device, imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+    //              VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer,
+    //              stagingBufferMemory);
+    // void *data;
+    // vkMapMemory(device.getDevice(), stagingBufferMemory, 0, imageSize, 0, &data);
+    // memcpy(data, pixels, static_cast<size_t>(imageSize));
+    // vkUnmapMemory(device.getDevice(), stagingBufferMemory);
     stbi_image_free(pixels);
     createImage(texWidth, texHeight, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL,
                 VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                 textureImage, textureImageMemory);
     transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED,
                           VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, command);
-    copyBufferToImage(stagingBuffer, textureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight),
+    copyBufferToImage(stagingBuffer, textureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight),//Might not work try Handle
                       command);
     transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                           VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, command);
-    vkDestroyBuffer(device.getDevice(), stagingBuffer, nullptr);
-    vkFreeMemory(device.getDevice(), stagingBufferMemory, nullptr);
+    // vkDestroyBuffer(device.getDevice(), stagingBuffer, nullptr);
+    // vkFreeMemory(device.getDevice(), stagingBufferMemory, nullptr);
 }
 
 void VulkanImage::createTextureImageView()

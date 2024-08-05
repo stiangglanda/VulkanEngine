@@ -17,6 +17,7 @@
 #include "VulkanSwapChain.h"
 #include "VulkanImage.h"
 #include "VulkanCommandBuffer.h"
+#include "VulkanBuffer.h"
 
 struct GLFWwindow;
 
@@ -133,12 +134,12 @@ class VulkanAPI : public RenderAPI
 
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
-    VkBuffer vertexBuffer;
-    VkDeviceMemory vertexBufferMemory;
-    VkBuffer indexBuffer;
-    VkDeviceMemory indexBufferMemory;
-    std::vector<VkBuffer> uniformBuffers;
-    std::vector<VkDeviceMemory> uniformBuffersMemory;
+    std::unique_ptr<VulkanBuffer> vertexBuffer;
+    // VkDeviceMemory vertexBufferMemory;
+    std::unique_ptr<VulkanBuffer> indexBuffer;
+    // VkDeviceMemory indexBufferMemory;
+    std::vector<std::unique_ptr<VulkanBuffer>> uniformBuffers;
+    // std::vector<VkDeviceMemory> uniformBuffersMemory;
     std::vector<void *> uniformBuffersMapped;
     VkDescriptorPool descriptorPool;
     std::vector<VkDescriptorSet> descriptorSets;

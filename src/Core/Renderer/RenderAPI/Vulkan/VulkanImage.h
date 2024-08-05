@@ -67,7 +67,7 @@ class VulkanImage
     //                   VkBuffer &buffer, VkDeviceMemory &bufferMemory);
 
   private:
-    const VulkanDevice &device;
+    VulkanDevice &device;
     VkImage textureImage;
     VkDeviceMemory textureImageMemory;
     VkImageView textureImageView;
