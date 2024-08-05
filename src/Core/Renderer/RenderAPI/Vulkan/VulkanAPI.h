@@ -96,9 +96,6 @@ class VulkanAPI : public RenderAPI
     void createUniformBuffers();
     void createDescriptorPool();
     void createDescriptorSets();
-    // void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer &buffer,
-    //                   VkDeviceMemory &bufferMemory);
-    // void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
     
     void createSyncObjects();
     void updateUniformBuffer(uint32_t currentImage);
@@ -135,11 +132,8 @@ class VulkanAPI : public RenderAPI
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
     std::unique_ptr<VulkanBuffer> vertexBuffer;
-    // VkDeviceMemory vertexBufferMemory;
     std::unique_ptr<VulkanBuffer> indexBuffer;
-    // VkDeviceMemory indexBufferMemory;
     std::vector<std::unique_ptr<VulkanBuffer>> uniformBuffers;
-    // std::vector<VkDeviceMemory> uniformBuffersMemory;
     std::vector<void *> uniformBuffersMapped;
     VkDescriptorPool descriptorPool;
     std::vector<VkDescriptorSet> descriptorSets;

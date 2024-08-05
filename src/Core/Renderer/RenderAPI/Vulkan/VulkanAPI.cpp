@@ -315,27 +315,14 @@ void VulkanAPI::loadModel()
 void VulkanAPI::createVertexBuffer()
 {
     VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
-    // VkBuffer stagingBuffer;
-    // VkDeviceMemory stagingBufferMemory;
     VulkanBuffer stagingBuffer = VulkanBuffer::create_staging_buffer(device, bufferSize, vertices.data());
 
-    // VulkanBuffer::createBuffer(device, bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-    //              VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer,
-    //              stagingBufferMemory);
-    // void *data;
-    // vkMapMemory(device.getDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
-    // memcpy(data, vertices.data(), (size_t)bufferSize);
-    // vkUnmapMemory(device.getDevice(), stagingBufferMemory);
-    // VulkanBuffer::createBuffer(device, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-    //              VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
     vertexBuffer=(BufferBuilder(bufferSize)
                .with_usage(VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT)
                .with_vma_usage(VMA_MEMORY_USAGE_AUTO)//VMA_MEMORY_USAGE_GPU_ONLY
                .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
                .build_unique(device));
     VulkanBuffer::copyBuffer(command, stagingBuffer.get_handle(), vertexBuffer->get_handle(), bufferSize);
-    // vkDestroyBuffer(device.getDevice(), stagingBuffer, nullptr);
-    // vkFreeMemory(device.getDevice(), stagingBufferMemory, nullptr);
 }
 
 void VulkanAPI::createIndexBuffer()
@@ -350,41 +337,22 @@ void VulkanAPI::createIndexBuffer()
                .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
                .build_unique(device));
     VulkanBuffer::copyBuffer(command, stagingBuffer.get_handle(), indexBuffer->get_handle(), bufferSize);
-    // VkBuffer stagingBuffer;
-    // VkDeviceMemory stagingBufferMemory;
-    // VulkanBuffer::createBuffer(device, bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-    //              VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer,
-    //              stagingBufferMemory);
-    // void *data;
-    // vkMapMemory(device.getDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
-    // memcpy(data, indices.data(), (size_t)bufferSize);
-    // vkUnmapMemory(device.getDevice(), stagingBufferMemory);
-    // VulkanBuffer::createBuffer(device, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-    //              VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
-    // VulkanBuffer::copyBuffer(command,stagingBuffer, indexBuffer, bufferSize);
-    // vkDestroyBuffer(device.getDevice(), stagingBuffer, nullptr);
-    // vkFreeMemory(device.getDevice(), stagingBufferMemory, nullptr);
 }
 
 void VulkanAPI::createUniformBuffers()
 {
     VkDeviceSize bufferSize = sizeof(UniformBufferObject);
     uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-    // uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
     uniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
 
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
     {
-        // VulkanBuffer::createBuffer(device, bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-        //              VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, uniformBuffers[i],
-        //              uniformBuffersMemory[i]);
         uniformBuffers[i]=(BufferBuilder(bufferSize)
                .with_usage(VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT)
                .with_vma_usage(VMA_MEMORY_USAGE_CPU_TO_GPU)
                .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
                .build_unique(device));
         uniformBuffersMapped[i]=uniformBuffers[i]->map();
-        // vkMapMemory(device.getDevice(), uniformBuffersMemory[i], 0, bufferSize, 0, &uniformBuffersMapped[i]);
     }
 }
 
@@ -454,44 +422,6 @@ void VulkanAPI::createDescriptorSets()
                                descriptorWrites.data(), 0, nullptr);
     }
 }
-
-// void VulkanAPI::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties,
-//                              VkBuffer &buffer, VkDeviceMemory &bufferMemory)
-// {
-//     VkBufferCreateInfo bufferInfo{};
-//     bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-//     bufferInfo.size = size;
-//     bufferInfo.usage = usage;
-//     bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
-//     if (vkCreateBuffer(device.getDevice(), &bufferInfo, nullptr, &buffer) != VK_SUCCESS)
-//     {
-//         throw std::runtime_error("failed to create buffer!");
-//     }
-
-//     VkMemoryRequirements memRequirements;
-//     vkGetBufferMemoryRequirements(device.getDevice(), buffer, &memRequirements);
-//     VkMemoryAllocateInfo allocInfo{};
-//     allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-//     allocInfo.allocationSize = memRequirements.size;
-//     allocInfo.memoryTypeIndex = device.findMemoryType(memRequirements.memoryTypeBits, properties);
-
-//     if (vkAllocateMemory(device.getDevice(), &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS)
-//     {
-//         throw std::runtime_error("failed to allocate buffer memory!");
-//     }
-
-//     vkBindBufferMemory(device.getDevice(), buffer, bufferMemory, 0);
-// }
-
-// void VulkanAPI::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
-// {
-//     VkCommandBuffer commandBuffer = command->beginSingleTimeCommands();
-//     VkBufferCopy copyRegion{};
-//     copyRegion.size = size;
-//     vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
-//     command->endSingleTimeCommands(commandBuffer);
-// }
 
 void VulkanAPI::createSyncObjects()
 {
@@ -660,8 +590,6 @@ bool VulkanAPI::Shutdown()
         uniformBuffers[i].reset();  //This is to avoid a segmentation fault since the memory 
                                     //already gets freed by VulkanMemoryManager::shutdown and 
                                     //then the destructore tryes to do the same therefore we call the destructure before
-        // vkDestroyBuffer(device.getDevice(), uniformBuffers[i], nullptr);
-        // vkFreeMemory(device.getDevice(), uniformBuffersMemory[i], nullptr);
     }
 
     vkDestroyDescriptorPool(device.getDevice(), descriptorPool, nullptr);
@@ -671,11 +599,6 @@ bool VulkanAPI::Shutdown()
     indexBuffer.reset(); //This is to avoid a segmentation fault since the memory 
     vertexBuffer.reset();//already gets freed by VulkanMemoryManager::shutdown and 
                          //then the destructore tryes to do the same therefore we call the destructure before
-                         
-    // vkDestroyBuffer(device.getDevice(), indexBuffer, nullptr);
-    // vkFreeMemory(device.getDevice(), indexBufferMemory, nullptr);
-    // vkDestroyBuffer(device.getDevice(), vertexBuffer, nullptr);
-    // vkFreeMemory(device.getDevice(), vertexBufferMemory, nullptr);
 
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
     {
@@ -694,9 +617,6 @@ bool VulkanAPI::Shutdown()
     instance.Shutdown();
 
     return true;
-    // glfwDestroyWindow(window);
-
-    // glfwTerminate();
 }
 
 void VulkanAPI::recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex)

@@ -1,27 +1,3 @@
-// #pragma once 
-// #include <vulkan/vulkan.h>
-// #include "../../../vepch.h"
-// #include <vk_mem_alloc.h>
-// #include "VulkanDevice.h"
-// #include "VulkanCommandBuffer.h"
-
-/* Copyright (c) 2019-2024, Arm Limited and Contributors
- *
- * SPDX-License-Identifier: Apache-2.0
- *
- * Licensed under the Apache License, Version 2.0 the "License";
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 #pragma once
 
 #include "../../../vepch.h"
@@ -164,31 +140,3 @@ class VulkanBuffer : public VulkanMemoryManager::VulkanMemoryManager<VkBuffer>
 	VkDeviceSize size{0};
 };
 }        // namespace Core
-
-// namespace Core 
-// {
-//     class VulkanBuffer 
-//     {
-//     public:
-//         VulkanBuffer() {}
-//         ~VulkanBuffer() {}
-        
-//         void Init(VkInstance instance);
-//         void Shutdown(VkInstance instance);
-
-//         VulkanBuffer(const VulkanBuffer &) = delete;
-
-// 	    VulkanBuffer &operator=(const VulkanBuffer &) = delete;
-
-// 	    VulkanBuffer &operator=(VulkanBuffer &&) = delete;
-
-//         static void createBuffer(const VulkanDevice &device, VkDeviceSize size, VkBufferUsageFlags usage,
-//                       VkMemoryPropertyFlags properties,
-//                       VkBuffer &buffer, VkDeviceMemory &bufferMemory);
-//         static void copyBuffer(std::weak_ptr<VulkanCommandBuffer> command, VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
-
-//     private:
-//         VkBuffer buffer;
-//         VkDeviceMemory bufferMemory;
-//     };
-// } // namespace Core

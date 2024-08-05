@@ -61,11 +61,6 @@ class VulkanImage
     void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, 
                                std::weak_ptr<VulkanCommandBuffer> command);
 
-
-    // void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
-    //                   VkMemoryPropertyFlags properties, // TODO should be in VulkanBuffer
-    //                   VkBuffer &buffer, VkDeviceMemory &bufferMemory);
-
   private:
     VulkanDevice &device;
     VkImage textureImage;
