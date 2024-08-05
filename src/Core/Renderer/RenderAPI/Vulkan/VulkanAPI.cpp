@@ -655,16 +655,23 @@ bool VulkanAPI::Shutdown()
 
     vkDestroyRenderPass(device.getDevice(), renderPass, nullptr);
 
-    // for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
-    // {
-    //     vkDestroyBuffer(device.getDevice(), uniformBuffers[i], nullptr);
-    //     vkFreeMemory(device.getDevice(), uniformBuffersMemory[i], nullptr);
-    // }
+    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+    {
+        uniformBuffers[i].reset();  //This is to avoid a segmentation fault since the memory 
+                                    //already gets freed by VulkanMemoryManager::shutdown and 
+                                    //then the destructore tryes to do the same therefore we call the destructure before
+        // vkDestroyBuffer(device.getDevice(), uniformBuffers[i], nullptr);
+        // vkFreeMemory(device.getDevice(), uniformBuffersMemory[i], nullptr);
+    }
 
     vkDestroyDescriptorPool(device.getDevice(), descriptorPool, nullptr);
     texture->Shutdown();
 
     vkDestroyDescriptorSetLayout(device.getDevice(), descriptorSetLayout, nullptr);
+    indexBuffer.reset(); //This is to avoid a segmentation fault since the memory 
+    vertexBuffer.reset();//already gets freed by VulkanMemoryManager::shutdown and 
+                         //then the destructore tryes to do the same therefore we call the destructure before
+                         
     // vkDestroyBuffer(device.getDevice(), indexBuffer, nullptr);
     // vkFreeMemory(device.getDevice(), indexBufferMemory, nullptr);
     // vkDestroyBuffer(device.getDevice(), vertexBuffer, nullptr);
