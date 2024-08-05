@@ -4,7 +4,7 @@
 cmake_minimum_required (VERSION 3.19)
 
 # Enable Hot Reload for MSVC compilers if supported.
-set(CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API 2182bf5c-ef0d-489a-91da-49dbc3090d2a)
+#set(CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API 2182bf5c-ef0d-489a-91da-49dbc3090d2a)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED On)
 
@@ -61,7 +61,8 @@ add_library(Core ${IMGUI_SOURCES} "vendor/stb_image.h" "src/Core/Core.cpp" "src/
 "src/Core/Renderer/RenderAPI/Vulkan/VulkanSwapChain.cpp" "src/Core/Renderer/RenderAPI/Vulkan/VulkanImage.h"
 "src/Core/Renderer/RenderAPI/Vulkan/VulkanImage.cpp" "src/Core/Renderer/RenderAPI/Vulkan/VulkanCommandBuffer.h"
 "src/Core/Renderer/RenderAPI/Vulkan/VulkanCommandBuffer.cpp" "src/Core/Renderer/RenderAPI/Vulkan/VulkanBuffer.h"
-"src/Core/Renderer/RenderAPI/Vulkan/VulkanBuffer.cpp")
+"src/Core/Renderer/RenderAPI/Vulkan/VulkanBuffer.cpp" "src/Core/Renderer/RenderAPI/Vulkan/VulkanResource.h" 
+"src/Core/Renderer/RenderAPI/Vulkan/allocated.h" "src/Core/Renderer/RenderAPI/Vulkan/allocated.cpp")
 
 set_property(TARGET Core PROPERTY CXX_STANDARD 20)
 
@@ -73,7 +74,6 @@ target_include_directories(Core
 	PUBLIC vendor/glfw/include 
 	PUBLIC vendor/glm/glm 
 	PUBLIC vendor/spdlog/include 
-	PUBLIC vendor/VulkanMemoryAllocator/include 
 	PUBLIC vendor/fastgltf/include 
 	PRIVATE vendor/imgui
 	PUBLIC vendor/tinyobjloader 

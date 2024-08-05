@@ -19,7 +19,8 @@
 
 #define VMA_IMPLEMENTATION
 #include "../../../Events/ApplicationEvent.h"
-#include "vk_mem_alloc.h"
+//#include "../../../vendor/VulkanMemoryAllocator/include/vk_mem_alloc.h"
+#include <vk_mem_alloc.h>
 
 constexpr bool bUseValidationLayers = true;
 
