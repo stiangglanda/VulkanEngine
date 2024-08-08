@@ -176,7 +176,7 @@ public:
 
 	VkDeviceSize get_image_required_size() const;
 
-	VkImageCompressionPropertiesEXT get_applied_compression() const;
+	// VkImageCompressionPropertiesEXT get_applied_compression() const;
 	
 	//TODO imageView and sampler shouldn't be here
     VkImageView getImageView() const
