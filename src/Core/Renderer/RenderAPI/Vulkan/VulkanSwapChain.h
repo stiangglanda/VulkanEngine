@@ -2,6 +2,7 @@
 #include <vulkan/vulkan.h>
 #include "../../../vepch.h"
 #include "VulkanDevice.h"
+#include "VulkanImage.h"
 
 namespace Core 
 {
@@ -20,7 +21,7 @@ namespace Core
         ~VulkanSwapChain() {}
         
         void Init(const VulkanDevice& device, VkSurfaceKHR surface);
-        void createDepthResourcesAndFramebuffers(const VulkanDevice& device, VkRenderPass renderPass);
+        void createDepthResourcesAndFramebuffers(VulkanDevice& device, VkRenderPass renderPass);
         void Shutdown(VkDevice device);
         static const SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR surface);
         
@@ -52,7 +53,7 @@ namespace Core
             }
         }
 
-        void recreateSwapChain(const VulkanDevice& device, VkSurfaceKHR surface, VkRenderPass renderPass);
+        void recreateSwapChain(VulkanDevice& device, VkSurfaceKHR surface, VkRenderPass renderPass);
 
     private:
         void createSwapChain(const VulkanDevice& device, VkSurfaceKHR surface); 
@@ -60,9 +61,9 @@ namespace Core
         VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes);
         VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
         void cleanupSwapChain(VkDevice device);
-        void createImageViews(const VkDevice device);
+        void createImageViews(const VulkanDevice& device);
         void createFramebuffers(const VkDevice device, VkRenderPass renderPass);
-        void createDepthResources(const VulkanDevice &device);
+        void createDepthResources(VulkanDevice &device);
 
     private:
         VkSwapchainKHR swapChain;
@@ -73,8 +74,9 @@ namespace Core
 
         std::vector<VkFramebuffer> swapChainFramebuffers;
 
-        VkImage depthImage;
-        VkDeviceMemory depthImageMemory;
+        std::unique_ptr<VulkanImage> depthImage;
+        // VkImage depthImage;
+        // VkDeviceMemory depthImageMemory;
         VkImageView depthImageView;
     };
 } // namespace Core

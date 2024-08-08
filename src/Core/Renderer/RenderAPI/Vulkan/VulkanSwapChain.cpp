@@ -1,7 +1,6 @@
 #include "VulkanSwapChain.h"
 #include <GLFW/glfw3.h>
 #include "../../../Application.h"
-#include "VulkanImage.h"
 
 namespace Core 
 {
@@ -9,11 +8,11 @@ namespace Core
 void VulkanSwapChain::Init(const VulkanDevice& device, VkSurfaceKHR surface)
 {
     createSwapChain(device, surface);
-    createImageViews(device.getDevice());
+    createImageViews(device);
     VE_CORE_INFO("Init Vulkan Swap Chain");
 }
 
-void VulkanSwapChain::createDepthResourcesAndFramebuffers(const VulkanDevice& device, VkRenderPass renderPass)
+void VulkanSwapChain::createDepthResourcesAndFramebuffers(VulkanDevice& device, VkRenderPass renderPass)
 {
     createDepthResources(device);
     createFramebuffers(device.getDevice(), renderPass);
@@ -132,17 +131,17 @@ VkExtent2D VulkanSwapChain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &cap
     }
 }
 
-void VulkanSwapChain::createImageViews(const VkDevice device)
+void VulkanSwapChain::createImageViews(const VulkanDevice& device)
 {
     swapChainImageViews.resize(swapChainImages.size());
 
     for (uint32_t i = 0; i < swapChainImages.size(); i++)
     {
-        swapChainImageViews[i] = VulkanImage::createImageView(swapChainImages[i], swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT,device);
+        swapChainImageViews[i] = VulkanImage::createImageView(swapChainImages[i], swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT,device.getDevice());
     }
 }
 
-void VulkanSwapChain::createFramebuffers(const VkDevice device, VkRenderPass renderPass)
+void VulkanSwapChain::createFramebuffers(const VkDevice device, VkRenderPass renderPass)//TODO Framebuffer should be its own thing
 {
     swapChainFramebuffers.resize(swapChainImageViews.size());
 
@@ -196,8 +195,9 @@ const SwapChainSupportDetails VulkanSwapChain::querySwapChainSupport(VkPhysicalD
 void VulkanSwapChain::cleanupSwapChain(VkDevice device)
 {
     vkDestroyImageView(device, depthImageView, nullptr);
-    vkDestroyImage(device, depthImage, nullptr);
-    vkFreeMemory(device, depthImageMemory, nullptr);
+    // vkDestroyImage(device, depthImage, nullptr);
+    depthImage.reset();
+    // vkFreeMemory(device, depthImageMemory, nullptr);
 
     for (auto framebuffer : swapChainFramebuffers)
     {
@@ -212,7 +212,7 @@ void VulkanSwapChain::cleanupSwapChain(VkDevice device)
     vkDestroySwapchainKHR(device, swapChain, nullptr);
 }
 
-void VulkanSwapChain::recreateSwapChain(const VulkanDevice& device, VkSurfaceKHR surface, VkRenderPass renderPass)
+void VulkanSwapChain::recreateSwapChain(VulkanDevice& device, VkSurfaceKHR surface, VkRenderPass renderPass)
 {
     int width = 0, height = 0;
     glfwGetFramebufferSize(static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), &width, &height);
@@ -227,18 +227,32 @@ void VulkanSwapChain::recreateSwapChain(const VulkanDevice& device, VkSurfaceKHR
     cleanupSwapChain(device.getDevice());
 
     createSwapChain(device, surface);
-    createImageViews(device.getDevice());
+    createImageViews(device);
     createDepthResources(device);
     createFramebuffers(device.getDevice(),renderPass);
 }
 
-void VulkanSwapChain::createDepthResources(const VulkanDevice &device)
+void VulkanSwapChain::createDepthResources(VulkanDevice &device)
 {
+        //     std::make_unique<vkb::core::Image>(get_device(), image_extent, VK_FORMAT_D32_SFLOAT, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VMA_MEMORY_USAGE_GPU_ONLY, VK_SAMPLE_COUNT_1_BIT);
+		// depth_image_view[i] = std::make_unique<vkb::core::ImageView>(*depth_image[i], VK_IMAGE_VIEW_TYPE_2D, VK_FORMAT_D32_SFLOAT);
+
     VkFormat depthFormat = device.findDepthFormat();
-    VulkanImage::createImage(swapChainExtent.width, swapChainExtent.height, depthFormat, VK_IMAGE_TILING_OPTIMAL,
-                VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depthImage,
-                depthImageMemory,device);
-    depthImageView = VulkanImage::createImageView(depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT, device.getDevice());
+    // VulkanImage::createImage(swapChainExtent.width, swapChainExtent.height, depthFormat, VK_IMAGE_TILING_OPTIMAL,
+    //             VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depthImage,
+    //             depthImageMemory,device);
+
+    depthImage=ImageBuilder(swapChainExtent.width, swapChainExtent.height)
+              .with_format(depthFormat)
+              .with_image_type(VK_IMAGE_TYPE_2D)
+              .with_usage(VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT)
+              .with_array_layers(1)
+              .with_tiling(VK_IMAGE_TILING_OPTIMAL)
+              .with_vma_usage(VMA_MEMORY_USAGE_GPU_ONLY)
+              .with_sample_count(VK_SAMPLE_COUNT_1_BIT)
+              .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
+              .build_unique(device);
+    depthImageView = VulkanImage::createImageView(depthImage->get_handle(), depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT, device.getDevice());
 }
 
 } // namespace Core
