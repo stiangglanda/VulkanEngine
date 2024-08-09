@@ -49,6 +49,7 @@ VulkanBuffer::VulkanBuffer(VulkanDevice &device, const BufferBuilder &builder) :
 	{
 		// set_debug_name(builder.debug_name);//TODO maybe implement debug name in VulkanResource
 	}
+    VE_CORE_INFO("VulkanBuffer created buffer");
 }
 
 VulkanBuffer::VulkanBuffer(VulkanBuffer &&other) noexcept :
@@ -60,6 +61,7 @@ VulkanBuffer::VulkanBuffer(VulkanBuffer &&other) noexcept :
 VulkanBuffer::~VulkanBuffer()
 {
 	destroy_buffer(get_handle());
+    VE_CORE_INFO("VulkanBuffer destroyed buffer");
 }
 
 VkDeviceSize VulkanBuffer::get_size() const

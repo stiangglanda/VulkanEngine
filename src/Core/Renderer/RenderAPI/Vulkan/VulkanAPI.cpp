@@ -34,13 +34,7 @@ bool VulkanAPI::Init()
 
     swapChain.createDepthResourcesAndFramebuffers(device, renderPass);
 
-    // texture = std::make_unique<VulkanImage>(device);
-    // texture->createTextureImage(TEXTURE_PATH, command);
-        	// createImage(texWidth, texHeight, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL,
-    	//             VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-    	//             textureImage, textureImageMemory);
-
-	texture=ImageBuilder(0, 0)
+	texture=ImageBuilder(0, 0)//with the option with_texture this will be set later
               .with_format(VK_FORMAT_R8G8B8A8_SRGB)
               .with_image_type(VK_IMAGE_TYPE_2D)
               .with_usage(VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT)
@@ -607,7 +601,6 @@ bool VulkanAPI::Shutdown()
     }
 
     vkDestroyDescriptorPool(device.getDevice(), descriptorPool, nullptr);
-    // texture->Shutdown();
     texture.reset();
 
     vkDestroyDescriptorSetLayout(device.getDevice(), descriptorSetLayout, nullptr);

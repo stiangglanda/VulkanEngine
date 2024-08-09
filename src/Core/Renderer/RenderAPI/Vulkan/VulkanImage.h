@@ -200,13 +200,6 @@ public:
 
     void createTextureImageView();
     void createTextureSampler();
-
-	// void createTextureImage(,
-	// 		 const std::string TEXTURE_PATH, 
-	// 		 std::weak_ptr<VulkanCommandBuffer> command);
-
-	// static void createImageNoVMA(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage &image,
-    //                         VkDeviceMemory &imageMemory, const VulkanDevice &device);
 	
 	static VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, VkDevice device);//TODO should be in VulkanImageView
 
@@ -223,42 +216,5 @@ private:
 	VkImageView view;
     VkSampler textureSampler=nullptr;//TODO this should not be here
 	// std::unordered_set<ImageView *> views;
-
-//   public:
-//     VulkanImage(VulkanDevice &device) : device(device)
-//     {
-//     }
-//     ~VulkanImage()
-//     {
-//     }
-
-//     void Init();
-//     void Shutdown();
-
-//     VkImage getImage() const
-//     {
-//         return textureImage;
-//     }
-
-
-
-
-
-//     static VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, VkDevice device);
-//     VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
-//     static void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage &image,
-//                             VkDeviceMemory &imageMemory, const VulkanDevice &device);
-//     void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling,
-//                             VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage &image,
-//                             VkDeviceMemory &imageMemory);
-
-
-
-//   private:
-//     VulkanDevice &device;
-//     VkImage textureImage;
-//     VkDeviceMemory textureImageMemory;
-    // VkImageView view;
-    // VkSampler textureSampler=nullptr;//TODO this should not be here
 };
 } // namespace Core

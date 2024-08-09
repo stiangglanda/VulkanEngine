@@ -195,9 +195,7 @@ const SwapChainSupportDetails VulkanSwapChain::querySwapChainSupport(VkPhysicalD
 void VulkanSwapChain::cleanupSwapChain(VkDevice device)
 {
     vkDestroyImageView(device, depthImageView, nullptr);
-    // vkDestroyImage(device, depthImage, nullptr);
     depthImage.reset();
-    // vkFreeMemory(device, depthImageMemory, nullptr);
 
     for (auto framebuffer : swapChainFramebuffers)
     {
@@ -234,13 +232,7 @@ void VulkanSwapChain::recreateSwapChain(VulkanDevice& device, VkSurfaceKHR surfa
 
 void VulkanSwapChain::createDepthResources(VulkanDevice &device)
 {
-        //     std::make_unique<vkb::core::Image>(get_device(), image_extent, VK_FORMAT_D32_SFLOAT, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VMA_MEMORY_USAGE_GPU_ONLY, VK_SAMPLE_COUNT_1_BIT);
-		// depth_image_view[i] = std::make_unique<vkb::core::ImageView>(*depth_image[i], VK_IMAGE_VIEW_TYPE_2D, VK_FORMAT_D32_SFLOAT);
-
     VkFormat depthFormat = device.findDepthFormat();
-    // VulkanImage::createImage(swapChainExtent.width, swapChainExtent.height, depthFormat, VK_IMAGE_TILING_OPTIMAL,
-    //             VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depthImage,
-    //             depthImageMemory,device);
 
     depthImage=ImageBuilder(swapChainExtent.width, swapChainExtent.height)
               .with_format(depthFormat)

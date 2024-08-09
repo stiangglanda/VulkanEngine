@@ -75,8 +75,6 @@ namespace Core
         std::vector<VkFramebuffer> swapChainFramebuffers;
 
         std::unique_ptr<VulkanImage> depthImage;
-        // VkImage depthImage;
-        // VkDeviceMemory depthImageMemory;
         VkImageView depthImageView;
     };
 } // namespace Core
