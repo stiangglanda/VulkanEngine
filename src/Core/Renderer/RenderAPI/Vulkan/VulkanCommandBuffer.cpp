@@ -1,6 +1,6 @@
 #include "VulkanCommandBuffer.h"
 
-namespace Core 
+namespace Core
 {
 
 void VulkanCommandBuffer::Shutdown()
@@ -53,19 +53,21 @@ void VulkanCommandBuffer::createCommandBuffers(const int MAX_FRAMES_IN_FLIGHT)
     }
 }
 
-void VulkanCommandBuffer::submit(uint32_t currentFrame, VkFence fence, VkSemaphore waitSemaphore, 
-                                VkSemaphore signalSemaphore, VkPipelineStageFlags waitStage) 
+void VulkanCommandBuffer::submit(uint32_t currentFrame, VkFence fence, VkSemaphore waitSemaphore,
+                                 VkSemaphore signalSemaphore, VkPipelineStageFlags waitStage)
 {
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-    if (waitSemaphore != VK_NULL_HANDLE) {
+    if (waitSemaphore != VK_NULL_HANDLE)
+    {
         submitInfo.waitSemaphoreCount = 1;
         submitInfo.pWaitSemaphores = &waitSemaphore;
         submitInfo.pWaitDstStageMask = &waitStage;
     }
 
-    if (signalSemaphore != VK_NULL_HANDLE) {
+    if (signalSemaphore != VK_NULL_HANDLE)
+    {
         submitInfo.signalSemaphoreCount = 1;
         submitInfo.pSignalSemaphores = &signalSemaphore;
     }
@@ -73,7 +75,7 @@ void VulkanCommandBuffer::submit(uint32_t currentFrame, VkFence fence, VkSemapho
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &commandBuffers[currentFrame];
 
-    if (vkQueueSubmit(device.getGraphicsQueue(), 1, &submitInfo, fence) != VK_SUCCESS) 
+    if (vkQueueSubmit(device.getGraphicsQueue(), 1, &submitInfo, fence) != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to submit command buffer!");
     }
@@ -84,21 +86,22 @@ void VulkanCommandBuffer::ResetCommandBuffer(uint32_t currentFrame, VkCommandBuf
     vkResetCommandBuffer(commandBuffers[currentFrame], /*VkCommandBufferResetFlagBits*/ flags);
 }
 
-
-void VulkanCommandBuffer::begin(uint32_t currentFrame, VkCommandBufferUsageFlags flags) 
+void VulkanCommandBuffer::begin(uint32_t currentFrame, VkCommandBufferUsageFlags flags)
 {
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     beginInfo.flags = flags;
 
-    if (vkBeginCommandBuffer(commandBuffers[currentFrame], &beginInfo) != VK_SUCCESS) {
+    if (vkBeginCommandBuffer(commandBuffers[currentFrame], &beginInfo) != VK_SUCCESS)
+    {
         throw std::runtime_error("Failed to begin recording command buffer!");
     }
 }
 
-void VulkanCommandBuffer::end(uint32_t currentFrame) 
+void VulkanCommandBuffer::end(uint32_t currentFrame)
 {
-    if (vkEndCommandBuffer(commandBuffers[currentFrame]) != VK_SUCCESS) {
+    if (vkEndCommandBuffer(commandBuffers[currentFrame]) != VK_SUCCESS)
+    {
         throw std::runtime_error("Failed to end recording command buffer!");
     }
 }

@@ -1,6 +1,6 @@
 #include "VulkanImage.h"
-#include "VulkanCommandBuffer.h"
 #include "VulkanBuffer.h"
+#include "VulkanCommandBuffer.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../../vendor/stb_image.h"
@@ -9,199 +9,189 @@ namespace Core
 {
 inline VkImageType find_image_type(VkExtent3D extent)
 {
-	VkImageType result{};
+    VkImageType result{};
 
-	uint32_t dim_num{0};
+    uint32_t dim_num{0};
 
-	if (extent.width >= 1)
-	{
-		dim_num++;
-	}
+    if (extent.width >= 1)
+    {
+        dim_num++;
+    }
 
-	if (extent.height >= 1)
-	{
-		dim_num++;
-	}
+    if (extent.height >= 1)
+    {
+        dim_num++;
+    }
 
-	if (extent.depth > 1)
-	{
-		dim_num++;
-	}
+    if (extent.depth > 1)
+    {
+        dim_num++;
+    }
 
-	switch (dim_num)
-	{
-		case 1:
-			result = VK_IMAGE_TYPE_1D;
-			break;
-		case 2:
-			result = VK_IMAGE_TYPE_2D;
-			break;
-		case 3:
-			result = VK_IMAGE_TYPE_3D;
-			break;
-		default:
-			throw std::runtime_error("No image type found.");
-			break;
-	}
+    switch (dim_num)
+    {
+    case 1:
+        result = VK_IMAGE_TYPE_1D;
+        break;
+    case 2:
+        result = VK_IMAGE_TYPE_2D;
+        break;
+    case 3:
+        result = VK_IMAGE_TYPE_3D;
+        break;
+    default:
+        throw std::runtime_error("No image type found.");
+        break;
+    }
 
-	return result;
+    return result;
 }
 
 VulkanImage ImageBuilder::build(VulkanDevice &device) const
 {
-	return VulkanImage(device, *this);
+    return VulkanImage(device, *this);
 }
 
 std::unique_ptr<VulkanImage> ImageBuilder::build_unique(VulkanDevice &device) const
 {
-	return std::make_unique<VulkanImage>(device, *this);
+    return std::make_unique<VulkanImage>(device, *this);
 }
 
-VulkanImage::VulkanImage(VulkanDevice   &device,
-             const VkExtent3D     &extent,
-             VkFormat              format,
-             VkImageUsageFlags     image_usage,
-			 const std::string TEXTURE_PATH, 
-			 std::weak_ptr<VulkanCommandBuffer> command,
-             VmaMemoryUsage        memory_usage,
-             VkSampleCountFlagBits sample_count,
-             const uint32_t        mip_levels,
-             const uint32_t        array_layers,
-             VkImageTiling         tiling,
-             VkImageCreateFlags    flags,
-             uint32_t              num_queue_families,
-             const uint32_t       *queue_families) :
-    // Pass through to the ImageBuilder ctor
-    VulkanImage(device,
-          ImageBuilder(extent)
-              .with_format(format)
-              .with_image_type(find_image_type(extent))
-              .with_usage(image_usage)
-			  .with_texture(TEXTURE_PATH, command)
-              .with_mip_levels(mip_levels)
-              .with_array_layers(array_layers)
-              .with_tiling(tiling)
-              .with_flags(flags)
-              .with_vma_usage(memory_usage)
-              .with_sample_count(sample_count)
-              .with_queue_families(num_queue_families, queue_families)
-              .with_implicit_sharing_mode())
+VulkanImage::VulkanImage(VulkanDevice &device, const VkExtent3D &extent, VkFormat format, VkImageUsageFlags image_usage,
+                         const std::string TEXTURE_PATH, std::weak_ptr<VulkanCommandBuffer> command,
+                         VmaMemoryUsage memory_usage, VkSampleCountFlagBits sample_count, const uint32_t mip_levels,
+                         const uint32_t array_layers, VkImageTiling tiling, VkImageCreateFlags flags,
+                         uint32_t num_queue_families, const uint32_t *queue_families)
+    : // Pass through to the ImageBuilder ctor
+      VulkanImage(device, ImageBuilder(extent)
+                              .with_format(format)
+                              .with_image_type(find_image_type(extent))
+                              .with_usage(image_usage)
+                              .with_texture(TEXTURE_PATH, command)
+                              .with_mip_levels(mip_levels)
+                              .with_array_layers(array_layers)
+                              .with_tiling(tiling)
+                              .with_flags(flags)
+                              .with_vma_usage(memory_usage)
+                              .with_sample_count(sample_count)
+                              .with_queue_families(num_queue_families, queue_families)
+                              .with_implicit_sharing_mode())
 {
 }
 
-VulkanImage::VulkanImage(VulkanDevice &device, ImageBuilder const &builder) :
-    VulkanMemoryManager{builder.alloc_create_info, VK_NULL_HANDLE, &device}, create_info(builder.create_info)
+VulkanImage::VulkanImage(VulkanDevice &device, ImageBuilder const &builder)
+    : VulkanMemoryManager{builder.alloc_create_info, VK_NULL_HANDLE, &device}, create_info(builder.create_info)
 {
-	
-	subresource.arrayLayer = create_info.arrayLayers;
-	subresource.mipLevel   = create_info.mipLevels;
-	if (!builder.debug_name.empty())
-	{
-		// set_debug_name(builder.debug_name);
-	}
 
-	if(!builder.texture_path.empty())
-	{
-		int texWidth, texHeight, texChannels;
-    	stbi_uc *pixels = stbi_load(builder.texture_path.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
-    	VkDeviceSize imageSize = texWidth * texHeight * 4;
+    subresource.arrayLayer = create_info.arrayLayers;
+    subresource.mipLevel = create_info.mipLevels;
+    if (!builder.debug_name.empty())
+    {
+        // set_debug_name(builder.debug_name);
+    }
 
-    	if (!pixels)
-    	{
-        	throw std::runtime_error("failed to load texture image!");
-    	}
+    if (!builder.texture_path.empty())
+    {
+        int texWidth, texHeight, texChannels;
+        stbi_uc *pixels = stbi_load(builder.texture_path.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+        VkDeviceSize imageSize = texWidth * texHeight * 4;
 
-    	VulkanBuffer stagingBuffer = VulkanBuffer::create_staging_buffer(get_device(), imageSize, pixels);
+        if (!pixels)
+        {
+            throw std::runtime_error("failed to load texture image!");
+        }
 
-    	stbi_image_free(pixels);
-		create_info.extent = VkExtent3D{static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight), 1};
-		set_handle(create_image(create_info));
+        VulkanBuffer stagingBuffer = VulkanBuffer::create_staging_buffer(get_device(), imageSize, pixels);
 
-    	transitionImageLayout(get_handle(), VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED,
-    	                      VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, builder.command);
-    	copyBufferToImage(stagingBuffer, get_handle(), static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight),//Might not work try Handle
-    	                  builder.command);
-    	transitionImageLayout(get_handle(), VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-    	                      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, builder.command);
-	}
-	else
-	{
-		set_handle(create_image(create_info));
-	}
+        stbi_image_free(pixels);
+        create_info.extent = VkExtent3D{static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight), 1};
+        set_handle(create_image(create_info));
+
+        transitionImageLayout(get_handle(), VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED,
+                              VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, builder.command);
+        copyBufferToImage(stagingBuffer, get_handle(), static_cast<uint32_t>(texWidth),
+                          static_cast<uint32_t>(texHeight), // Might not work try Handle
+                          builder.command);
+        transitionImageLayout(get_handle(), VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                              VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, builder.command);
+    }
+    else
+    {
+        set_handle(create_image(create_info));
+    }
     VE_CORE_INFO("VulkanImage created image");
 }
 
-VulkanImage::VulkanImage(VulkanDevice &device, VkImage handle, const VkExtent3D &extent, VkFormat format, VkImageUsageFlags image_usage, VkSampleCountFlagBits sample_count) :
-    VulkanMemoryManager{handle, &device}
+VulkanImage::VulkanImage(VulkanDevice &device, VkImage handle, const VkExtent3D &extent, VkFormat format,
+                         VkImageUsageFlags image_usage, VkSampleCountFlagBits sample_count)
+    : VulkanMemoryManager{handle, &device}
 {
-	create_info.extent     = extent;
-	create_info.imageType  = find_image_type(extent);
-	create_info.format     = format;
-	create_info.samples    = sample_count;
-	create_info.usage      = image_usage;
-	subresource.arrayLayer = create_info.arrayLayers = 1;
-	subresource.mipLevel = create_info.mipLevels = 1;
+    create_info.extent = extent;
+    create_info.imageType = find_image_type(extent);
+    create_info.format = format;
+    create_info.samples = sample_count;
+    create_info.usage = image_usage;
+    subresource.arrayLayer = create_info.arrayLayers = 1;
+    subresource.mipLevel = create_info.mipLevels = 1;
 }
 
-VulkanImage::VulkanImage(VulkanImage &&other) noexcept :
-    VulkanMemoryManager{std::move(other)},
-    create_info{std::exchange(other.create_info, {})},
-    subresource{std::exchange(other.subresource, {})},
-    view(std::exchange(other.view, {}))
+VulkanImage::VulkanImage(VulkanImage &&other) noexcept
+    : VulkanMemoryManager{std::move(other)}, create_info{std::exchange(other.create_info, {})},
+      subresource{std::exchange(other.subresource, {})}, view(std::exchange(other.view, {}))
 {
-	// Update image views references to this image to avoid dangling pointers
-	// for (auto &view : views)
-	// {
-	// 	view->set_image(*this);
-	// }
+    // Update image views references to this image to avoid dangling pointers
+    // for (auto &view : views)
+    // {
+    // 	view->set_image(*this);
+    // }
 }
 
 VulkanImage::~VulkanImage()
 {
-	destroy_image(get_handle());
-	vkDestroySampler(get_device().getDevice(), textureSampler, nullptr); // TODO the sampler should not be here
+    destroy_image(get_handle());
+    vkDestroySampler(get_device().getDevice(), textureSampler, nullptr); // TODO the sampler should not be here
     vkDestroyImageView(get_device().getDevice(), view, nullptr);
-	VE_CORE_INFO("VulkanImage destroyed image");
+    VE_CORE_INFO("VulkanImage destroyed image");
 }
 
 VkImageType VulkanImage::get_type() const
 {
-	return create_info.imageType;
+    return create_info.imageType;
 }
 
 const VkExtent3D &VulkanImage::get_extent() const
 {
-	return create_info.extent;
+    return create_info.extent;
 }
 
 VkFormat VulkanImage::get_format() const
 {
-	return create_info.format;
+    return create_info.format;
 }
 
 VkSampleCountFlagBits VulkanImage::get_sample_count() const
 {
-	return create_info.samples;
+    return create_info.samples;
 }
 
 VkImageUsageFlags VulkanImage::get_usage() const
 {
-	return create_info.usage;
+    return create_info.usage;
 }
 
 VkImageTiling VulkanImage::get_tiling() const
 {
-	return create_info.tiling;
+    return create_info.tiling;
 }
 
 const VkImageSubresource &VulkanImage::get_subresource() const
 {
-	return subresource;
+    return subresource;
 }
 
 uint32_t VulkanImage::get_array_layer_count() const
 {
-	return create_info.arrayLayers;
+    return create_info.arrayLayers;
 }
 
 // std::unordered_set<ImageView *> &VulkanImage::get_views()
@@ -211,11 +201,11 @@ uint32_t VulkanImage::get_array_layer_count() const
 
 VkDeviceSize VulkanImage::get_image_required_size() const
 {
-	VkMemoryRequirements memory_requirements;
+    VkMemoryRequirements memory_requirements;
 
-	vkGetImageMemoryRequirements(get_device().getDevice(), get_handle(), &memory_requirements);
+    vkGetImageMemoryRequirements(get_device().getDevice(), get_handle(), &memory_requirements);
 
-	return memory_requirements.size;
+    return memory_requirements.size;
 }
 
 // VkImageCompressionPropertiesEXT VulkanImage::get_applied_compression() const
@@ -228,9 +218,9 @@ void VulkanImage::transitionImageLayout(VkImage image, VkFormat format, VkImageL
 {
     VkCommandBuffer commandBuffer;
 
-    if(auto tmp = command.lock())
+    if (auto tmp = command.lock())
     {
-        commandBuffer=tmp->beginSingleTimeCommands();
+        commandBuffer = tmp->beginSingleTimeCommands();
     }
     else
     {
@@ -274,7 +264,7 @@ void VulkanImage::transitionImageLayout(VkImage image, VkFormat format, VkImageL
 
     vkCmdPipelineBarrier(commandBuffer, sourceStage, destinationStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
 
-    if(auto tmp = command.lock())
+    if (auto tmp = command.lock())
     {
         tmp->endSingleTimeCommands(commandBuffer);
     }
@@ -289,9 +279,9 @@ void VulkanImage::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t wid
 {
     VkCommandBuffer commandBuffer;
 
-    if(auto tmp = command.lock())
+    if (auto tmp = command.lock())
     {
-        commandBuffer=tmp->beginSingleTimeCommands();
+        commandBuffer = tmp->beginSingleTimeCommands();
     }
     else
     {
@@ -311,7 +301,7 @@ void VulkanImage::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t wid
 
     vkCmdCopyBufferToImage(commandBuffer, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
-    if(auto tmp = command.lock())
+    if (auto tmp = command.lock())
     {
         tmp->endSingleTimeCommands(commandBuffer);
     }
@@ -351,7 +341,8 @@ void VulkanImage::createTextureSampler()
     }
 }
 
-VkImageView VulkanImage::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags,//TODO should be in VulkanImageView
+VkImageView VulkanImage::createImageView(VkImage image, VkFormat format,
+                                         VkImageAspectFlags aspectFlags, // TODO should be in VulkanImageView
                                          VkDevice device)
 {
     VkImageViewCreateInfo viewInfo{};

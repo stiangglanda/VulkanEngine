@@ -2,19 +2,23 @@
 #include "../../../vepch.h"
 #include <vulkan/vulkan.h>
 
-namespace Core 
+namespace Core
 {
 
-    class VulkanPipeline 
+class VulkanPipeline
+{
+  public:
+    VulkanPipeline()
     {
-    public:
-        VulkanPipeline() {}
-        ~VulkanPipeline() {}
+    }
+    ~VulkanPipeline()
+    {
+    }
 
-        void Init();
+    void Init();
 
-        void Shutdown();
+    void Shutdown();
 
-    private:
-	};
-}
+  private:
+};
+} // namespace Core

@@ -111,4 +111,4 @@ bool VulkanInstance::checkValidationLayerSupport(const std::vector<const char *>
 
     return true;
 }
-}
+} // namespace Core

@@ -1,24 +1,28 @@
-#pragma once 
-#include <vulkan/vulkan.h>
+#pragma once
 #include "../../../vepch.h"
+#include <vulkan/vulkan.h>
 
-namespace Core 
+namespace Core
 {
-    class VulkanSurface 
+class VulkanSurface
+{
+  public:
+    VulkanSurface()
     {
-    public:
-        VulkanSurface() {}
-        ~VulkanSurface() {}
-        
-        void Init(VkInstance instance);
-        void Shutdown(VkInstance instance);
+    }
+    ~VulkanSurface()
+    {
+    }
 
-        VkSurfaceKHR getSurface() const 
-        {
-            return surface;
-        }
+    void Init(VkInstance instance);
+    void Shutdown(VkInstance instance);
 
-    private:
-        VkSurfaceKHR surface;   // Vulkan window surface
-    };
+    VkSurfaceKHR getSurface() const
+    {
+        return surface;
+    }
+
+  private:
+    VkSurfaceKHR surface; // Vulkan window surface
+};
 } // namespace Core

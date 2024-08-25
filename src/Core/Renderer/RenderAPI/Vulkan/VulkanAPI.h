@@ -1,8 +1,8 @@
 #pragma once
 #include "../../../vepch.h"
 #include "../../RenderAPI.h"
-#include "VulkanInstance.h"
 #include "VulkanDebug.h"
+#include "VulkanInstance.h"
 #include "VulkanSurface.h"
 #include "camera.h"
 #include <vulkan/vulkan.h>
@@ -10,14 +10,14 @@
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #define GLM_ENABLE_EXPERIMENTAL
+#include "VulkanBuffer.h"
+#include "VulkanCommandBuffer.h"
+#include "VulkanDevice.h"
+#include "VulkanImage.h"
+#include "VulkanSwapChain.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/hash.hpp>
-#include "VulkanDevice.h"
-#include "VulkanSwapChain.h"
-#include "VulkanImage.h"
-#include "VulkanCommandBuffer.h"
-#include "VulkanBuffer.h"
 
 struct GLFWwindow;
 
@@ -76,7 +76,9 @@ struct UniformBufferObject
 class VulkanAPI : public RenderAPI
 {
   public:
-    VulkanAPI() {}
+    VulkanAPI()
+    {
+    }
     virtual ~VulkanAPI() = default;
 
     virtual bool Init() override;
@@ -96,7 +98,7 @@ class VulkanAPI : public RenderAPI
     void createUniformBuffers();
     void createDescriptorPool();
     void createDescriptorSets();
-    
+
     void createSyncObjects();
     void updateUniformBuffer(uint32_t currentImage);
     VkShaderModule createShaderModule(const std::vector<char> &code);
@@ -113,10 +115,10 @@ class VulkanAPI : public RenderAPI
 
     const int MAX_FRAMES_IN_FLIGHT = 2;
 
-    VulkanInstance instance;// Vulkan library handle
-    VulkanDebug vkDebug;// Vulkan debug output handle
-    VulkanSurface surface;// Vulkan window surface
-    VulkanDevice device;// Vulkan device for commands // GPU chosen as the default device
+    VulkanInstance instance; // Vulkan library handle
+    VulkanDebug vkDebug;     // Vulkan debug output handle
+    VulkanSurface surface;   // Vulkan window surface
+    VulkanDevice device;     // Vulkan device for commands // GPU chosen as the default device
     std::unique_ptr<VulkanImage> texture;
     std::shared_ptr<VulkanCommandBuffer> command;
 

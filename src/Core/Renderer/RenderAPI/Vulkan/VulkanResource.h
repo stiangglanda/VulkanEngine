@@ -7,22 +7,20 @@ namespace Core
 /**
  * @brief Facade class around a Vulkan handle providing some utility functions.
  */
-template <typename T>
-class VulkanResource
+template <typename T> class VulkanResource
 {
-public:
+  public:
     VulkanResource() = default;
 
     VulkanResource(T handle = nullptr, VulkanDevice *device_ = nullptr);
 
-    explicit VulkanResource(T handle) :
-        handle{handle}
-    {}
+    explicit VulkanResource(T handle) : handle{handle}
+    {
+    }
 
     VulkanResource(const VulkanResource &) = delete;
 
-    VulkanResource(VulkanResource &&other) noexcept :
-        handle{other.handle}
+    VulkanResource(VulkanResource &&other) noexcept : handle{other.handle}
     {
         other.handle = VK_NULL_HANDLE;
     }
@@ -46,11 +44,11 @@ public:
         return handle;
     }
 
-    VulkanDevice       &get_device();
-	VulkanDevice const &get_device() const;
+    VulkanDevice &get_device();
+    VulkanDevice const &get_device() const;
 
-	bool has_device() const;
-	bool has_handle() const;
+    bool has_device() const;
+    bool has_handle() const;
 
     void set_handle(T hdl);
 
@@ -59,49 +57,41 @@ public:
         return handle;
     }
 
-protected:
+  protected:
     T handle{VK_NULL_HANDLE};
     VulkanDevice *device;
 };
 
-template <typename T>
-inline VulkanResource<T>::VulkanResource(T handle_, VulkanDevice *device_) :
-    handle{handle_}
+template <typename T> inline VulkanResource<T>::VulkanResource(T handle_, VulkanDevice *device_) : handle{handle_}
 {
-		device = device_;
+    device = device_;
 }
 
-template <typename T>
-inline VulkanDevice& VulkanResource<T>::get_device()
+template <typename T> inline VulkanDevice &VulkanResource<T>::get_device()
 {
-	assert(device && "VKBDevice handle not set");
-	return *device;
+    assert(device && "VKBDevice handle not set");
+    return *device;
 }
 
-template <typename T>
-inline VulkanDevice const &VulkanResource<T>::get_device() const
+template <typename T> inline VulkanDevice const &VulkanResource<T>::get_device() const
 {
-	assert(device && "VKBDevice handle not set");
-	return *device;
+    assert(device && "VKBDevice handle not set");
+    return *device;
 }
 
-template <typename T>
-inline bool VulkanResource<T>::has_device() const
+template <typename T> inline bool VulkanResource<T>::has_device() const
 {
-	return device != nullptr;
+    return device != nullptr;
 }
 
-template <typename T>
-inline bool VulkanResource<T>::has_handle() const
+template <typename T> inline bool VulkanResource<T>::has_handle() const
 {
-	return handle != nullptr;
+    return handle != nullptr;
 }
 
-template <typename T>
-inline void VulkanResource<T>::set_handle(T hdl)
+template <typename T> inline void VulkanResource<T>::set_handle(T hdl)
 {
-	handle = hdl;
+    handle = hdl;
 }
 
-} // namespace core
-
+} // namespace Core

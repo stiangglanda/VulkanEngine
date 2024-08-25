@@ -1,11 +1,12 @@
 #include "VulkanDevice.h"
 #include "../../../Application.h"
-#include <set>
 #include "VulkanSwapChain.h"
+#include <set>
 
-namespace Core 
+namespace Core
 {
-void VulkanDevice::Init(VkInstance instance, VkSurfaceKHR surface, const bool enableValidationLayers, const std::vector<const char *> validationLayers)
+void VulkanDevice::Init(VkInstance instance, VkSurfaceKHR surface, const bool enableValidationLayers,
+                        const std::vector<const char *> validationLayers)
 {
     pickPhysicalDevice(instance, surface);
     createLogicalDevice(enableValidationLayers, validationLayers, surface);
@@ -45,7 +46,8 @@ void VulkanDevice::pickPhysicalDevice(VkInstance instance, VkSurfaceKHR surface)
     }
 }
 
-void VulkanDevice::createLogicalDevice(const bool enableValidationLayers, const std::vector<const char *> validationLayers, VkSurfaceKHR surface)
+void VulkanDevice::createLogicalDevice(const bool enableValidationLayers,
+                                       const std::vector<const char *> validationLayers, VkSurfaceKHR surface)
 {
     QueueFamilyIndices indices = findQueueFamilies(surface);
 
@@ -151,7 +153,8 @@ bool VulkanDevice::isDeviceSuitable(VkPhysicalDevice device, VkSurfaceKHR surfac
     bool swapChainAdequate = false;
     if (extensionsSupported)
     {
-        SwapChainSupportDetails swapChainSupport = VulkanSwapChain::querySwapChainSupport(device, surface);//should be in VulkanSwapChain
+        SwapChainSupportDetails swapChainSupport =
+            VulkanSwapChain::querySwapChainSupport(device, surface); // should be in VulkanSwapChain
         swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
     }
 
@@ -180,7 +183,7 @@ bool VulkanDevice::checkDeviceExtensionSupport(VkPhysicalDevice device)
 }
 
 const VkFormat VulkanDevice::findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling,
-                                              VkFormatFeatureFlags features) const
+                                                 VkFormatFeatureFlags features) const
 {
     for (VkFormat format : candidates)
     {
@@ -221,6 +224,5 @@ const uint32_t VulkanDevice::findMemoryType(uint32_t typeFilter, VkMemoryPropert
 
     throw std::runtime_error("failed to find suitable memory type!");
 }
-
 
 } // namespace Core

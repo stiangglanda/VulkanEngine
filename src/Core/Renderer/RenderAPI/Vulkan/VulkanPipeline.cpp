@@ -13,4 +13,4 @@ void VulkanPipeline::Init()
 {
     VE_CORE_INFO("Successful: Init Vulkan Pipeline");
 }
-}
+} // namespace Core

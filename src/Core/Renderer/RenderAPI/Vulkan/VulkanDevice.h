@@ -40,12 +40,12 @@ class VulkanDevice
         return device;
     }
 
-    VkQueue getGraphicsQueue() const 
+    VkQueue getGraphicsQueue() const
     {
         return graphicsQueue;
     }
 
-    VkQueue getPresentQueue() const 
+    VkQueue getPresentQueue() const
     {
         return presentQueue;
     }
@@ -53,11 +53,11 @@ class VulkanDevice
     static const QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);
     const QueueFamilyIndices findQueueFamilies(VkSurfaceKHR surface) const;
 
-    const uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) const; 
+    const uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) const;
     const VkFormat findDepthFormat() const;
-    const VkFormat findSupportedFormat(
-        const std::vector<VkFormat> &candidates, VkImageTiling tiling,
-        VkFormatFeatureFlags features) const;
+    const VkFormat findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling,
+                                       VkFormatFeatureFlags features) const;
+
   private:
     void pickPhysicalDevice(VkInstance instance, VkSurfaceKHR surface);
     void createLogicalDevice(const bool enableValidationLayers, const std::vector<const char *> validationLayers,

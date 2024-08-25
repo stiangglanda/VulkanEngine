@@ -2,29 +2,33 @@
 #include "../../../vepch.h"
 #include <vulkan/vulkan.h>
 
-namespace Core 
+namespace Core
 {
 
-    class VulkanInstance 
+class VulkanInstance
+{
+  public:
+    VulkanInstance()
     {
-    public:
-        VulkanInstance() {}
-        ~VulkanInstance() {}
+    }
+    ~VulkanInstance()
+    {
+    }
 
-        void Init(const bool enableValidationLayers, const std::vector<const char *> validationLayers);
+    void Init(const bool enableValidationLayers, const std::vector<const char *> validationLayers);
 
-        void Shutdown();
+    void Shutdown();
 
-        VkInstance getInstance() const
-        {
-            return instance;
-        }
+    VkInstance getInstance() const
+    {
+        return instance;
+    }
 
-    private:
-        bool checkValidationLayerSupport(const std::vector<const char *> validationLayers);
-        std::vector<const char *> getRequiredExtensions(const bool enableValidationLayers);
+  private:
+    bool checkValidationLayerSupport(const std::vector<const char *> validationLayers);
+    std::vector<const char *> getRequiredExtensions(const bool enableValidationLayers);
 
-    private:
-        VkInstance instance;// Vulkan library handle
-	};
-}
+  private:
+    VkInstance instance; // Vulkan library handle
+};
+} // namespace Core

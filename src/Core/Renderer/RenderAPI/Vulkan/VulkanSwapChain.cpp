@@ -1,18 +1,18 @@
 #include "VulkanSwapChain.h"
-#include <GLFW/glfw3.h>
 #include "../../../Application.h"
+#include <GLFW/glfw3.h>
 
-namespace Core 
+namespace Core
 {
 
-void VulkanSwapChain::Init(const VulkanDevice& device, VkSurfaceKHR surface)
+void VulkanSwapChain::Init(const VulkanDevice &device, VkSurfaceKHR surface)
 {
     createSwapChain(device, surface);
     createImageViews(device);
     VE_CORE_INFO("Init Vulkan Swap Chain");
 }
 
-void VulkanSwapChain::createDepthResourcesAndFramebuffers(VulkanDevice& device, VkRenderPass renderPass)
+void VulkanSwapChain::createDepthResourcesAndFramebuffers(VulkanDevice &device, VkRenderPass renderPass)
 {
     createDepthResources(device);
     createFramebuffers(device.getDevice(), renderPass);
@@ -25,9 +25,9 @@ void VulkanSwapChain::Shutdown(VkDevice device)
     VE_CORE_INFO("Shutdown Vulkan Swap Chain");
 }
 
-void VulkanSwapChain::createSwapChain(const VulkanDevice& device, VkSurfaceKHR surface)
+void VulkanSwapChain::createSwapChain(const VulkanDevice &device, VkSurfaceKHR surface)
 {
-    SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device.getPhysicalDevice(),surface);
+    SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device.getPhysicalDevice(), surface);
 
     VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
     VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
@@ -118,7 +118,8 @@ VkExtent2D VulkanSwapChain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &cap
     else
     {
         int width, height;
-        glfwGetFramebufferSize(static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), &width, &height);
+        glfwGetFramebufferSize(static_cast<GLFWwindow *>(Application::Get().GetWindow().GetNativeWindow()), &width,
+                               &height);
 
         VkExtent2D actualExtent = {static_cast<uint32_t>(width), static_cast<uint32_t>(height)};
 
@@ -131,17 +132,19 @@ VkExtent2D VulkanSwapChain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &cap
     }
 }
 
-void VulkanSwapChain::createImageViews(const VulkanDevice& device)
+void VulkanSwapChain::createImageViews(const VulkanDevice &device)
 {
     swapChainImageViews.resize(swapChainImages.size());
 
     for (uint32_t i = 0; i < swapChainImages.size(); i++)
     {
-        swapChainImageViews[i] = VulkanImage::createImageView(swapChainImages[i], swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT,device.getDevice());
+        swapChainImageViews[i] = VulkanImage::createImageView(swapChainImages[i], swapChainImageFormat,
+                                                              VK_IMAGE_ASPECT_COLOR_BIT, device.getDevice());
     }
 }
 
-void VulkanSwapChain::createFramebuffers(const VkDevice device, VkRenderPass renderPass)//TODO Framebuffer should be its own thing
+void VulkanSwapChain::createFramebuffers(const VkDevice device,
+                                         VkRenderPass renderPass) // TODO Framebuffer should be its own thing
 {
     swapChainFramebuffers.resize(swapChainImageViews.size());
 
@@ -210,13 +213,15 @@ void VulkanSwapChain::cleanupSwapChain(VkDevice device)
     vkDestroySwapchainKHR(device, swapChain, nullptr);
 }
 
-void VulkanSwapChain::recreateSwapChain(VulkanDevice& device, VkSurfaceKHR surface, VkRenderPass renderPass)
+void VulkanSwapChain::recreateSwapChain(VulkanDevice &device, VkSurfaceKHR surface, VkRenderPass renderPass)
 {
     int width = 0, height = 0;
-    glfwGetFramebufferSize(static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), &width, &height);
+    glfwGetFramebufferSize(static_cast<GLFWwindow *>(Application::Get().GetWindow().GetNativeWindow()), &width,
+                           &height);
     while (width == 0 || height == 0)
     {
-        glfwGetFramebufferSize(static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), &width, &height);
+        glfwGetFramebufferSize(static_cast<GLFWwindow *>(Application::Get().GetWindow().GetNativeWindow()), &width,
+                               &height);
         glfwWaitEvents();
     }
 
@@ -227,24 +232,25 @@ void VulkanSwapChain::recreateSwapChain(VulkanDevice& device, VkSurfaceKHR surfa
     createSwapChain(device, surface);
     createImageViews(device);
     createDepthResources(device);
-    createFramebuffers(device.getDevice(),renderPass);
+    createFramebuffers(device.getDevice(), renderPass);
 }
 
 void VulkanSwapChain::createDepthResources(VulkanDevice &device)
 {
     VkFormat depthFormat = device.findDepthFormat();
 
-    depthImage=ImageBuilder(swapChainExtent.width, swapChainExtent.height)
-              .with_format(depthFormat)
-              .with_image_type(VK_IMAGE_TYPE_2D)
-              .with_usage(VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT)
-              .with_array_layers(1)
-              .with_tiling(VK_IMAGE_TILING_OPTIMAL)
-              .with_vma_usage(VMA_MEMORY_USAGE_GPU_ONLY)
-              .with_sample_count(VK_SAMPLE_COUNT_1_BIT)
-              .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
-              .build_unique(device);
-    depthImageView = VulkanImage::createImageView(depthImage->get_handle(), depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT, device.getDevice());
+    depthImage = ImageBuilder(swapChainExtent.width, swapChainExtent.height)
+                     .with_format(depthFormat)
+                     .with_image_type(VK_IMAGE_TYPE_2D)
+                     .with_usage(VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT)
+                     .with_array_layers(1)
+                     .with_tiling(VK_IMAGE_TILING_OPTIMAL)
+                     .with_vma_usage(VMA_MEMORY_USAGE_GPU_ONLY)
+                     .with_sample_count(VK_SAMPLE_COUNT_1_BIT)
+                     .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
+                     .build_unique(device);
+    depthImageView = VulkanImage::createImageView(depthImage->get_handle(), depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT,
+                                                  device.getDevice());
 }
 
 } // namespace Core

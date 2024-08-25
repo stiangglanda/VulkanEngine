@@ -34,15 +34,15 @@ bool VulkanAPI::Init()
 
     swapChain.createDepthResourcesAndFramebuffers(device, renderPass);
 
-	texture=ImageBuilder(0, 0)//with the option with_texture this will be set later
-              .with_format(VK_FORMAT_R8G8B8A8_SRGB)
-              .with_image_type(VK_IMAGE_TYPE_2D)
-              .with_usage(VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT)
-              .with_tiling(VK_IMAGE_TILING_OPTIMAL)
-              .with_vma_usage(VMA_MEMORY_USAGE_AUTO)
-              .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
-              .with_texture(TEXTURE_PATH, command)
-              .build_unique(device);
+    texture = ImageBuilder(0, 0) // with the option with_texture this will be set later
+                  .with_format(VK_FORMAT_R8G8B8A8_SRGB)
+                  .with_image_type(VK_IMAGE_TYPE_2D)
+                  .with_usage(VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT)
+                  .with_tiling(VK_IMAGE_TILING_OPTIMAL)
+                  .with_vma_usage(VMA_MEMORY_USAGE_AUTO)
+                  .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
+                  .with_texture(TEXTURE_PATH, command)
+                  .build_unique(device);
 
     texture->createTextureImageView();
     texture->createTextureSampler();
@@ -325,11 +325,11 @@ void VulkanAPI::createVertexBuffer()
     VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
     VulkanBuffer stagingBuffer = VulkanBuffer::create_staging_buffer(device, bufferSize, vertices.data());
 
-    vertexBuffer=(BufferBuilder(bufferSize)
-               .with_usage(VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT)
-               .with_vma_usage(VMA_MEMORY_USAGE_AUTO)//VMA_MEMORY_USAGE_GPU_ONLY
-               .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
-               .build_unique(device));
+    vertexBuffer = (BufferBuilder(bufferSize)
+                        .with_usage(VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT)
+                        .with_vma_usage(VMA_MEMORY_USAGE_AUTO) // VMA_MEMORY_USAGE_GPU_ONLY
+                        .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
+                        .build_unique(device));
     VulkanBuffer::copyBuffer(command, stagingBuffer.get_handle(), vertexBuffer->get_handle(), bufferSize);
 }
 
@@ -339,11 +339,11 @@ void VulkanAPI::createIndexBuffer()
 
     VulkanBuffer stagingBuffer = VulkanBuffer::create_staging_buffer(device, bufferSize, indices.data());
 
-    indexBuffer=(BufferBuilder(bufferSize)
-               .with_usage(VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT)
-               .with_vma_usage(VMA_MEMORY_USAGE_AUTO)//VMA_MEMORY_USAGE_GPU_ONLY
-               .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
-               .build_unique(device));
+    indexBuffer = (BufferBuilder(bufferSize)
+                       .with_usage(VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT)
+                       .with_vma_usage(VMA_MEMORY_USAGE_AUTO) // VMA_MEMORY_USAGE_GPU_ONLY
+                       .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
+                       .build_unique(device));
     VulkanBuffer::copyBuffer(command, stagingBuffer.get_handle(), indexBuffer->get_handle(), bufferSize);
 }
 
@@ -355,12 +355,12 @@ void VulkanAPI::createUniformBuffers()
 
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
     {
-        uniformBuffers[i]=(BufferBuilder(bufferSize)
-               .with_usage(VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT)
-               .with_vma_usage(VMA_MEMORY_USAGE_CPU_TO_GPU)
-               .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
-               .build_unique(device));
-        uniformBuffersMapped[i]=uniformBuffers[i]->map();
+        uniformBuffers[i] = (BufferBuilder(bufferSize)
+                                 .with_usage(VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT)
+                                 .with_vma_usage(VMA_MEMORY_USAGE_CPU_TO_GPU)
+                                 .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
+                                 .build_unique(device));
+        uniformBuffersMapped[i] = uniformBuffers[i]->map();
     }
 }
 
@@ -555,7 +555,8 @@ void VulkanAPI::Draw()
     command->ResetCommandBuffer(currentFrame);
     recordCommandBuffer(currentFrame, imageIndex);
 
-    command->submit(currentFrame, inFlightFences[currentFrame], imageAvailableSemaphores[currentFrame], renderFinishedSemaphores[currentFrame]);
+    command->submit(currentFrame, inFlightFences[currentFrame], imageAvailableSemaphores[currentFrame],
+                    renderFinishedSemaphores[currentFrame]);
 
     VkPresentInfoKHR presentInfo{};
     presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -595,18 +596,18 @@ bool VulkanAPI::Shutdown()
 
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
     {
-        uniformBuffers[i].reset();  //This is to avoid a segmentation fault since the memory 
-                                    //already gets freed by VulkanMemoryManager::shutdown and 
-                                    //then the destructore tryes to do the same therefore we call the destructure before
+        uniformBuffers[i].reset(); // This is to avoid a segmentation fault since the memory
+                                   // already gets freed by VulkanMemoryManager::shutdown and
+                                   // then the destructore tryes to do the same therefore we call the destructure before
     }
 
     vkDestroyDescriptorPool(device.getDevice(), descriptorPool, nullptr);
     texture.reset();
 
     vkDestroyDescriptorSetLayout(device.getDevice(), descriptorSetLayout, nullptr);
-    indexBuffer.reset(); //This is to avoid a segmentation fault since the memory 
-    vertexBuffer.reset();//already gets freed by VulkanMemoryManager::shutdown and 
-                         //then the destructore tryes to do the same therefore we call the destructure before
+    indexBuffer.reset();  // This is to avoid a segmentation fault since the memory
+    vertexBuffer.reset(); // already gets freed by VulkanMemoryManager::shutdown and
+                          // then the destructore tryes to do the same therefore we call the destructure before
 
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
     {
@@ -666,8 +667,8 @@ void VulkanAPI::recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex)
     VkDeviceSize offsets[] = {0};
     vkCmdBindVertexBuffers(command->getCommandBuffer(currentFrame), 0, 1, vertexBuffers, offsets);
     vkCmdBindIndexBuffer(command->getCommandBuffer(currentFrame), indexBuffer->get_handle(), 0, VK_INDEX_TYPE_UINT32);
-    vkCmdBindDescriptorSets(command->getCommandBuffer(currentFrame), VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1,
-                            &descriptorSets[currentFrame], 0, nullptr);
+    vkCmdBindDescriptorSets(command->getCommandBuffer(currentFrame), VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0,
+                            1, &descriptorSets[currentFrame], 0, nullptr);
     vkCmdDrawIndexed(command->getCommandBuffer(currentFrame), static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
     vkCmdEndRenderPass(command->getCommandBuffer(currentFrame));
