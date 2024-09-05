@@ -35,7 +35,7 @@ void VulkanDevice::pickPhysicalDevice(VkInstance instance, VkSurfaceKHR surface)
     {
         if (isDeviceSuitable(device, surface))
         {
-            physicalDevice = device;
+            physicalDevice = device;//TODO add call to vkGetPhysicalDeviceProperties and print them
             break;
         }
     }

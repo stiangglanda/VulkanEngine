@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vk_types.h"
+#include <vulkan/vulkan.h>
 
 class PipelineBuilder
 {
@@ -43,5 +43,9 @@ class PipelineBuilder
 
 namespace vkutil
 {
+
+VkPipelineShaderStageCreateInfo pipeline_shader_stage_create_info(VkShaderStageFlagBits stage,
+                                                                          VkShaderModule shaderModule,
+                                                                          const char *entry = "main");
 bool load_shader_module(const char *filePath, VkDevice device, VkShaderModule *outShaderModule);
 }

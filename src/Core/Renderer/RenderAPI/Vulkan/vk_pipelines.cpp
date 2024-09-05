@@ -1,6 +1,4 @@
 #include "vk_pipelines.h"
-
-#include "vk_initializers.h"
 #include <fstream>
 
 //> pipe_clear
@@ -98,14 +96,15 @@ VkPipeline PipelineBuilder::build_pipeline(VkDevice device)
     }
     //< build_pipeline_4
 }
+
 //> set_shaders
 void PipelineBuilder::set_shaders(VkShaderModule vertexShader, VkShaderModule fragmentShader)
 {
     _shaderStages.clear();
 
-    _shaderStages.push_back(vkinit::pipeline_shader_stage_create_info(VK_SHADER_STAGE_VERTEX_BIT, vertexShader));
+    _shaderStages.push_back(vkutil::pipeline_shader_stage_create_info(VK_SHADER_STAGE_VERTEX_BIT, vertexShader));
 
-    _shaderStages.push_back(vkinit::pipeline_shader_stage_create_info(VK_SHADER_STAGE_FRAGMENT_BIT, fragmentShader));
+    _shaderStages.push_back(vkutil::pipeline_shader_stage_create_info(VK_SHADER_STAGE_FRAGMENT_BIT, fragmentShader));
 }
 //< set_shaders
 //> set_topo
@@ -231,6 +230,23 @@ void PipelineBuilder::enable_depthtest(bool depthWriteEnable, VkCompareOp op)
     _depthStencil.maxDepthBounds = 1.f;
 }
 //< depth_enable
+
+VkPipelineShaderStageCreateInfo vkutil::pipeline_shader_stage_create_info(VkShaderStageFlagBits stage,
+                                                                          VkShaderModule shaderModule,
+                                                                          const char *entry)
+{
+    VkPipelineShaderStageCreateInfo info{};
+    info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    info.pNext = nullptr;
+
+    // shader stage
+    info.stage = stage;
+    // module containing the code for this shader stage
+    info.module = shaderModule;
+    // the entry point of the shader
+    info.pName = entry;
+    return info;
+}
 
 //> load_shader
 bool vkutil::load_shader_module(const char *filePath, VkDevice device, VkShaderModule *outShaderModule)

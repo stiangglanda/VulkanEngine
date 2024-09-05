@@ -12,6 +12,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include "VulkanBuffer.h"
 #include "VulkanCommandBuffer.h"
+#include "VulkanDescriptorSetLayout.h"
 #include "VulkanDevice.h"
 #include "VulkanImage.h"
 #include "VulkanSwapChain.h"
@@ -90,7 +91,7 @@ class VulkanAPI : public RenderAPI
   private:
     void createRenderPass();       // should be in its own file called RenderPass
     void createGraphicsPipeline(); // should be in its own file called GraphicsPipeline
-    void createDescriptorSetLayout();
+    // void createDescriptorSetLayout();
 
     void loadModel();
     void createVertexBuffer();
@@ -127,7 +128,8 @@ class VulkanAPI : public RenderAPI
     VulkanSwapChain swapChain;
 
     VkRenderPass renderPass;
-    VkDescriptorSetLayout descriptorSetLayout;
+    // VkDescriptorSetLayout descriptorSetLayout;
+    std::unique_ptr<VulkanDescriptorSetLayout> descriptorSetLayout;
     VkPipelineLayout pipelineLayout;
     VkPipeline graphicsPipeline;
 

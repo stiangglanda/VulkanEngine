@@ -10,6 +10,7 @@
 #include "VulkanBuffer.h"
 
 #include "VulkanMemoryManager.h"
+#include "vk_pipelines.h"
 
 const std::string MODEL_PATH = RESOURCES_PATH "viking_room.obj";
 const std::string TEXTURE_PATH = RESOURCES_PATH "viking_room.png";
@@ -27,7 +28,8 @@ bool VulkanAPI::Init()
     swapChain.Init(device, surface.getSurface());
 
     createRenderPass();
-    createDescriptorSetLayout();
+    // createDescriptorSetLayout();
+    descriptorSetLayout=std::make_unique<VulkanDescriptorSetLayout>(device.getDevice());
     createGraphicsPipeline();
     command = std::make_shared<VulkanCommandBuffer>(device);
     command->createCommandPool(surface.getSurface(), MAX_FRAMES_IN_FLIGHT);
@@ -130,33 +132,33 @@ void VulkanAPI::createRenderPass()
     }
 }
 
-void VulkanAPI::createDescriptorSetLayout()
-{
-    VkDescriptorSetLayoutBinding uboLayoutBinding{};
-    uboLayoutBinding.binding = 0;
-    uboLayoutBinding.descriptorCount = 1;
-    uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    uboLayoutBinding.pImmutableSamplers = nullptr;
-    uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+// void VulkanAPI::createDescriptorSetLayout()
+// {
+//     VkDescriptorSetLayoutBinding uboLayoutBinding{};
+//     uboLayoutBinding.binding = 0;
+//     uboLayoutBinding.descriptorCount = 1;
+//     uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+//     uboLayoutBinding.pImmutableSamplers = nullptr;
+//     uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
-    VkDescriptorSetLayoutBinding samplerLayoutBinding{};
-    samplerLayoutBinding.binding = 1;
-    samplerLayoutBinding.descriptorCount = 1;
-    samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    samplerLayoutBinding.pImmutableSamplers = nullptr;
-    samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+//     VkDescriptorSetLayoutBinding samplerLayoutBinding{};
+//     samplerLayoutBinding.binding = 1;
+//     samplerLayoutBinding.descriptorCount = 1;
+//     samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+//     samplerLayoutBinding.pImmutableSamplers = nullptr;
+//     samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-    std::array<VkDescriptorSetLayoutBinding, 2> bindings = {uboLayoutBinding, samplerLayoutBinding};
-    VkDescriptorSetLayoutCreateInfo layoutInfo{};
-    layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-    layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
-    layoutInfo.pBindings = bindings.data();
+//     std::array<VkDescriptorSetLayoutBinding, 2> bindings = {uboLayoutBinding, samplerLayoutBinding};
+//     VkDescriptorSetLayoutCreateInfo layoutInfo{};
+//     layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+//     layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
+//     layoutInfo.pBindings = bindings.data();
 
-    if (vkCreateDescriptorSetLayout(device.getDevice(), &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS)
-    {
-        throw std::runtime_error("failed to create descriptor set layout!");
-    }
-}
+//     if (vkCreateDescriptorSetLayout(device.getDevice(), &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS)
+//     {
+//         throw std::runtime_error("failed to create descriptor set layout!");
+//     }
+// }
 
 void VulkanAPI::createGraphicsPipeline()
 {
@@ -249,7 +251,8 @@ void VulkanAPI::createGraphicsPipeline()
     VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     pipelineLayoutInfo.setLayoutCount = 1;
-    pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
+    
+    pipelineLayoutInfo.pSetLayouts = descriptorSetLayout->get_handle_ptr();
 
     if (vkCreatePipelineLayout(device.getDevice(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS)
     {
@@ -386,7 +389,7 @@ void VulkanAPI::createDescriptorPool()
 
 void VulkanAPI::createDescriptorSets()
 {
-    std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, descriptorSetLayout);
+    std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, descriptorSetLayout->get_handle());
     VkDescriptorSetAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
     allocInfo.descriptorPool = descriptorPool;
@@ -604,7 +607,8 @@ bool VulkanAPI::Shutdown()
     vkDestroyDescriptorPool(device.getDevice(), descriptorPool, nullptr);
     texture.reset();
 
-    vkDestroyDescriptorSetLayout(device.getDevice(), descriptorSetLayout, nullptr);
+    descriptorSetLayout.reset();
+    // vkDestroyDescriptorSetLayout(device.getDevice(), descriptorSetLayout->get_handle(), nullptr);
     indexBuffer.reset();  // This is to avoid a segmentation fault since the memory
     vertexBuffer.reset(); // already gets freed by VulkanMemoryManager::shutdown and
                           // then the destructore tryes to do the same therefore we call the destructure before
