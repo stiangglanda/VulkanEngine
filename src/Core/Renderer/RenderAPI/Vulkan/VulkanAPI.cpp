@@ -29,7 +29,7 @@ bool VulkanAPI::Init()
 
     createRenderPass();
     // createDescriptorSetLayout();
-    descriptorSetLayout=std::make_unique<VulkanDescriptorSetLayout>(device.getDevice());
+    descriptorSetLayout=std::make_shared<VulkanDescriptorSetLayout>(device.getDevice());
     createGraphicsPipeline();
     command = std::make_shared<VulkanCommandBuffer>(device);
     command->createCommandPool(surface.getSurface(), MAX_FRAMES_IN_FLIGHT);
@@ -132,34 +132,6 @@ void VulkanAPI::createRenderPass()
     }
 }
 
-// void VulkanAPI::createDescriptorSetLayout()
-// {
-//     VkDescriptorSetLayoutBinding uboLayoutBinding{};
-//     uboLayoutBinding.binding = 0;
-//     uboLayoutBinding.descriptorCount = 1;
-//     uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-//     uboLayoutBinding.pImmutableSamplers = nullptr;
-//     uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-
-//     VkDescriptorSetLayoutBinding samplerLayoutBinding{};
-//     samplerLayoutBinding.binding = 1;
-//     samplerLayoutBinding.descriptorCount = 1;
-//     samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-//     samplerLayoutBinding.pImmutableSamplers = nullptr;
-//     samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-
-//     std::array<VkDescriptorSetLayoutBinding, 2> bindings = {uboLayoutBinding, samplerLayoutBinding};
-//     VkDescriptorSetLayoutCreateInfo layoutInfo{};
-//     layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-//     layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
-//     layoutInfo.pBindings = bindings.data();
-
-//     if (vkCreateDescriptorSetLayout(device.getDevice(), &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS)
-//     {
-//         throw std::runtime_error("failed to create descriptor set layout!");
-//     }
-// }
-
 void VulkanAPI::createGraphicsPipeline()
 {
     auto vertShaderCode = readFile(RESOURCES_PATH "shaders/GLSL/vert.spv");
@@ -248,16 +220,18 @@ void VulkanAPI::createGraphicsPipeline()
     dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
     dynamicState.pDynamicStates = dynamicStates.data();
 
-    VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
-    pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    pipelineLayoutInfo.setLayoutCount = 1;
-    
-    pipelineLayoutInfo.pSetLayouts = descriptorSetLayout->get_handle_ptr();
+    pipelineLayout=std::make_unique<VulkanPipelineLayout>(device.getDevice(), descriptorSetLayout);
 
-    if (vkCreatePipelineLayout(device.getDevice(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS)
-    {
-        throw std::runtime_error("failed to create pipeline layout!");
-    }
+    // VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
+    // pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    // pipelineLayoutInfo.setLayoutCount = 1;
+    
+    // pipelineLayoutInfo.pSetLayouts = descriptorSetLayout->get_handle_ptr();
+
+    // if (vkCreatePipelineLayout(device.getDevice(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS)
+    // {
+    //     throw std::runtime_error("failed to create pipeline layout!");
+    // }
 
     VkGraphicsPipelineCreateInfo pipelineInfo{};
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -271,7 +245,7 @@ void VulkanAPI::createGraphicsPipeline()
     pipelineInfo.pDepthStencilState = &depthStencil;
     pipelineInfo.pColorBlendState = &colorBlending;
     pipelineInfo.pDynamicState = &dynamicState;
-    pipelineInfo.layout = pipelineLayout;
+    pipelineInfo.layout = pipelineLayout->get_handle();
     pipelineInfo.renderPass = renderPass;
     pipelineInfo.subpass = 0;
     pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
@@ -593,7 +567,8 @@ bool VulkanAPI::Shutdown()
     swapChain.Shutdown(device.getDevice());
 
     vkDestroyPipeline(device.getDevice(), graphicsPipeline, nullptr);
-    vkDestroyPipelineLayout(device.getDevice(), pipelineLayout, nullptr);
+    // vkDestroyPipelineLayout(device.getDevice(), pipelineLayout, nullptr);
+    pipelineLayout.reset();
 
     vkDestroyRenderPass(device.getDevice(), renderPass, nullptr);
 
@@ -671,7 +646,7 @@ void VulkanAPI::recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex)
     VkDeviceSize offsets[] = {0};
     vkCmdBindVertexBuffers(command->getCommandBuffer(currentFrame), 0, 1, vertexBuffers, offsets);
     vkCmdBindIndexBuffer(command->getCommandBuffer(currentFrame), indexBuffer->get_handle(), 0, VK_INDEX_TYPE_UINT32);
-    vkCmdBindDescriptorSets(command->getCommandBuffer(currentFrame), VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0,
+    vkCmdBindDescriptorSets(command->getCommandBuffer(currentFrame), VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->get_handle(), 0,
                             1, &descriptorSets[currentFrame], 0, nullptr);
     vkCmdDrawIndexed(command->getCommandBuffer(currentFrame), static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
