@@ -28,7 +28,6 @@ bool VulkanAPI::Init()
     swapChain.Init(device, surface.getSurface());
 
     createRenderPass();
-    // createDescriptorSetLayout();
     descriptorSetLayout=std::make_shared<VulkanDescriptorSetLayout>(device.getDevice());
     createGraphicsPipeline();
     command = std::make_shared<VulkanCommandBuffer>(device);
@@ -220,18 +219,10 @@ void VulkanAPI::createGraphicsPipeline()
     dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
     dynamicState.pDynamicStates = dynamicStates.data();
 
-    pipelineLayout=std::make_unique<VulkanPipelineLayout>(device.getDevice(), descriptorSetLayout);
+    std::vector<VkDescriptorSetLayout> descriptorSetLayouts;
+    descriptorSetLayouts.push_back(descriptorSetLayout->get_handle());
 
-    // VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
-    // pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    // pipelineLayoutInfo.setLayoutCount = 1;
-    
-    // pipelineLayoutInfo.pSetLayouts = descriptorSetLayout->get_handle_ptr();
-
-    // if (vkCreatePipelineLayout(device.getDevice(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS)
-    // {
-    //     throw std::runtime_error("failed to create pipeline layout!");
-    // }
+    pipelineLayout=std::make_unique<VulkanPipelineLayout>(device.getDevice(), descriptorSetLayouts);
 
     VkGraphicsPipelineCreateInfo pipelineInfo{};
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -567,7 +558,6 @@ bool VulkanAPI::Shutdown()
     swapChain.Shutdown(device.getDevice());
 
     vkDestroyPipeline(device.getDevice(), graphicsPipeline, nullptr);
-    // vkDestroyPipelineLayout(device.getDevice(), pipelineLayout, nullptr);
     pipelineLayout.reset();
 
     vkDestroyRenderPass(device.getDevice(), renderPass, nullptr);
@@ -583,7 +573,6 @@ bool VulkanAPI::Shutdown()
     texture.reset();
 
     descriptorSetLayout.reset();
-    // vkDestroyDescriptorSetLayout(device.getDevice(), descriptorSetLayout->get_handle(), nullptr);
     indexBuffer.reset();  // This is to avoid a segmentation fault since the memory
     vertexBuffer.reset(); // already gets freed by VulkanMemoryManager::shutdown and
                           // then the destructore tryes to do the same therefore we call the destructure before

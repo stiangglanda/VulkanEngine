@@ -44,10 +44,10 @@ public:
         return descriptorSetLayout;
     }
 
-    const VkDescriptorSetLayout* get_handle_ptr() const//TODO come up with a solution so i can delete this function
-    {                                                  //this can be deleted if i support multiple discription set layouts
-        return &descriptorSetLayout;
-    }
+    // const VkDescriptorSetLayout* get_handle_ptr() const//TODO come up with a solution so i can delete this function
+    // {                                                  //this can be deleted if i support multiple discription set layouts
+    //     return &descriptorSetLayout;
+    // }
 
 private:
     VkDevice device;

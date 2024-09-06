@@ -8,13 +8,13 @@ namespace Core
 
 class VulkanPipelineLayout {
 public:
-    // Constructor to create the descriptor set layout
-    VulkanPipelineLayout(VkDevice device, std::weak_ptr<VulkanDescriptorSetLayout> descriptorSetLayout) : device(device), pipelineLayout(VK_NULL_HANDLE) 
+    // Constructor to create the Pipeline Layout
+    VulkanPipelineLayout(VkDevice device, std::vector<VkDescriptorSetLayout> descriptorSetLayouts) : device(device), pipelineLayout(VK_NULL_HANDLE) 
     {
-        createPipelineLayout(descriptorSetLayout);
+        createPipelineLayout(descriptorSetLayouts);
     }
 
-    // Destructor to destroy the descriptor set layout
+    // Destructor to destroy the Pipeline Layout
     ~VulkanPipelineLayout() 
     {
         cleanup();
@@ -42,7 +42,7 @@ public:
     VulkanPipelineLayout(const VulkanPipelineLayout&) = delete;
     VulkanPipelineLayout& operator=(const VulkanPipelineLayout&) = delete;
 
-    // Get the descriptor set layout
+    // Get the Pipeline Layout
     VkPipelineLayout get_handle() const
     {
         return pipelineLayout;
@@ -52,10 +52,9 @@ private:
     VkDevice device;
     VkPipelineLayout pipelineLayout;
 
-    // Create the descriptor set layout
-    void createPipelineLayout(std::weak_ptr<VulkanDescriptorSetLayout> descriptorSetLayout);
+    // Create the Pipeline Layout
+    void createPipelineLayout(std::vector<VkDescriptorSetLayout> descriptorSetLayouts);
 
-    // Helper function to destroy the descriptor set layout
     void cleanup();
 };
 
