@@ -60,6 +60,4 @@ private:
     void cleanup();
 };
 
-
-
 } // namespace Core

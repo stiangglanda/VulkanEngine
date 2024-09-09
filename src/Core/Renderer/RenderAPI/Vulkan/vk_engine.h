@@ -19,7 +19,7 @@
 #include "camera.h"
 #include "vk_descriptors.h"
 #include "vk_loader.h"
-#include "vk_pipelines.h"
+#include "VulkanPipelineBuilder.h"
 #include "../../../Events/Event.h"
 struct MeshAsset;
 namespace fastgltf

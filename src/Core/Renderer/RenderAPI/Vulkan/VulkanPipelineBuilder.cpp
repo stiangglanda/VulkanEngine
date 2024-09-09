@@ -1,5 +1,6 @@
-#include "vk_pipelines.h"
+#include "VulkanPipelineBuilder.h"
 #include <fstream>
+#include "Vertex.h"
 
 //> pipe_clear
 void PipelineBuilder::clear()
@@ -47,9 +48,31 @@ VkPipeline PipelineBuilder::build_pipeline(VkDevice device)
     colorBlending.attachmentCount = 1;
     colorBlending.pAttachments = &_colorBlendAttachment;
 
-    // completely clear VertexInputStateCreateInfo, as we have no need for it
-    VkPipelineVertexInputStateCreateInfo _vertexInputInfo = {
-        .sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO};
+    //TODO remove customised start
+    colorBlending.blendConstants[0] = 0.0f;
+    colorBlending.blendConstants[1] = 0.0f;
+    colorBlending.blendConstants[2] = 0.0f;
+    colorBlending.blendConstants[3] = 0.0f;
+    // completely clear VertexInputStateCreateInfo, as we have no need for it //TODO Vertex Pulling
+    // VkPipelineVertexInputStateCreateInfo _vertexInputInfo = {
+    //     .sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO};
+
+    VkPipelineVertexInputStateCreateInfo _vertexInputInfo{};
+    _vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+
+    auto bindingDescription = Core::Vertex::getBindingDescription();
+    auto attributeDescriptions = Core::Vertex::getAttributeDescriptions();
+
+    _vertexInputInfo.vertexBindingDescriptionCount = 1;
+    _vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
+    _vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+    _vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
+
+    _rasterizer.depthClampEnable = VK_FALSE;
+    _rasterizer.rasterizerDiscardEnable = VK_FALSE;
+    _rasterizer.depthBiasEnable = VK_FALSE;
+
+    //customised end
 
     //< build_pipeline_1
 
@@ -59,7 +82,7 @@ VkPipeline PipelineBuilder::build_pipeline(VkDevice device)
     // to create the pipeline
     VkGraphicsPipelineCreateInfo pipelineInfo = {.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO};
     // connect the renderInfo to the pNext extension mechanism
-    pipelineInfo.pNext = &_renderInfo;
+    // pipelineInfo.pNext = &_renderInfo;//is used for dynamic rendering
 
     pipelineInfo.stageCount = (uint32_t)_shaderStages.size();
     pipelineInfo.pStages = _shaderStages.data();
@@ -68,9 +91,12 @@ VkPipeline PipelineBuilder::build_pipeline(VkDevice device)
     pipelineInfo.pViewportState = &viewportState;
     pipelineInfo.pRasterizationState = &_rasterizer;
     pipelineInfo.pMultisampleState = &_multisampling;
-    pipelineInfo.pColorBlendState = &colorBlending;
     pipelineInfo.pDepthStencilState = &_depthStencil;
+    pipelineInfo.pColorBlendState = &colorBlending;
     pipelineInfo.layout = _pipelineLayout;
+    pipelineInfo.renderPass = _renderPass;//TODO use dynamic rendering
+    pipelineInfo.subpass = 0;//TODO use dynamic rendering
+    pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;//may not be nessesary
 
     //< build_pipeline_2
     //> build_pipeline_3
@@ -224,10 +250,10 @@ void PipelineBuilder::enable_depthtest(bool depthWriteEnable, VkCompareOp op)
     _depthStencil.depthCompareOp = op;
     _depthStencil.depthBoundsTestEnable = VK_FALSE;
     _depthStencil.stencilTestEnable = VK_FALSE;
-    _depthStencil.front = {};
-    _depthStencil.back = {};
-    _depthStencil.minDepthBounds = 0.f;
-    _depthStencil.maxDepthBounds = 1.f;
+    // _depthStencil.front = {}; //TODO
+    // _depthStencil.back = {};
+    // _depthStencil.minDepthBounds = 0.f;
+    // _depthStencil.maxDepthBounds = 1.f;
 }
 //< depth_enable
 

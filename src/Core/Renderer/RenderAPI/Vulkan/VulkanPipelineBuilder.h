@@ -16,6 +16,7 @@ class PipelineBuilder
     VkPipelineDepthStencilStateCreateInfo _depthStencil;
     VkPipelineRenderingCreateInfo _renderInfo;
     VkFormat _colorAttachmentformat;
+    VkRenderPass _renderPass;//TODO use dynamic rendering
 
     PipelineBuilder()
     {
