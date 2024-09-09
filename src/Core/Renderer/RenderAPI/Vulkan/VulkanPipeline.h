@@ -8,13 +8,11 @@ namespace Core
 
 class VulkanPipeline {
 public:
-    // Constructor to create the descriptor set layout
     VulkanPipeline(VkDevice device, VkDescriptorSetLayout descriptorSetLayout, VkRenderPass renderPass) : device(device), pipeline(VK_NULL_HANDLE) //questianable
     {
         createPipeline(descriptorSetLayout, renderPass);
     }
 
-    // Destructor to destroy the descriptor set layout
     ~VulkanPipeline() {
         cleanup();
     }
@@ -31,6 +29,7 @@ public:
             cleanup(); // Destroy current layout if it exists
             device = other.device;
             pipeline = other.pipeline;
+            pipelineLayout = std::move(other.pipelineLayout);
             other.pipeline = VK_NULL_HANDLE; // Avoid double destruction
         }
         return *this;
@@ -51,18 +50,13 @@ public:
         return pipelineLayout->get_handle();
     }
 
-    // const VkDescriptorSetLayout* get_handle_ptr() const//TODO come up with a solution so i can delete this function
-    // {                                                  //this can be deleted if i support multiple discription set layouts
-    //     return &descriptorSetLayout;
-    // }
-
 private:
     VkDevice device;
     VkPipeline pipeline;
     std::unique_ptr<VulkanPipelineLayout> pipelineLayout;
 
-    VkShaderModule createShaderModule(const std::vector<char> &code);
-    std::vector<char> readFile(const std::string &filename);
+    VkShaderModule createShaderModule(const std::vector<char> &code);//TODO should be in VulkanShader
+    std::vector<char> readFile(const std::string &filename);//TODO should be in VulkanShader
 
     // Create the descriptor set layout
     void createPipeline(VkDescriptorSetLayout descriptorSetLayout, VkRenderPass renderPass);

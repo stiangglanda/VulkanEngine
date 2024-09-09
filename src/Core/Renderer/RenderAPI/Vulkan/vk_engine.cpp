@@ -302,13 +302,13 @@ void VulkanEngine::init_background_pipelines()
     VK_CHECK(vkCreatePipelineLayout(_device, &computeLayout, nullptr, &_gradientPipelineLayout));
 
     VkShaderModule gradientShader;
-    if (!vkutil::load_shader_module(RESOURCES_PATH "shaders/gradient_color.comp.spv", _device, &gradientShader))
+    if (!Core::vkutil::load_shader_module(RESOURCES_PATH "shaders/gradient_color.comp.spv", _device, &gradientShader))
     {
         // fmt::print("Error when building the compute shader \n");
     }
 
     VkShaderModule skyShader;
-    if (!vkutil::load_shader_module(RESOURCES_PATH "shaders/sky.comp.spv", _device, &skyShader))
+    if (!Core::vkutil::load_shader_module(RESOURCES_PATH "shaders/sky.comp.spv", _device, &skyShader))
     {
         // fmt::print("Error when building the compute shader\n");
     }
@@ -1389,13 +1389,13 @@ void VulkanEngine::init_descriptors()
 void GLTFMetallic_Roughness::build_pipelines(VulkanEngine *engine)
 {
     VkShaderModule meshFragShader;
-    if (!vkutil::load_shader_module(RESOURCES_PATH "shaders/mesh.frag.spv", engine->_device, &meshFragShader))
+    if (!Core::vkutil::load_shader_module(RESOURCES_PATH "shaders/mesh.frag.spv", engine->_device, &meshFragShader))
     {
         // fmt::println("Error when building the triangle fragment shader module");
     }
 
     VkShaderModule meshVertexShader;
-    if (!vkutil::load_shader_module(RESOURCES_PATH "shaders/mesh.vert.spv", engine->_device, &meshVertexShader))
+    if (!Core::vkutil::load_shader_module(RESOURCES_PATH "shaders/mesh.vert.spv", engine->_device, &meshVertexShader))
     {
         // fmt::println("Error when building the triangle vertex shader module");
     }
@@ -1428,7 +1428,7 @@ void GLTFMetallic_Roughness::build_pipelines(VulkanEngine *engine)
 
     // build the stage-create-info for both vertex and fragment stages. This lets
     // the pipeline know the shader modules per stage
-    PipelineBuilder pipelineBuilder;
+    Core::VulkanPipelineBuilder pipelineBuilder;
 
     pipelineBuilder.set_shaders(meshVertexShader, meshFragShader);
 

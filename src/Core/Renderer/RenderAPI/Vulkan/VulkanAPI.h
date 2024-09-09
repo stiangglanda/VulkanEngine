@@ -51,8 +51,6 @@ class VulkanAPI : public RenderAPI
 
   private:
     void createRenderPass();       // should be in its own file called RenderPass
-    void createGraphicsPipeline(); // should be in its own file called GraphicsPipeline
-    // void createDescriptorSetLayout();
 
     void loadModel();
     void createVertexBuffer();
@@ -63,8 +61,6 @@ class VulkanAPI : public RenderAPI
 
     void createSyncObjects();
     void updateUniformBuffer(uint32_t currentImage);
-    VkShaderModule createShaderModule(const std::vector<char> &code);
-    static std::vector<char> readFile(const std::string &filename);
     void recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex);
 
 #ifdef NDEBUG
@@ -89,10 +85,7 @@ class VulkanAPI : public RenderAPI
     VulkanSwapChain swapChain;
 
     VkRenderPass renderPass;
-    std::shared_ptr<VulkanDescriptorSetLayout> descriptorSetLayout;
-    // std::unique_ptr<VulkanPipelineLayout> pipelineLayout;
-    // VkPipelineLayout pipelineLayout;
-    // VkPipeline graphicsPipeline;
+    std::unique_ptr<VulkanDescriptorSetLayout> descriptorSetLayout;
     std::unique_ptr<VulkanPipeline> graphicsPipeline;
 
     std::vector<Vertex> vertices;

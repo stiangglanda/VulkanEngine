@@ -10,15 +10,7 @@ namespace Core
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
         pipelineLayoutInfo.setLayoutCount = descriptorSetLayouts.size();
-    
-        // if (auto tmp = descriptorSetLayout.lock())
-        // {
-            pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data();
-        // }
-        // else
-        // {
-        //     VE_CORE_ERROR("VulkanPipelineLayout::createPipelineLayout VulkanDescriptorSetLayout ptr expired");
-        // }
+        pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data();
 
         if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS)
         {

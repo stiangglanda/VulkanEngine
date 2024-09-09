@@ -2,9 +2,11 @@
 
 #include <vulkan/vulkan.h>
 
-class PipelineBuilder
+namespace Core
 {
-    //> pipeline
+
+class VulkanPipelineBuilder
+{
   public:
     std::vector<VkPipelineShaderStageCreateInfo> _shaderStages;
 
@@ -18,7 +20,7 @@ class PipelineBuilder
     VkFormat _colorAttachmentformat;
     VkRenderPass _renderPass;//TODO use dynamic rendering
 
-    PipelineBuilder()
+    VulkanPipelineBuilder()
     {
         clear();
     }
@@ -26,7 +28,7 @@ class PipelineBuilder
     void clear();
 
     VkPipeline build_pipeline(VkDevice device);
-    //< pipeline
+
     void set_shaders(VkShaderModule vertexShader, VkShaderModule fragmentShader);
     void set_input_topology(VkPrimitiveTopology topology);
     void set_polygon_mode(VkPolygonMode mode);
@@ -42,11 +44,13 @@ class PipelineBuilder
     void enable_depthtest(bool depthWriteEnable, VkCompareOp op);
 };
 
-namespace vkutil
+namespace vkutil//TODO move this somewhere else
 {
 
 VkPipelineShaderStageCreateInfo pipeline_shader_stage_create_info(VkShaderStageFlagBits stage,
                                                                           VkShaderModule shaderModule,
                                                                           const char *entry = "main");
 bool load_shader_module(const char *filePath, VkDevice device, VkShaderModule *outShaderModule);
+}
+
 }
