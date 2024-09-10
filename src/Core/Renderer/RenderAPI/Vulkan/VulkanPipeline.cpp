@@ -10,8 +10,16 @@ namespace Core
         // auto vertShaderCode = VulkanShader::readFile(RESOURCES_PATH "shaders/GLSL/vert.spv");
         // auto fragShaderCode = VulkanShader::readFile(RESOURCES_PATH "shaders/GLSL/frag.spv");
 
-        VkShaderModule vertShaderModule = VulkanShader::loadShaderModule(device, RESOURCES_PATH "shaders/GLSL/vert.spv");
-        VkShaderModule fragShaderModule = VulkanShader::loadShaderModule(device, RESOURCES_PATH "shaders/GLSL/frag.spv");
+        VkShaderModule vertShaderModule;
+        if(!VulkanShader::loadShaderModule(device, RESOURCES_PATH "shaders/GLSL/vert.spv", &vertShaderModule))
+        {
+            VE_CORE_ERROR("Failed to load Shader");
+        }
+        VkShaderModule fragShaderModule;
+        if(!VulkanShader::loadShaderModule(device, RESOURCES_PATH "shaders/GLSL/frag.spv", &fragShaderModule))
+        {
+            VE_CORE_ERROR("Failed to load Shader");
+        }
 
         VulkanPipelineBuilder pipelineBuilder;
 

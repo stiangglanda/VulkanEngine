@@ -21,9 +21,31 @@ namespace Core
             return shaderModule;
         }
 
-        VkShaderModule loadShaderModule(VkDevice device, const std::string &filename)//TODO whould be in VulkanShader
+        // VkShaderModule loadShaderModule(VkDevice device, const std::string &filename)//TODO whould be in VulkanShader
+        // {
+        //     return createShaderModule(device, readFile(filename));
+        // }
+
+        bool loadShaderModule(VkDevice device, const std::string &filename, VkShaderModule* outShaderModule)
         {
-            return createShaderModule(device, readFile(filename));
+            std::vector<char> shaderCode = readFile(filename);
+
+            if (shaderCode.empty())
+            {
+                std::cerr << "Failed to read shader file: " << filename << std::endl;
+                return false;
+            }
+
+            VkShaderModule shaderModule = createShaderModule(device, shaderCode);
+
+            if (shaderModule == VK_NULL_HANDLE) // Assuming this is returned in case of failure
+            {
+                std::cerr << "Failed to create shader module from file: " << filename << std::endl;
+                return false;
+            }
+
+            *outShaderModule = shaderModule;
+            return true;
         }
 
         std::vector<char> readFile(const std::string &filename)//TODO whould be in VulkanShader
