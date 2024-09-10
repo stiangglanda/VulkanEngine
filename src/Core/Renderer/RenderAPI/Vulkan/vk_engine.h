@@ -22,6 +22,7 @@
 #include "VulkanPipelineBuilder.h"
 #include "../../../Events/Event.h"
 struct MeshAsset;
+
 namespace fastgltf
 {
 struct Mesh;

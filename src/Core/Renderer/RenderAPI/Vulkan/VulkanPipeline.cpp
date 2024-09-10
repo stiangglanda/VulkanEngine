@@ -7,11 +7,11 @@ namespace Core
 {
     void VulkanPipeline::createPipeline(VkDescriptorSetLayout descriptorSetLayout, VkRenderPass renderPass) 
     {
-        auto vertShaderCode = VulkanShader::readFile(RESOURCES_PATH "shaders/GLSL/vert.spv");
-        auto fragShaderCode = VulkanShader::readFile(RESOURCES_PATH "shaders/GLSL/frag.spv");
+        // auto vertShaderCode = VulkanShader::readFile(RESOURCES_PATH "shaders/GLSL/vert.spv");
+        // auto fragShaderCode = VulkanShader::readFile(RESOURCES_PATH "shaders/GLSL/frag.spv");
 
-        VkShaderModule vertShaderModule = VulkanShader::createShaderModule(device, vertShaderCode);
-        VkShaderModule fragShaderModule = VulkanShader::createShaderModule(device, fragShaderCode);
+        VkShaderModule vertShaderModule = VulkanShader::loadShaderModule(device, RESOURCES_PATH "shaders/GLSL/vert.spv");
+        VkShaderModule fragShaderModule = VulkanShader::loadShaderModule(device, RESOURCES_PATH "shaders/GLSL/frag.spv");
 
         VulkanPipelineBuilder pipelineBuilder;
 

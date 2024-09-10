@@ -44,13 +44,13 @@ class VulkanPipelineBuilder
     void enable_depthtest(bool depthWriteEnable, VkCompareOp op);
 };
 
-namespace vkutil//TODO move this somewhere else
-{
+// namespace vkutil//TODO move this somewhere else
+// {
 
-VkPipelineShaderStageCreateInfo pipeline_shader_stage_create_info(VkShaderStageFlagBits stage,
-                                                                          VkShaderModule shaderModule,
-                                                                          const char *entry = "main");
-bool load_shader_module(const char *filePath, VkDevice device, VkShaderModule *outShaderModule);
-}
+// VkPipelineShaderStageCreateInfo pipeline_shader_stage_create_info(VkShaderStageFlagBits stage,
+//                                                                           VkShaderModule shaderModule,
+//                                                                           const char *entry = "main");
+// bool load_shader_module(const char *filePath, VkDevice device, VkShaderModule *outShaderModule);
+// }
 
 }

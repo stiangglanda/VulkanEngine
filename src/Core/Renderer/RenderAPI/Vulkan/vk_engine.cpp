@@ -16,6 +16,7 @@
 #include <glm/gtx/transform.hpp>
 
 #include <GLFW/glfw3.h>
+#include "VulkanShader.h"
 
 #define VMA_IMPLEMENTATION
 #include "../../../Events/ApplicationEvent.h"
@@ -301,17 +302,17 @@ void VulkanEngine::init_background_pipelines()
 
     VK_CHECK(vkCreatePipelineLayout(_device, &computeLayout, nullptr, &_gradientPipelineLayout));
 
-    VkShaderModule gradientShader;
-    if (!Core::vkutil::load_shader_module(RESOURCES_PATH "shaders/gradient_color.comp.spv", _device, &gradientShader))
-    {
-        // fmt::print("Error when building the compute shader \n");
-    }
+    VkShaderModule gradientShader=Core::VulkanShader::loadShaderModule(_device, RESOURCES_PATH "shaders/gradient_color.comp.spv");
+    // if (!Core::vkutil::load_shader_module(RESOURCES_PATH "shaders/gradient_color.comp.spv", _device, &gradientShader))
+    // {
+    //     // fmt::print("Error when building the compute shader \n");
+    // }
 
-    VkShaderModule skyShader;
-    if (!Core::vkutil::load_shader_module(RESOURCES_PATH "shaders/sky.comp.spv", _device, &skyShader))
-    {
-        // fmt::print("Error when building the compute shader\n");
-    }
+    VkShaderModule skyShader=Core::VulkanShader::loadShaderModule(_device, RESOURCES_PATH "shaders/sky.comp.spv");
+    // if (!Core::vkutil::load_shader_module(RESOURCES_PATH "shaders/sky.comp.spv", _device, &skyShader))
+    // {
+    //     // fmt::print("Error when building the compute shader\n");
+    // }
 
     VkPipelineShaderStageCreateInfo stageinfo{};
     stageinfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -1388,17 +1389,17 @@ void VulkanEngine::init_descriptors()
 
 void GLTFMetallic_Roughness::build_pipelines(VulkanEngine *engine)
 {
-    VkShaderModule meshFragShader;
-    if (!Core::vkutil::load_shader_module(RESOURCES_PATH "shaders/mesh.frag.spv", engine->_device, &meshFragShader))
-    {
-        // fmt::println("Error when building the triangle fragment shader module");
-    }
+    VkShaderModule meshFragShader=Core::VulkanShader::loadShaderModule(engine->_device, RESOURCES_PATH "shaders/mesh.frag.spv");
+    // if (!Core::vkutil::load_shader_module(RESOURCES_PATH "shaders/mesh.frag.spv", engine->_device, &meshFragShader))
+    // {
+    //     // fmt::println("Error when building the triangle fragment shader module");
+    // }
 
-    VkShaderModule meshVertexShader;
-    if (!Core::vkutil::load_shader_module(RESOURCES_PATH "shaders/mesh.vert.spv", engine->_device, &meshVertexShader))
-    {
-        // fmt::println("Error when building the triangle vertex shader module");
-    }
+    VkShaderModule meshVertexShader=Core::VulkanShader::loadShaderModule(engine->_device, RESOURCES_PATH "shaders/mesh.vert.spv");
+    // if (!Core::vkutil::load_shader_module(RESOURCES_PATH "shaders/mesh.vert.spv", engine->_device, &meshVertexShader))
+    // {
+    //     // fmt::println("Error when building the triangle vertex shader module");
+    // }
 
     VkPushConstantRange matrixRange{};
     matrixRange.offset = 0;
