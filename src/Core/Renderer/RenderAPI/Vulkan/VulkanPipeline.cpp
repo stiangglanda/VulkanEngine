@@ -54,6 +54,8 @@ namespace Core
 
         vkDestroyShaderModule(device, fragShaderModule, nullptr);
         vkDestroyShaderModule(device, vertShaderModule, nullptr);
+
+        VE_CORE_INFO("Created Pipeline");
     }
 
     void VulkanPipeline::cleanup() {
@@ -61,6 +63,7 @@ namespace Core
         {
             vkDestroyPipeline(device, pipeline, nullptr);
             pipeline = VK_NULL_HANDLE;
+            VE_CORE_INFO("Destroyed Pipeline");
         }
         pipelineLayout.reset();
     }

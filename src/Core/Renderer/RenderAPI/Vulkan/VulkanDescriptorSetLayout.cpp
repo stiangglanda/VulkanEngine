@@ -27,7 +27,12 @@ namespace Core
         layoutInfo.pBindings = bindings.data();
 
         if (vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
+            VE_CORE_ERROR("failed to create descriptor set layout!");
             throw std::runtime_error("failed to create descriptor set layout!");
+        }
+        else
+        {
+            VE_CORE_INFO("Successful: created DescriptorSetLayout");
         }
     }
 
@@ -36,6 +41,7 @@ namespace Core
         if (descriptorSetLayout != VK_NULL_HANDLE) {
             vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
             descriptorSetLayout = VK_NULL_HANDLE;
+            VE_CORE_INFO("Successful: Destroyed DescriptorSetLayout");
         }
     }
 } // namespace Core

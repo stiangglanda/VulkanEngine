@@ -14,7 +14,12 @@ namespace Core
 
         if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS)
         {
+            VE_CORE_ERROR("failed to create pipeline layout!");
             throw std::runtime_error("failed to create pipeline layout!");
+        }
+        else
+        {
+            VE_CORE_INFO("Created Pipeline Layout");
         }
     }
 
@@ -23,6 +28,7 @@ namespace Core
         if (pipelineLayout != VK_NULL_HANDLE) {
             vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
             pipelineLayout = VK_NULL_HANDLE;
+            VE_CORE_INFO("Destroyed Pipeline Layout");
         }
     }
 } // namespace Core

@@ -80,6 +80,10 @@ void init(const VmaAllocatorCreateInfo &create_info)
     {
         VE_CORE_ERROR("Cannot create allocator");
     }
+    else
+    {
+        VE_CORE_INFO("Created VMA Allocator");
+    }
 }
 
 void shutdown()
@@ -92,6 +96,7 @@ void shutdown()
         VE_CORE_INFO("Total device memory leaked: {} bytes.", stats.total.statistics.allocationBytes);
         vmaDestroyAllocator(allocator);
         allocator = VK_NULL_HANDLE;
+        VE_CORE_INFO("Destroyed VMA Allocator");
     }
 }
 

@@ -25,6 +25,7 @@ void VulkanDevice::pickPhysicalDevice(VkInstance instance, VkSurfaceKHR surface)
 
     if (deviceCount == 0)
     {
+        VE_CORE_ERROR("failed to find GPUs with Vulkan support!");
         throw std::runtime_error("failed to find GPUs with Vulkan support!");
     }
 
