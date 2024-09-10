@@ -1,16 +1,17 @@
 #include "VulkanPipeline.h"
 #include "VulkanPipelineBuilder.h"
 #include "VulkanDebug.h"
+#include "VulkanShader.h"
 
 namespace Core
 {
     void VulkanPipeline::createPipeline(VkDescriptorSetLayout descriptorSetLayout, VkRenderPass renderPass) 
     {
-        auto vertShaderCode = readFile(RESOURCES_PATH "shaders/GLSL/vert.spv");
-        auto fragShaderCode = readFile(RESOURCES_PATH "shaders/GLSL/frag.spv");
+        auto vertShaderCode = VulkanShader::readFile(RESOURCES_PATH "shaders/GLSL/vert.spv");
+        auto fragShaderCode = VulkanShader::readFile(RESOURCES_PATH "shaders/GLSL/frag.spv");
 
-        VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
-        VkShaderModule fragShaderModule = createShaderModule(fragShaderCode);
+        VkShaderModule vertShaderModule = VulkanShader::createShaderModule(device, vertShaderCode);
+        VkShaderModule fragShaderModule = VulkanShader::createShaderModule(device, fragShaderCode);
 
         VulkanPipelineBuilder pipelineBuilder;
 
@@ -68,40 +69,40 @@ namespace Core
         pipelineLayout.reset();
     }
 
-    VkShaderModule VulkanPipeline::createShaderModule(const std::vector<char> &code)//TODO whould be in VulkanShader
-    {
-        VkShaderModuleCreateInfo createInfo{};
-        createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-        createInfo.codeSize = code.size();
-        createInfo.pCode = reinterpret_cast<const uint32_t *>(code.data());
+    // VkShaderModule VulkanPipeline::createShaderModule(const std::vector<char> &code)//TODO whould be in VulkanShader
+    // {
+    //     VkShaderModuleCreateInfo createInfo{};
+    //     createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+    //     createInfo.codeSize = code.size();
+    //     createInfo.pCode = reinterpret_cast<const uint32_t *>(code.data());
 
-        VkShaderModule shaderModule;
-        if (vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to create shader module!");
-        }
+    //     VkShaderModule shaderModule;
+    //     if (vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS)
+    //     {
+    //         throw std::runtime_error("failed to create shader module!");
+    //     }
 
-        return shaderModule;
-    }
+    //     return shaderModule;
+    // }
 
-    std::vector<char> VulkanPipeline::readFile(const std::string &filename)//TODO whould be in VulkanShader
-    {
-        std::ifstream file(filename, std::ios::ate | std::ios::binary);
+    // std::vector<char> VulkanPipeline::readFile(const std::string &filename)//TODO whould be in VulkanShader
+    // {
+    //     std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
-        if (!file.is_open())
-        {
-            throw std::runtime_error("failed to open file!");
-        }
+    //     if (!file.is_open())
+    //     {
+    //         throw std::runtime_error("failed to open file!");
+    //     }
 
-        size_t fileSize = (size_t)file.tellg();
-        std::vector<char> buffer(fileSize);
+    //     size_t fileSize = (size_t)file.tellg();
+    //     std::vector<char> buffer(fileSize);
 
-        file.seekg(0);
-        file.read(buffer.data(), fileSize);
+    //     file.seekg(0);
+    //     file.read(buffer.data(), fileSize);
 
-        file.close();
+    //     file.close();
 
-        return buffer;
-    }
+    //     return buffer;
+    // }
 
 } // namespace Core
