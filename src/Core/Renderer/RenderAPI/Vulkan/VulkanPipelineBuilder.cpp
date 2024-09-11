@@ -128,8 +128,6 @@ void VulkanPipelineBuilder::set_shaders(VkShaderModule vertexShader, VkShaderMod
 void VulkanPipelineBuilder::set_input_topology(VkPrimitiveTopology topology)
 {
     _inputAssembly.topology = topology;
-    // we are not going to use primitive restart on the entire tutorial so leave
-    // it on false
     _inputAssembly.primitiveRestartEnable = VK_FALSE;
 }
 
@@ -230,69 +228,5 @@ void VulkanPipelineBuilder::enable_depthtest(bool depthWriteEnable, VkCompareOp 
     _depthStencil.minDepthBounds = 0.f;
     _depthStencil.maxDepthBounds = 1.f;
 }
-
-// VkPipelineShaderStageCreateInfo vkutil::pipeline_shader_stage_create_info(VkShaderStageFlagBits stage,
-//                                                                           VkShaderModule shaderModule,
-//                                                                           const char *entry)
-// {
-//     VkPipelineShaderStageCreateInfo info{};
-//     info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-//     info.pNext = nullptr;
-
-//     // shader stage
-//     info.stage = stage;
-//     // module containing the code for this shader stage
-//     info.module = shaderModule;
-//     // the entry point of the shader
-//     info.pName = entry;
-//     return info;
-// }
-
-// bool vkutil::load_shader_module(const char *filePath, VkDevice device, VkShaderModule *outShaderModule)
-// {
-//     // open the file. With cursor at the end
-//     std::ifstream file(filePath, std::ios::ate | std::ios::binary);
-
-//     if (!file.is_open())
-//     {
-//         return false;
-//     }
-
-//     // find what the size of the file is by looking up the location of the cursor
-//     // because the cursor is at the end, it gives the size directly in bytes
-//     size_t fileSize = (size_t)file.tellg();
-
-//     // spirv expects the buffer to be on uint32, so make sure to reserve a int
-//     // vector big enough for the entire file
-//     std::vector<uint32_t> buffer(fileSize / sizeof(uint32_t));
-
-//     // put file cursor at beginning
-//     file.seekg(0);
-
-//     // load the entire file into the buffer
-//     file.read((char *)buffer.data(), fileSize);
-
-//     // now that the file is loaded into the buffer, we can close it
-//     file.close();
-
-//     // create a new shader module, using the buffer we loaded
-//     VkShaderModuleCreateInfo createInfo = {};
-//     createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-//     createInfo.pNext = nullptr;
-
-//     // codeSize has to be in bytes, so multply the ints in the buffer by size of
-//     // int to know the real size of the buffer
-//     createInfo.codeSize = buffer.size() * sizeof(uint32_t);
-//     createInfo.pCode = buffer.data();
-
-//     // check that the creation goes well.
-//     VkShaderModule shaderModule;
-//     if (vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS)
-//     {
-//         return false;
-//     }
-//     *outShaderModule = shaderModule;
-//     return true;
-// }
 
 }

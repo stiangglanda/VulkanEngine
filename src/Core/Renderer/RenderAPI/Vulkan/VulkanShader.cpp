@@ -5,7 +5,7 @@ namespace Core
 {
     namespace VulkanShader
     {
-        VkShaderModule createShaderModule(VkDevice device, const std::vector<char> &code)//TODO whould be in VulkanShader
+        VkShaderModule createShaderModule(VkDevice device, const std::vector<char> &code)
         {
             VkShaderModuleCreateInfo createInfo{};
             createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -20,11 +20,6 @@ namespace Core
 
             return shaderModule;
         }
-
-        // VkShaderModule loadShaderModule(VkDevice device, const std::string &filename)//TODO whould be in VulkanShader
-        // {
-        //     return createShaderModule(device, readFile(filename));
-        // }
 
         bool loadShaderModule(VkDevice device, const std::string &filename, VkShaderModule* outShaderModule)
         {
@@ -48,7 +43,7 @@ namespace Core
             return true;
         }
 
-        std::vector<char> readFile(const std::string &filename)//TODO whould be in VulkanShader
+        std::vector<char> readFile(const std::string &filename)//TODO the vector should be empty when there is an error instead of throwing a runtime error
         {
             std::ifstream file(filename, std::ios::ate | std::ios::binary);
 

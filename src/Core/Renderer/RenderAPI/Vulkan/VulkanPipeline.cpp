@@ -7,8 +7,6 @@ namespace Core
 {
     void VulkanPipeline::createPipeline(VkDescriptorSetLayout descriptorSetLayout, VkRenderPass renderPass) 
     {
-        // auto vertShaderCode = VulkanShader::readFile(RESOURCES_PATH "shaders/GLSL/vert.spv");
-        // auto fragShaderCode = VulkanShader::readFile(RESOURCES_PATH "shaders/GLSL/frag.spv");
 
         VkShaderModule vertShaderModule;
         if(!VulkanShader::loadShaderModule(device, RESOURCES_PATH "shaders/GLSL/vert.spv", &vertShaderModule))
@@ -61,8 +59,8 @@ namespace Core
 
         // transparentPipeline.pipeline = pipelineBuilder.build_pipeline(engine->_device);
 
-        vkDestroyShaderModule(device, fragShaderModule, nullptr);
-        vkDestroyShaderModule(device, vertShaderModule, nullptr);
+        vkDestroyShaderModule(device, fragShaderModule, nullptr);//TODO maybe create a VulkanShader class anyway so this can be called by the destructor
+        vkDestroyShaderModule(device, vertShaderModule, nullptr);//TODO maybe create a VulkanShader class anyway so this can be called by the destructor
 
         VE_CORE_INFO("Created Pipeline");
     }
@@ -76,41 +74,5 @@ namespace Core
         }
         pipelineLayout.reset();
     }
-
-    // VkShaderModule VulkanPipeline::createShaderModule(const std::vector<char> &code)//TODO whould be in VulkanShader
-    // {
-    //     VkShaderModuleCreateInfo createInfo{};
-    //     createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-    //     createInfo.codeSize = code.size();
-    //     createInfo.pCode = reinterpret_cast<const uint32_t *>(code.data());
-
-    //     VkShaderModule shaderModule;
-    //     if (vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS)
-    //     {
-    //         throw std::runtime_error("failed to create shader module!");
-    //     }
-
-    //     return shaderModule;
-    // }
-
-    // std::vector<char> VulkanPipeline::readFile(const std::string &filename)//TODO whould be in VulkanShader
-    // {
-    //     std::ifstream file(filename, std::ios::ate | std::ios::binary);
-
-    //     if (!file.is_open())
-    //     {
-    //         throw std::runtime_error("failed to open file!");
-    //     }
-
-    //     size_t fileSize = (size_t)file.tellg();
-    //     std::vector<char> buffer(fileSize);
-
-    //     file.seekg(0);
-    //     file.read(buffer.data(), fileSize);
-
-    //     file.close();
-
-    //     return buffer;
-    // }
 
 } // namespace Core
