@@ -92,4 +92,11 @@ VKAPI_ATTR VkBool32 VKAPI_CALL VulkanDebug::debugCallback(VkDebugUtilsMessageSev
     }
     return VK_FALSE;
 }
+
+void VulkanDebug::logPhysicalDevice(VkPhysicalDevice physicalDevice)
+{
+    VkPhysicalDeviceProperties pProperties;
+    vkGetPhysicalDeviceProperties(physicalDevice, &pProperties);
+    VE_CORE_INFO("PhysicalDevice: {0}", pProperties.deviceName);
+}
 } // namespace Core

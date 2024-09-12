@@ -1,6 +1,7 @@
 #include "VulkanDevice.h"
 #include "../../../Application.h"
 #include "VulkanSwapChain.h"
+#include "VulkanDebug.h"
 #include <set>
 
 namespace Core
@@ -10,6 +11,7 @@ void VulkanDevice::Init(VkInstance instance, VkSurfaceKHR surface, const bool en
 {
     pickPhysicalDevice(instance, surface);
     createLogicalDevice(enableValidationLayers, validationLayers, surface);
+    VulkanDebug::logPhysicalDevice(physicalDevice);
 }
 
 void VulkanDevice::Shutdown()
@@ -18,7 +20,7 @@ void VulkanDevice::Shutdown()
     VE_CORE_INFO("Shutdown Vulkan Device");
 }
 
-void VulkanDevice::pickPhysicalDevice(VkInstance instance, VkSurfaceKHR surface)
+void VulkanDevice::pickPhysicalDevice(VkInstance instance, VkSurfaceKHR surface)//TODO it doesn't pick the best GPU
 {
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
@@ -34,6 +36,7 @@ void VulkanDevice::pickPhysicalDevice(VkInstance instance, VkSurfaceKHR surface)
 
     for (const auto &device : devices)
     {
+        VulkanDebug::logPhysicalDevice(device);
         if (isDeviceSuitable(device, surface))
         {
             physicalDevice = device;//TODO add call to vkGetPhysicalDeviceProperties and print them

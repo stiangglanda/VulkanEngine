@@ -16,6 +16,7 @@ class VulkanDebug
 
     void Init(VkInstance instance, const bool EnableValidationLayers);
     void Shutdown(VkInstance instance);
+    static void logPhysicalDevice(VkPhysicalDevice physicalDevice);
 
     static void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo);
 
