@@ -22,6 +22,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/hash.hpp>
 #include "Vertex.h"
+#include "VulkanRenderPass.h"
 
 struct GLFWwindow;
 
@@ -50,7 +51,7 @@ class VulkanAPI : public RenderAPI
     virtual void OnEvent(Core::Event &e, float delta) override;
 
   private:
-    void createRenderPass();       // should be in its own file called RenderPass
+    // void createRenderPass();       // should be in its own file called RenderPass
 
     void loadModel();
     void createVertexBuffer();
@@ -84,7 +85,8 @@ class VulkanAPI : public RenderAPI
 
     VulkanSwapChain swapChain;
 
-    VkRenderPass renderPass;
+    // VkRenderPass renderPass;
+    std::unique_ptr<VulkanRenderPass> renderPass;
     std::unique_ptr<VulkanDescriptorSetLayout> descriptorSetLayout;
     std::unique_ptr<VulkanPipeline> graphicsPipeline;
 
