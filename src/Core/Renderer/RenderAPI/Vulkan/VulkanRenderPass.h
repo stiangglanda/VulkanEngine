@@ -9,13 +9,13 @@ namespace Core
 
 class VulkanRenderPass {
 public:
-    // Constructor to create the Pipeline Layout
+    // Constructor to create the Render Pass
     VulkanRenderPass(VulkanDevice& device, VulkanSwapChain& swapChain) : device(device.getDevice()), renderPass(VK_NULL_HANDLE) 
     {
         createRenderPass(device, swapChain);
     }
 
-    // Destructor to destroy the Pipeline Layout
+    // Destructor to destroy the Render Pass
     ~VulkanRenderPass() 
     {
         cleanup();
@@ -43,7 +43,7 @@ public:
     VulkanRenderPass(const VulkanRenderPass&) = delete;
     VulkanRenderPass& operator=(const VulkanRenderPass&) = delete;
 
-    // Get the Pipeline Layout
+    // Get the Render Pass
     VkRenderPass get_handle() const
     {
         return renderPass;
@@ -53,7 +53,7 @@ private:
     VkDevice device;
     VkRenderPass renderPass;
 
-    // Create the Pipeline Layout
+    // Create the Render Pass
     void createRenderPass(VulkanDevice& device, VulkanSwapChain& swapChain);
 
     void cleanup();

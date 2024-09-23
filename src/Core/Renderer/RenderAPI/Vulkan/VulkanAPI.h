@@ -51,8 +51,6 @@ class VulkanAPI : public RenderAPI
     virtual void OnEvent(Core::Event &e, float delta) override;
 
   private:
-    // void createRenderPass();       // should be in its own file called RenderPass
-
     void loadModel();
     void createVertexBuffer();
     void createIndexBuffer();
@@ -85,7 +83,6 @@ class VulkanAPI : public RenderAPI
 
     VulkanSwapChain swapChain;
 
-    // VkRenderPass renderPass;
     std::unique_ptr<VulkanRenderPass> renderPass;
     std::unique_ptr<VulkanDescriptorSetLayout> descriptorSetLayout;
     std::unique_ptr<VulkanPipeline> graphicsPipeline;
