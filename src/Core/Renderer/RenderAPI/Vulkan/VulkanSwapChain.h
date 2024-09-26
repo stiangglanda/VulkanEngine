@@ -76,7 +76,7 @@ class VulkanSwapChain
     std::vector<VkImage> swapChainImages;
     std::vector<VkImageView> swapChainImageViews;
 
-    std::vector<VkFramebuffer> swapChainFramebuffers;
+    std::vector<VkFramebuffer> swapChainFramebuffers;//TODO should probobly be in VulkanFrameBuffer
 
     std::unique_ptr<VulkanImage> depthImage;
     VkImageView depthImageView;
