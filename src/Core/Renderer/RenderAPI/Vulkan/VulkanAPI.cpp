@@ -53,7 +53,7 @@ bool VulkanAPI::Init()
     createVertexBuffer();
     createIndexBuffer();
     createUniformBuffers();
-    descriptorSet=std::make_unique<VulkanDescriptorSet>(device.getDevice(),
+    descriptorSet = std::make_unique<VulkanDescriptorSet>(device.getDevice(),
                                                         MAX_FRAMES_IN_FLIGHT,
                                                         descriptorSetLayout->get_handle(), 
                                                         uniformBuffers,texture);

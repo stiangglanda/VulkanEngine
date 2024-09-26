@@ -43,15 +43,13 @@ class VulkanAPI : public RenderAPI
     virtual bool Shutdown() override;
     virtual void Update(float delta) override;
     virtual void Draw() override;
-    virtual void OnEvent(Core::Event &e, float delta) override;
+    virtual void OnEvent(Event &e, float delta) override;
 
   private:
     void loadModel();
     void createVertexBuffer();
     void createIndexBuffer();
     void createUniformBuffers();
-    void createDescriptorPool();
-    void createDescriptorSets();
 
     void createSyncObjects();
     void updateUniformBuffer(uint32_t currentImage);
