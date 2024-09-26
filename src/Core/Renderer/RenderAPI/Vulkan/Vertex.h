@@ -6,7 +6,7 @@
 namespace Core
 {
 
-struct Vertex
+struct Vertex//TODO should not be in Vulkan folder and should not be vulkan specific
 {
     glm::vec3 pos;
     glm::vec3 color;

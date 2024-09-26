@@ -15,7 +15,7 @@ class VulkanCommandBuffer
     {
     }
 
-    void Init(VkSurfaceKHR surface, const int MAX_FRAMES_IN_FLIGHT);
+    void Init(VkSurfaceKHR surface, const int max_frames_in_flight);
     void Shutdown();
 
     VkCommandBuffer getCommandBuffer(uint32_t index) const
@@ -39,8 +39,8 @@ class VulkanCommandBuffer
                 VkSemaphore signalSemaphore = VK_NULL_HANDLE,
                 VkPipelineStageFlags waitStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
     void ResetCommandBuffer(uint32_t currentFrame, VkCommandBufferResetFlags flags = 0);
-    void createCommandPool(VkSurfaceKHR surface, const int MAX_FRAMES_IN_FLIGHT);
-    void createCommandBuffers(const int MAX_FRAMES_IN_FLIGHT);
+    void createCommandPool(VkSurfaceKHR surface, const int max_frames_in_flight);
+    void createCommandBuffers(const int max_frames_in_flight);
 
   private:
     const VulkanDevice &device;

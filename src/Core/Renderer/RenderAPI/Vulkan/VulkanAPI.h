@@ -23,18 +23,13 @@
 #include <glm/gtx/hash.hpp>
 #include "Vertex.h"
 #include "VulkanRenderPass.h"
+#include "UniformBufferObject.h"
+#include "VulkanDescriptorSet.h"
 
 struct GLFWwindow;
 
 namespace Core
 {
-
-struct UniformBufferObject
-{
-    alignas(16) glm::mat4 model;
-    alignas(16) glm::mat4 view;
-    alignas(16) glm::mat4 proj;
-};
 
 class VulkanAPI : public RenderAPI
 {
@@ -76,7 +71,7 @@ class VulkanAPI : public RenderAPI
     VulkanDebug vkDebug;     // Vulkan debug output handle
     VulkanSurface surface;   // Vulkan window surface
     VulkanDevice device;     // Vulkan device for commands // GPU chosen as the default device
-    std::unique_ptr<VulkanImage> texture;
+    std::shared_ptr<VulkanImage> texture;
     std::shared_ptr<VulkanCommandBuffer> command;
 
     Camera Cam;
@@ -93,8 +88,9 @@ class VulkanAPI : public RenderAPI
     std::unique_ptr<VulkanBuffer> indexBuffer;
     std::vector<std::unique_ptr<VulkanBuffer>> uniformBuffers;
     std::vector<void *> uniformBuffersMapped;
-    VkDescriptorPool descriptorPool;
-    std::vector<VkDescriptorSet> descriptorSets;
+    std::unique_ptr<VulkanDescriptorSet> descriptorSet;
+    // VkDescriptorPool descriptorPool;
+    // std::vector<VkDescriptorSet> descriptorSets;
 
     std::vector<VkSemaphore> imageAvailableSemaphores;
     std::vector<VkSemaphore> renderFinishedSemaphores;

@@ -114,6 +114,7 @@ struct ImageBuilder : public VulkanMemoryManager::Builder<ImageBuilder, VkImageC
 
     VulkanImage build(VulkanDevice &device) const;
     std::unique_ptr<VulkanImage> build_unique(VulkanDevice &device) const;
+    std::shared_ptr<VulkanImage> build_shared(VulkanDevice &device) const;
 };
 class VulkanImage : public VulkanMemoryManager::VulkanMemoryManager<VkImage>
 {

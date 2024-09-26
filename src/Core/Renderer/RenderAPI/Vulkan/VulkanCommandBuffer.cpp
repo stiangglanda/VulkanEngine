@@ -9,12 +9,12 @@ void VulkanCommandBuffer::Shutdown()
     VE_CORE_INFO("Shutdown VulkanCommandBuffer");
 }
 
-void VulkanCommandBuffer::Init(VkSurfaceKHR surface, const int MAX_FRAMES_IN_FLIGHT)
+void VulkanCommandBuffer::Init(VkSurfaceKHR surface, const int max_frames_in_flight)
 {
     VE_CORE_INFO("Init VulkanCommandBuffer");
 }
 
-void VulkanCommandBuffer::createCommandPool(VkSurfaceKHR surface, const int MAX_FRAMES_IN_FLIGHT)
+void VulkanCommandBuffer::createCommandPool(VkSurfaceKHR surface, const int max_frames_in_flight)
 {
     QueueFamilyIndices queueFamilyIndices = device.findQueueFamilies(surface);
 
@@ -33,9 +33,9 @@ void VulkanCommandBuffer::createCommandPool(VkSurfaceKHR surface, const int MAX_
     }
 }
 
-void VulkanCommandBuffer::createCommandBuffers(const int MAX_FRAMES_IN_FLIGHT)
+void VulkanCommandBuffer::createCommandBuffers(const int max_frames_in_flight)
 {
-    commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+    commandBuffers.resize(max_frames_in_flight);
 
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;

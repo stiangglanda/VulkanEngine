@@ -57,6 +57,11 @@ std::unique_ptr<VulkanImage> ImageBuilder::build_unique(VulkanDevice &device) co
     return std::make_unique<VulkanImage>(device, *this);
 }
 
+std::shared_ptr<VulkanImage> ImageBuilder::build_shared(VulkanDevice &device) const
+{
+    return std::make_shared<VulkanImage>(device, *this);
+}
+
 VulkanImage::VulkanImage(VulkanDevice &device, const VkExtent3D &extent, VkFormat format, VkImageUsageFlags image_usage,
                          const std::string TEXTURE_PATH, std::weak_ptr<VulkanCommandBuffer> command,
                          VmaMemoryUsage memory_usage, VkSampleCountFlagBits sample_count, const uint32_t mip_levels,
