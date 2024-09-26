@@ -20,12 +20,20 @@ namespace Core
 
         if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS)
         {
+            VE_CORE_ERROR("failed to create descriptor pool!");
             throw std::runtime_error("failed to create descriptor pool!");
+        }
+        else
+        {
+            VE_CORE_INFO("Created Descriptor Pool");
         }
     }
 
     // Create the descriptor set
-    void VulkanDescriptorSet::createDescriptorSets(const int max_frames_in_flight, VkDescriptorSetLayout descriptorSetLayout, std::vector<std::unique_ptr<VulkanBuffer>>& uniformBuffers, std::weak_ptr<VulkanImage> texture)
+    void VulkanDescriptorSet::createDescriptorSets(const int max_frames_in_flight, 
+                                                   VkDescriptorSetLayout descriptorSetLayout, 
+                                                   const std::vector<std::unique_ptr<VulkanBuffer>>& uniformBuffers, 
+                                                   std::weak_ptr<VulkanImage> texture)
     {
         std::vector<VkDescriptorSetLayout> layouts(max_frames_in_flight, descriptorSetLayout);
         VkDescriptorSetAllocateInfo allocInfo{};
@@ -37,6 +45,7 @@ namespace Core
 
         if (vkAllocateDescriptorSets(device, &allocInfo, descriptorSets.data()) != VK_SUCCESS)
         {
+            VE_CORE_ERROR("failed to allocate descriptor sets!");
             throw std::runtime_error("failed to allocate descriptor sets!");
         }
 
@@ -79,6 +88,7 @@ namespace Core
             vkUpdateDescriptorSets(device, static_cast<uint32_t>(descriptorWrites.size()),
                                    descriptorWrites.data(), 0, nullptr);
         }
+        VE_CORE_INFO("Create Descriptor Sets");
     }
 
     // Helper function to destroy the descriptor set layout

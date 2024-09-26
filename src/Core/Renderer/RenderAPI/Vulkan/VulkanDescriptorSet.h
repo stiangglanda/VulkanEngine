@@ -11,7 +11,11 @@ namespace Core
 class VulkanDescriptorSet {
 public:
     // Constructor to create the descriptor set
-    VulkanDescriptorSet(VkDevice device, const int max_frames_in_flight, VkDescriptorSetLayout descriptorSetLayout, std::vector<std::unique_ptr<VulkanBuffer>>& uniformBuffers, std::weak_ptr<VulkanImage> texture) : device(device), descriptorPool(VK_NULL_HANDLE) {
+    VulkanDescriptorSet(VkDevice device, const int max_frames_in_flight, 
+                        VkDescriptorSetLayout descriptorSetLayout, 
+                        const std::vector<std::unique_ptr<VulkanBuffer>>& uniformBuffers, 
+                        std::weak_ptr<VulkanImage> texture) : device(device), descriptorPool(VK_NULL_HANDLE) 
+    {
         createDescriptorPool(max_frames_in_flight);
         createDescriptorSets(max_frames_in_flight, descriptorSetLayout, uniformBuffers, texture);
     }
@@ -46,7 +50,10 @@ private:
     std::vector<VkDescriptorSet> descriptorSets;
 
     // Create the descriptor sets
-    void createDescriptorSets(const int max_frames_in_flight, VkDescriptorSetLayout descriptorSetLayout, std::vector<std::unique_ptr<VulkanBuffer>>& uniformBuffers, std::weak_ptr<VulkanImage> texture);
+    void createDescriptorSets(const int max_frames_in_flight, 
+                            VkDescriptorSetLayout descriptorSetLayout, 
+                            const std::vector<std::unique_ptr<VulkanBuffer>>& uniformBuffers, 
+                            std::weak_ptr<VulkanImage> texture);
 
     // Create the descriptor pool
     void createDescriptorPool(const int max_frames_in_flight);

@@ -89,8 +89,6 @@ class VulkanAPI : public RenderAPI
     std::vector<std::unique_ptr<VulkanBuffer>> uniformBuffers;
     std::vector<void *> uniformBuffersMapped;
     std::unique_ptr<VulkanDescriptorSet> descriptorSet;
-    // VkDescriptorPool descriptorPool;
-    // std::vector<VkDescriptorSet> descriptorSets;
 
     std::vector<VkSemaphore> imageAvailableSemaphores;
     std::vector<VkSemaphore> renderFinishedSemaphores;
