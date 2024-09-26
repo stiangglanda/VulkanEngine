@@ -49,14 +49,14 @@ private:
     VkDescriptorPool descriptorPool;
     std::vector<VkDescriptorSet> descriptorSets;
 
+    // Create the descriptor pool
+    void createDescriptorPool(const int max_frames_in_flight);
+
     // Create the descriptor sets
     void createDescriptorSets(const int max_frames_in_flight, 
                             VkDescriptorSetLayout descriptorSetLayout, 
                             const std::vector<std::unique_ptr<VulkanBuffer>>& uniformBuffers, 
                             std::weak_ptr<VulkanImage> texture);
-
-    // Create the descriptor pool
-    void createDescriptorPool(const int max_frames_in_flight);
 
     // Helper function to destroy the descriptor set
     void cleanup();
