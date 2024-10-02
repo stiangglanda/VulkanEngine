@@ -1,14 +1,13 @@
 #pragma once
 #include "../vepch.h"
 #include "Vertex.h"
-#include <cstddef>
 
 namespace Core
 {
 class Model 
 {
 public:
-    Model(const std::string model_path)
+    Model(const std::string model_path) : modelMatrix(glm::mat4(1.0f))
     {
         loadModel(model_path);
     };

@@ -20,8 +20,6 @@
 #include "VulkanSwapChain.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-// #include <glm/gtx/hash.hpp>
-#include "../../Vertex.h"
 #include "VulkanRenderPass.h"
 #include "UniformBufferObject.h"
 #include "VulkanDescriptorSet.h"
@@ -47,13 +45,10 @@ class VulkanAPI : public RenderAPI
     virtual void OnEvent(Event &e, float delta) override;
 
   private:
-    // void loadModel();
-    // void createVertexBuffer();
-    // void createIndexBuffer();
-    void createUniformBuffers();
+    void createUniformBuffers();//TODO should probobly be in VulkanModel //TODO split UniformBuffers one for per frame and one per model
 
     void createSyncObjects();
-    void updateUniformBuffer(uint32_t currentImage);
+    void updateUniformBuffer(uint32_t currentImage);//TODO should probobly be in VulkanModel
     void recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex);
 
 #ifdef NDEBUG
@@ -70,7 +65,7 @@ class VulkanAPI : public RenderAPI
     VulkanDebug vkDebug;     // Vulkan debug output handle
     VulkanSurface surface;   // Vulkan window surface
     VulkanDevice device;     // Vulkan device for commands // GPU chosen as the default device
-    std::shared_ptr<VulkanImage> texture;
+    std::shared_ptr<VulkanImage> texture;//TODO should probobly be in VulkanModel
     std::shared_ptr<VulkanCommandBuffer> command;
 
     Camera Cam;
@@ -83,13 +78,9 @@ class VulkanAPI : public RenderAPI
 
     std::unique_ptr<VulkanModel> model;
 
-    // std::vector<Vertex> vertices;
-    // std::vector<uint32_t> indices;
-    // std::unique_ptr<VulkanBuffer> vertexBuffer;
-    // std::unique_ptr<VulkanBuffer> indexBuffer;
-    std::vector<std::unique_ptr<VulkanBuffer>> uniformBuffers;
-    std::vector<void *> uniformBuffersMapped;
-    std::unique_ptr<VulkanDescriptorSet> descriptorSet;
+    std::vector<std::unique_ptr<VulkanBuffer>> uniformBuffers;//TODO should probobly be in VulkanModel
+    std::vector<void *> uniformBuffersMapped;//TODO should probobly be in VulkanModel
+    std::unique_ptr<VulkanDescriptorSet> descriptorSet;//TODO should probobly be in VulkanModel
 
     std::vector<VkSemaphore> imageAvailableSemaphores;
     std::vector<VkSemaphore> renderFinishedSemaphores;

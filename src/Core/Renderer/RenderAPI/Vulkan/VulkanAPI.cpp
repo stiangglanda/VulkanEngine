@@ -4,9 +4,6 @@
 #include <GLFW/glfw3.h>
 #include <memory>
 
-// #define TINYOBJLOADER_IMPLEMENTATION
-// #include <tiny_obj_loader.h>
-
 #include "../../../Application.h"
 #include "VulkanBuffer.h"
 
@@ -51,11 +48,9 @@ bool VulkanAPI::Init()
     texture->createTextureSampler();
 
     model = std::make_unique<VulkanModel>(MODEL_PATH, device, command);
-    // loadModel();
-    // createVertexBuffer();
-    // createIndexBuffer();
-    createUniformBuffers();
-    descriptorSet = std::make_unique<VulkanDescriptorSet>(device.getDevice(),
+
+    createUniformBuffers();//TODO should probobly be in VulkanModel
+    descriptorSet = std::make_unique<VulkanDescriptorSet>(device.getDevice(),//TODO should probobly be in VulkanModel
                                                         MAX_FRAMES_IN_FLIGHT,
                                                         descriptorSetLayout->get_handle(), 
                                                         uniformBuffers,texture);
@@ -72,70 +67,6 @@ bool VulkanAPI::Init()
     // Cam.yaw = 0;
     return true;
 }
-
-// void VulkanAPI::loadModel()
-// {
-//     tinyobj::attrib_t attrib;
-//     std::vector<tinyobj::shape_t> shapes;
-//     std::vector<tinyobj::material_t> materials;
-//     std::string warn, err;
-
-//     if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, MODEL_PATH.c_str()))
-//     {
-//         throw std::runtime_error(warn + err);
-//     }
-
-//     std::unordered_map<Vertex, uint32_t> uniqueVertices{};
-//     for (const auto &shape : shapes)
-//     {
-//         for (const auto &index : shape.mesh.indices)
-//         {
-//             Vertex vertex{};
-//             vertex.pos = {attrib.vertices[3 * index.vertex_index + 0], attrib.vertices[3 * index.vertex_index + 1],
-//                           attrib.vertices[3 * index.vertex_index + 2]};
-
-//             vertex.texCoord = {attrib.texcoords[2 * index.texcoord_index + 0],
-//                                1.0f - attrib.texcoords[2 * index.texcoord_index + 1]};
-
-//             vertex.color = {1.0f, 1.0f, 1.0f};
-
-//             if (uniqueVertices.count(vertex) == 0)
-//             {
-//                 uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
-//                 vertices.push_back(vertex);
-//             }
-
-//             indices.push_back(uniqueVertices[vertex]);
-//         }
-//     }
-// }
-
-// void VulkanAPI::createVertexBuffer()
-// {
-//     VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
-//     VulkanBuffer stagingBuffer = VulkanBuffer::create_staging_buffer(device, bufferSize, vertices.data());
-
-//     vertexBuffer = (BufferBuilder(bufferSize)
-//                         .with_usage(VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT)
-//                         .with_vma_usage(VMA_MEMORY_USAGE_AUTO) // VMA_MEMORY_USAGE_GPU_ONLY
-//                         .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
-//                         .build_unique(device));
-//     VulkanBuffer::copyBuffer(command, stagingBuffer.get_handle(), vertexBuffer->get_handle(), bufferSize);
-// }
-
-// void VulkanAPI::createIndexBuffer()
-// {
-//     VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
-
-//     VulkanBuffer stagingBuffer = VulkanBuffer::create_staging_buffer(device, bufferSize, indices.data());
-
-//     indexBuffer = (BufferBuilder(bufferSize)
-//                        .with_usage(VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT)
-//                        .with_vma_usage(VMA_MEMORY_USAGE_AUTO) // VMA_MEMORY_USAGE_GPU_ONLY
-//                        .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
-//                        .build_unique(device));
-//     VulkanBuffer::copyBuffer(command, stagingBuffer.get_handle(), indexBuffer->get_handle(), bufferSize);
-// }
 
 void VulkanAPI::createUniformBuffers()
 {
@@ -204,7 +135,7 @@ void VulkanAPI::updateUniformBuffer(uint32_t currentImage) // TODO use actual ca
     ubo.view = Cam.getViewMatrix();
 
     ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    ubo.model = glm::mat4(1.0f);
+    ubo.model = model->getModelMatrix();//TODO shoul be seperate from camera cause per object
     // ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     ubo.proj = glm::perspective(glm::radians(45.0f), swapChain.getExtent().width / (float)swapChain.getExtent().height,
                                 0.1f, 10.0f);
@@ -293,9 +224,9 @@ bool VulkanAPI::Shutdown()
     descriptorSetLayout.reset();
 
     model.reset();
-    // indexBuffer.reset();  // This is to avoid a segmentation fault since the memory
-    // vertexBuffer.reset(); // already gets freed by VulkanMemoryManager::shutdown and
-                          // then the destructore tryes to do the same therefore we call the destructure before
+    // This is to avoid a segmentation fault since the memory
+    // already gets freed by VulkanMemoryManager::shutdown and
+    // then the destructore tryes to do the same therefore we call the destructure before
 
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
     {

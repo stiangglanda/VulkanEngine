@@ -30,21 +30,4 @@ void VulkanModel::createIndexBuffer(VulkanDevice &device, const std::weak_ptr<Vu
     VulkanBuffer::copyBuffer(command, stagingBuffer.get_handle(), indexBuffer->get_handle(), bufferSize);
 }
 
-// void VulkanModel::createUniformBuffers(VulkanDevice &device)
-// {
-//     VkDeviceSize bufferSize = sizeof(UniformBufferObject);
-//     uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-//     uniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
-
-//     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
-//     {
-//         uniformBuffers[i] = (BufferBuilder(bufferSize)
-//                                  .with_usage(VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT)
-//                                  .with_vma_usage(VMA_MEMORY_USAGE_CPU_TO_GPU)
-//                                  .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
-//                                  .build_unique(device));
-//         uniformBuffersMapped[i] = uniformBuffers[i]->map();
-//     }
-// }
-
 }
