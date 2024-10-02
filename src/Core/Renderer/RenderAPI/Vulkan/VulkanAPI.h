@@ -20,11 +20,12 @@
 #include "VulkanSwapChain.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/hash.hpp>
-#include "Vertex.h"
+// #include <glm/gtx/hash.hpp>
+#include "../../Vertex.h"
 #include "VulkanRenderPass.h"
 #include "UniformBufferObject.h"
 #include "VulkanDescriptorSet.h"
+#include "VulkanModel.h"
 
 struct GLFWwindow;
 
@@ -46,9 +47,9 @@ class VulkanAPI : public RenderAPI
     virtual void OnEvent(Event &e, float delta) override;
 
   private:
-    void loadModel();
-    void createVertexBuffer();
-    void createIndexBuffer();
+    // void loadModel();
+    // void createVertexBuffer();
+    // void createIndexBuffer();
     void createUniformBuffers();
 
     void createSyncObjects();
@@ -80,10 +81,12 @@ class VulkanAPI : public RenderAPI
     std::unique_ptr<VulkanDescriptorSetLayout> descriptorSetLayout;
     std::unique_ptr<VulkanPipeline> graphicsPipeline;
 
-    std::vector<Vertex> vertices;
-    std::vector<uint32_t> indices;
-    std::unique_ptr<VulkanBuffer> vertexBuffer;
-    std::unique_ptr<VulkanBuffer> indexBuffer;
+    std::unique_ptr<VulkanModel> model;
+
+    // std::vector<Vertex> vertices;
+    // std::vector<uint32_t> indices;
+    // std::unique_ptr<VulkanBuffer> vertexBuffer;
+    // std::unique_ptr<VulkanBuffer> indexBuffer;
     std::vector<std::unique_ptr<VulkanBuffer>> uniformBuffers;
     std::vector<void *> uniformBuffersMapped;
     std::unique_ptr<VulkanDescriptorSet> descriptorSet;
@@ -97,15 +100,3 @@ class VulkanAPI : public RenderAPI
 };
 
 } // namespace Core
-
-namespace std
-{
-template <> struct hash<Core::Vertex>
-{
-    size_t operator()(Core::Vertex const &vertex) const
-    {
-        return ((hash<glm::vec3>()(vertex.pos) ^ (hash<glm::vec3>()(vertex.color) << 1)) >> 1) ^
-               (hash<glm::vec2>()(vertex.texCoord) << 1);
-    }
-};
-} // namespace std

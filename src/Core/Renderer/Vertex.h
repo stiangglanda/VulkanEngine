@@ -1,7 +1,8 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <vulkan/vulkan.h>
-#include "../../../vepch.h"
+#include <glm/gtx/hash.hpp>
+#include "../vepch.h"
 
 namespace Core
 {
@@ -49,3 +50,14 @@ struct Vertex//TODO should not be in Vulkan folder and should not be vulkan spec
 };
 
 }
+namespace std
+{
+template <> struct hash<Core::Vertex>
+{
+    size_t operator()(Core::Vertex const &vertex) const
+    {
+        return ((hash<glm::vec3>()(vertex.pos) ^ (hash<glm::vec3>()(vertex.color) << 1)) >> 1) ^
+               (hash<glm::vec2>()(vertex.texCoord) << 1);
+    }
+};
+} // namespace std

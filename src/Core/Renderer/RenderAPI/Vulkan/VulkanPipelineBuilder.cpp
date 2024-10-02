@@ -1,6 +1,6 @@
 #include "VulkanPipelineBuilder.h"
 #include <fstream>
-#include "Vertex.h"
+#include "../../Vertex.h"
 #include "VulkanShader.h"
 
 namespace Core
