@@ -5,6 +5,7 @@
 #include "VulkanInstance.h"
 #include "VulkanSurface.h"
 #include "camera.h"
+#include <memory>
 #include <vulkan/vulkan.h>
 
 #define GLM_FORCE_RADIANS
@@ -24,6 +25,7 @@
 #include "UniformBufferObject.h"
 #include "VulkanDescriptorSet.h"
 #include "VulkanModel.h"
+#include "VulkanSync.h"
 
 struct GLFWwindow;
 
@@ -47,7 +49,6 @@ class VulkanAPI : public RenderAPI
   private:
     void createUniformBuffers();//TODO should probobly be in VulkanModel //TODO split UniformBuffers one for per frame and one per model
 
-    void createSyncObjects();
     void updateUniformBuffer(uint32_t currentImage);//TODO should probobly be in VulkanModel
     void recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex);
 
@@ -82,9 +83,7 @@ class VulkanAPI : public RenderAPI
     std::vector<void *> uniformBuffersMapped;//TODO should probobly be in VulkanModel
     std::unique_ptr<VulkanDescriptorSet> descriptorSet;//TODO should probobly be in VulkanModel
 
-    std::vector<VkSemaphore> imageAvailableSemaphores;
-    std::vector<VkSemaphore> renderFinishedSemaphores;
-    std::vector<VkFence> inFlightFences;
+    std::unique_ptr<VulkanSync> sync;
     uint32_t currentFrame = 0;
 
     bool framebufferResized = false;

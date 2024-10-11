@@ -8,6 +8,7 @@
 #include "VulkanBuffer.h"
 
 #include "VulkanMemoryManager.h"
+#include "VulkanSync.h"
 
 const std::string MODEL_PATH = RESOURCES_PATH "viking_room.obj";
 const std::string TEXTURE_PATH = RESOURCES_PATH "viking_room.png";
@@ -57,7 +58,7 @@ bool VulkanAPI::Init()
 
     command->createCommandBuffers(MAX_FRAMES_IN_FLIGHT);
 
-    createSyncObjects();
+    sync=std::make_unique<VulkanSync>(device.getDevice(),MAX_FRAMES_IN_FLIGHT);
     // glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     // Cam.velocity = glm::vec3(0.f);
 
@@ -82,32 +83,6 @@ void VulkanAPI::createUniformBuffers()
                                  .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
                                  .build_unique(device));
         uniformBuffersMapped[i] = uniformBuffers[i]->map();
-    }
-}
-
-void VulkanAPI::createSyncObjects()
-{
-    imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
-    renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
-    inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
-
-    VkSemaphoreCreateInfo semaphoreInfo{};
-    semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-
-    VkFenceCreateInfo fenceInfo{};
-    fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-    fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-
-    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
-    {
-        if (vkCreateSemaphore(device.getDevice(), &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) !=
-                VK_SUCCESS ||
-            vkCreateSemaphore(device.getDevice(), &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) !=
-                VK_SUCCESS ||
-            vkCreateFence(device.getDevice(), &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to create synchronization objects for a frame!");
-        }
     }
 }
 
@@ -150,11 +125,14 @@ void VulkanAPI::Update(float delta)
 
 void VulkanAPI::Draw()
 {
-    vkWaitForFences(device.getDevice(), 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
+    vkWaitForFences(device.getDevice(), 1, 
+           sync->get_inFlightFences_handle_by_index(currentFrame), 
+           VK_TRUE, UINT64_MAX);
 
     uint32_t imageIndex;
     VkResult result = vkAcquireNextImageKHR(device.getDevice(), swapChain.getSwapChain(), UINT64_MAX,
-                                            imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
+                                 sync->get_imageAvailableSemaphores_handle_by_index(currentFrame), 
+                                     VK_NULL_HANDLE, &imageIndex);
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR)
     {
@@ -168,19 +146,20 @@ void VulkanAPI::Draw()
 
     updateUniformBuffer(currentFrame);
 
-    vkResetFences(device.getDevice(), 1, &inFlightFences[currentFrame]);
+    vkResetFences(device.getDevice(), 1, sync->get_inFlightFences_handle_by_index(currentFrame));
 
     command->ResetCommandBuffer(currentFrame);
     recordCommandBuffer(currentFrame, imageIndex);
 
-    command->submit(currentFrame, inFlightFences[currentFrame], imageAvailableSemaphores[currentFrame],
-                    renderFinishedSemaphores[currentFrame]);
+    command->submit(currentFrame, *sync->get_inFlightFences_handle_by_index(currentFrame), 
+     sync->get_imageAvailableSemaphores_handle_by_index(currentFrame),
+  *sync->get_renderFinishedSemaphores_handle_by_index(currentFrame));
 
     VkPresentInfoKHR presentInfo{};
     presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 
     presentInfo.waitSemaphoreCount = 1;
-    presentInfo.pWaitSemaphores = &renderFinishedSemaphores[currentFrame];
+    presentInfo.pWaitSemaphores = sync->get_renderFinishedSemaphores_handle_by_index(currentFrame);
 
     VkSwapchainKHR swapChains[] = {swapChain.getSwapChain()};
     presentInfo.swapchainCount = 1;
@@ -228,12 +207,7 @@ bool VulkanAPI::Shutdown()
     // already gets freed by VulkanMemoryManager::shutdown and
     // then the destructore tryes to do the same therefore we call the destructure before
 
-    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
-    {
-        vkDestroySemaphore(device.getDevice(), renderFinishedSemaphores[i], nullptr);
-        vkDestroySemaphore(device.getDevice(), imageAvailableSemaphores[i], nullptr);
-        vkDestroyFence(device.getDevice(), inFlightFences[i], nullptr);
-    }
+    sync.reset();
     command->Shutdown();
 
     VulkanMemoryManager::shutdown();
@@ -264,9 +238,11 @@ void VulkanAPI::recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex)
     renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
     renderPassInfo.pClearValues = clearValues.data();
 
-    vkCmdBeginRenderPass(command->getCommandBuffer(currentFrame), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+    vkCmdBeginRenderPass(command->getCommandBuffer(currentFrame), 
+       &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-    vkCmdBindPipeline(command->getCommandBuffer(currentFrame), VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->get_handle());
+    vkCmdBindPipeline(command->getCommandBuffer(currentFrame), 
+    VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->get_handle());
 
     VkViewport viewport{};
     viewport.x = 0.0f;
@@ -284,11 +260,18 @@ void VulkanAPI::recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex)
 
     VkBuffer vertexBuffers[] = {model->get_VertexBuffer_handle()};
     VkDeviceSize offsets[] = {0};
-    vkCmdBindVertexBuffers(command->getCommandBuffer(currentFrame), 0, 1, vertexBuffers, offsets);
-    vkCmdBindIndexBuffer(command->getCommandBuffer(currentFrame), model->get_IndexBuffer_handle(), 0, VK_INDEX_TYPE_UINT32);
-    vkCmdBindDescriptorSets(command->getCommandBuffer(currentFrame), VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->get_PipelineLayout(), 0,
-                            1, descriptorSet->get_handle_ptr_at_index(currentFrame), 0, nullptr);
-    vkCmdDrawIndexed(command->getCommandBuffer(currentFrame), static_cast<uint32_t>(model->getIndicesSize()), 1, 0, 0, 0);
+    vkCmdBindVertexBuffers(command->getCommandBuffer(currentFrame), 
+             0, 1, vertexBuffers, offsets);
+    vkCmdBindIndexBuffer(command->getCommandBuffer(currentFrame), 
+                 model->get_IndexBuffer_handle(), 0, VK_INDEX_TYPE_UINT32);
+    vkCmdBindDescriptorSets(command->getCommandBuffer(currentFrame), 
+         VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->get_PipelineLayout(), 0,
+                            1, 
+                            descriptorSet->get_handle_ptr_at_index(currentFrame), 
+                            0, nullptr);
+    vkCmdDrawIndexed(command->getCommandBuffer(currentFrame), 
+                    static_cast<uint32_t>(model->getIndicesSize()), 
+                    1, 0, 0, 0);
 
     vkCmdEndRenderPass(command->getCommandBuffer(currentFrame));
 
