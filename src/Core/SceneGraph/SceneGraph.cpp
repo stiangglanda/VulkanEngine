@@ -1,7 +1,9 @@
 #include "SceneGraph.h"
-#include <utility>
 
-Node::Node(const std::string& name) : m_name(name) {}
+namespace Core 
+{
+
+Node::Node(std::string name) : m_name(name) {}
 
 void Node::addChild(std::shared_ptr<Node> child) {
     if (child) {
@@ -37,10 +39,12 @@ glm::mat4 Node::getWorldTransform() const {
 SceneGraph::SceneGraph() : m_root(std::make_shared<Node>("Root")) {}
 
 void SceneGraph::setRoot(std::shared_ptr<Node> root) {
-    m_root = std::move(root);
+    m_root = root;
 }
 
 void SceneGraph::update() {
     // Traverse the scene graph and update as needed
     // This is where you might update animations, physics, etc.
+}
+
 }

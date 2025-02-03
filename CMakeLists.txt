@@ -73,6 +73,7 @@ add_library(Core ${IMGUI_SOURCES} "vendor/stb_image.h" "src/Core/Core.cpp" "src/
 "src/Core/Renderer/RenderAPI/Vulkan/VulkanSync.h" "src/Core/Renderer/RenderAPI/Vulkan/VulkanSync.cpp"
 "src/Core/Renderer/Model.h" "src/Core/Renderer/Model.cpp"
 "src/Core/SceneGraph/SceneGraph.h" "src/Core/SceneGraph/SceneGraph.cpp"
+"src/Core/SceneGraph/MeshNode.h" "src/Core/SceneGraph/MeshNode.cpp"
 "src/Core/Renderer/RenderAPI/Vulkan/UniformBufferObject.h")
 
 set_property(TARGET Core PROPERTY CXX_STANDARD 20)

@@ -17,6 +17,7 @@
 #include <Application.h>
 #include <Core.h>
 #include <EntryPoint.h>
+#include <SceneGraph/MeshNode.h>
 //
 // #include <algorithm>
 // #include <array>
@@ -1821,6 +1822,7 @@ class Sandbox : public Core::Application
   public:
     Sandbox(const Core::ApplicationSpecification &specification) : Core::Application(specification)
     {
+      auto meshNode1 = std::make_shared<Core::MeshNode>("Node1");
     }
 
     ~Sandbox()

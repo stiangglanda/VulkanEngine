@@ -2,13 +2,14 @@
 #include "SceneGraph.h"
 #include "../Renderer/Model.h"
 
-namespace Core {
+namespace Core 
+{
 
-class MeshNode : public Node {
+class MeshNode : public Node 
+{
 public:
-    explicit MeshNode(const std::string& name = "MeshNode");
-    explicit MeshNode(const std::string& modelPath, const std::string& name = "MeshNode");
-    ~MeshNode() = default;
+    MeshNode(const std::string& name = "MeshNode");
+    virtual ~MeshNode() = default;
 
     void setModel(std::shared_ptr<Model> model);
     [[nodiscard]] std::shared_ptr<Model> getModel() const { return m_model; }

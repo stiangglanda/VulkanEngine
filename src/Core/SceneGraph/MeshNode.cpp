@@ -7,12 +7,6 @@ MeshNode::MeshNode(const std::string& name)
 {
 }
 
-MeshNode::MeshNode(const std::string& modelPath, const std::string& name)
-    : Node(name)
-{
-    loadModel(modelPath);
-}
-
 void MeshNode::setModel(std::shared_ptr<Model> model)
 {
     m_model = std::move(model);
