@@ -7,6 +7,7 @@
 #include "Window.h"
 #include "vepch.h"
 #include <GLFW/glfw3.h>
+#include "SceneGraph/SceneGraph.h"
 
 int main(int argc, char **argv);
 
