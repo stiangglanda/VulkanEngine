@@ -17,8 +17,8 @@ public:
     void removeChild(std::shared_ptr<Node> child);
     void setParent(std::shared_ptr<Node> parent);
     
-    void setLocalTransform(const glm::mat4& transform);
-    glm::mat4 getWorldTransform() const;
+    virtual void setLocalTransform(const glm::mat4& transform);
+    [[nodiscard]] virtual glm::mat4 getWorldTransform() const;
     
     std::string getName() const { return m_name; }
     std::vector<std::shared_ptr<Node>>& getChildren() { return m_children; }

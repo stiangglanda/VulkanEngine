@@ -1,5 +1,4 @@
 #include "SceneGraph.h"
-
 #include <utility>
 
 Node::Node(const std::string& name) : m_name(name) {}
