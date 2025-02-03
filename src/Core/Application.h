@@ -51,6 +51,9 @@ class Application
     {
         return *s_Instance;
     }
+    
+    SceneGraph& GetSceneGraph() { return *m_SceneGraph; }
+    [[nodiscard]] const SceneGraph& GetSceneGraph() const { return *m_SceneGraph; }
 
   private:
     void Run();
@@ -62,6 +65,7 @@ class Application
 
     std::unique_ptr<Window> mWindow;
     std::unique_ptr<Timer> mTimer;
+    std::unique_ptr<SceneGraph> m_SceneGraph;
     
     bool mRunning = true;
     bool mMinimized = false;
