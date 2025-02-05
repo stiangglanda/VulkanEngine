@@ -22,6 +22,8 @@ Application::Application(const ApplicationSpecification &specification) : m_Spec
     mWindow->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
     mTimer = std::make_unique<Timer>();
     mTimer->Start();
+
+    mSceneGraph = std::make_unique<SceneGraph>();
     VE_CORE_INFO("Application Constructor end");
 }
 

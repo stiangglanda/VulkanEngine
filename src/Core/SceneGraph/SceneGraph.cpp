@@ -7,7 +7,7 @@ Node::Node(std::string name) : m_name(name) {}
 
 void Node::addChild(std::shared_ptr<Node> child) {
     if (child) {
-        child->setParent(std::shared_ptr<Node>(this));
+        child->setParent(shared_from_this());
         m_children.push_back(child);
     }
 }
@@ -36,7 +36,10 @@ glm::mat4 Node::getWorldTransform() const {
     return transform;
 }
 
-SceneGraph::SceneGraph() : m_root(std::make_shared<Node>("Root")) {}
+SceneGraph::SceneGraph() 
+{
+    m_root=std::make_shared<Node>("Root");
+}
 
 void SceneGraph::setRoot(std::shared_ptr<Node> root) {
     m_root = root;

@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #define GLFW_INCLUDE_VULKAN
 #include "Events/ApplicationEvent.h"
 #include "Events/Event.h"
@@ -7,6 +8,7 @@
 #include "Window.h"
 #include "vepch.h"
 #include <GLFW/glfw3.h>
+#include "SceneGraph/SceneGraph.h"
 
 int main(int argc, char **argv);
 
@@ -50,6 +52,21 @@ class Application
     {
         return *s_Instance;
     }
+    
+    void addChild(std::shared_ptr<Node> child)
+    {
+        mSceneGraph->getRoot()->addChild(child);
+    }
+
+    SceneGraph& GetSceneGraph()
+    {
+        return *mSceneGraph;
+    }
+
+    const SceneGraph& GetSceneGraph() const
+    {
+        return *mSceneGraph;
+    }
 
   private:
     void Run();
@@ -61,6 +78,7 @@ class Application
 
     std::unique_ptr<Window> mWindow;
     std::unique_ptr<Timer> mTimer;
+    std::unique_ptr<SceneGraph> mSceneGraph;
     
     bool mRunning = true;
     bool mMinimized = false;

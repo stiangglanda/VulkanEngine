@@ -7,7 +7,7 @@
 namespace Core 
 {
 
-class Node {
+class Node: public std::enable_shared_from_this<Node> {
 public:
     Node(std::string name);
     ~Node() = default;
@@ -35,7 +35,7 @@ public:
     ~SceneGraph() = default;
 
     void setRoot(std::shared_ptr<Node> root);
-    std::shared_ptr<Node> getRoot() const { return m_root; }
+    std::shared_ptr<Node> getRoot() { return m_root; }
     void update();
 
 private:
