@@ -47,9 +47,9 @@ class VulkanAPI : public RenderAPI
     virtual void OnEvent(Event &e, float delta) override;
 
   private:
-    void createUniformBuffers();//TODO should probobly be in VulkanModel //TODO split UniformBuffers one for per frame and one per model
+    //void createUniformBuffers();//TODO should probobly be in VulkanModel //TODO split UniformBuffers one for per frame and one per model
 
-    void updateUniformBuffer(uint32_t currentImage);//TODO should probobly be in VulkanModel
+    //void updateUniformBuffer(uint32_t currentImage);//TODO should probobly be in VulkanModel
     void recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex);
 
 #ifdef NDEBUG
@@ -79,8 +79,8 @@ class VulkanAPI : public RenderAPI
 
     std::unique_ptr<VulkanModel> model;
 
-    std::vector<std::unique_ptr<VulkanBuffer>> uniformBuffers;//TODO should probobly be in VulkanModel
-    std::vector<void *> uniformBuffersMapped;//TODO should probobly be in VulkanModel
+    //std::vector<std::unique_ptr<VulkanBuffer>> uniformBuffers;//TODO should probobly be in VulkanModel
+    //std::vector<void *> uniformBuffersMapped;//TODO should probobly be in VulkanModel
     std::unique_ptr<VulkanDescriptorSet> descriptorSet;//TODO should probobly be in VulkanModel
 
     std::unique_ptr<VulkanSync> sync;

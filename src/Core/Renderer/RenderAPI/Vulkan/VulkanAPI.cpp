@@ -48,13 +48,13 @@ bool VulkanAPI::Init()
     texture->createTextureImageView();
     texture->createTextureSampler();
 
-    model = std::make_unique<VulkanModel>(MODEL_PATH, device, command);
+    model = std::make_unique<VulkanModel>(MODEL_PATH, device, command, MAX_FRAMES_IN_FLIGHT);
 
-    createUniformBuffers();//TODO should probobly be in VulkanModel
+    //createUniformBuffers();//TODO should probobly be in VulkanModel
     descriptorSet = std::make_unique<VulkanDescriptorSet>(device.getDevice(),//TODO should probobly be in VulkanModel
                                                         MAX_FRAMES_IN_FLIGHT,
                                                         descriptorSetLayout->get_handle(), 
-                                                        uniformBuffers,texture);
+                                                        model->get_uniformBuffers(),texture);
 
     command->createCommandBuffers(MAX_FRAMES_IN_FLIGHT);
 
@@ -69,22 +69,22 @@ bool VulkanAPI::Init()
     return true;
 }
 
-void VulkanAPI::createUniformBuffers()
-{
-    VkDeviceSize bufferSize = sizeof(UniformBufferObject);
-    uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-    uniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
+// void VulkanAPI::createUniformBuffers()
+// {
+//     VkDeviceSize bufferSize = sizeof(UniformBufferObject);
+//     uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+//     uniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
 
-    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
-    {
-        uniformBuffers[i] = (BufferBuilder(bufferSize)
-                                 .with_usage(VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT)
-                                 .with_vma_usage(VMA_MEMORY_USAGE_CPU_TO_GPU)
-                                 .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
-                                 .build_unique(device));
-        uniformBuffersMapped[i] = uniformBuffers[i]->map();
-    }
-}
+//     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+//     {
+//         uniformBuffers[i] = (BufferBuilder(bufferSize)
+//                                  .with_usage(VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT)
+//                                  .with_vma_usage(VMA_MEMORY_USAGE_CPU_TO_GPU)
+//                                  .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
+//                                  .build_unique(device));
+//         uniformBuffersMapped[i] = uniformBuffers[i]->map();
+//     }
+// }
 
 void VulkanAPI::OnEvent(Core::Event &e, float delta)
 {
@@ -98,25 +98,25 @@ void VulkanAPI::OnEvent(Core::Event &e, float delta)
     // }
 }
 
-void VulkanAPI::updateUniformBuffer(uint32_t currentImage) // TODO use actual camera
-{
-    static auto startTime = std::chrono::high_resolution_clock::now();
-    auto currentTime = std::chrono::high_resolution_clock::now();
-    float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+// void VulkanAPI::updateUniformBuffer(uint32_t currentImage) // TODO use actual camera
+// {
+//     static auto startTime = std::chrono::high_resolution_clock::now();
+//     auto currentTime = std::chrono::high_resolution_clock::now();
+//     float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
-    // Cam.update();
-    UniformBufferObject ubo{};
+//     // Cam.update();
+//     UniformBufferObject ubo{};
 
-    ubo.view = Cam.getViewMatrix();
+//     ubo.view = Cam.getViewMatrix();
 
-    ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    ubo.model = model->getModelMatrix();//TODO shoul be seperate from camera cause per object
-    // ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    ubo.proj = glm::perspective(glm::radians(45.0f), swapChain.getExtent().width / (float)swapChain.getExtent().height,
-                                0.1f, 10.0f);
-    ubo.proj[1][1] *= -1;
-    memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
-}
+//     ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+//     ubo.model = model->getModelMatrix();//TODO shoul be seperate from camera cause per object
+//     // ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+//     ubo.proj = glm::perspective(glm::radians(45.0f), swapChain.getExtent().width / (float)swapChain.getExtent().height,
+//                                 0.1f, 10.0f);
+//     ubo.proj[1][1] *= -1;
+//     memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
+// }
 
 void VulkanAPI::Update(float delta)
 {
@@ -144,7 +144,9 @@ void VulkanAPI::Draw()
         throw std::runtime_error("failed to acquire swap chain image!");
     }
 
-    updateUniformBuffer(currentFrame);
+    
+    model->updateUniformBuffer(currentFrame, Cam, swapChain.getExtent().width / (float)swapChain.getExtent().height);
+    
 
     vkResetFences(device.getDevice(), 1, sync->get_inFlightFences_handle_by_index(currentFrame));
 
@@ -190,12 +192,12 @@ bool VulkanAPI::Shutdown()
     
     renderPass.reset();
 
-    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
-    {
-        uniformBuffers[i].reset(); // This is to avoid a segmentation fault since the memory
-                                   // already gets freed by VulkanMemoryManager::shutdown and
-                                   // then the destructore tryes to do the same therefore we call the destructure before
-    }
+    // for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+    // {
+    //     uniformBuffers[i].reset(); // This is to avoid a segmentation fault since the memory
+    //                                // already gets freed by VulkanMemoryManager::shutdown and
+    //                                // then the destructore tryes to do the same therefore we call the destructure before
+    // }
 
     descriptorSet.reset();
     texture.reset();
