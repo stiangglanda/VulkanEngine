@@ -1,8 +1,6 @@
 #include "VulkanModel.h"
 #include "UniformBufferObject.h"
 
-const std::string TEXTURE_PATH = RESOURCES_PATH "viking_room.png";
-
 namespace Core
 {
 
@@ -70,7 +68,7 @@ void VulkanModel::updateUniformBuffer(uint32_t currentImage, Camera& Cam, float 
     memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
 }
 
-VulkanModel::VulkanModel(const std::string model_path, VulkanDevice &device, const std::weak_ptr<VulkanCommandBuffer> command, const int max_frames_in_flight) : Model(model_path) 
+VulkanModel::VulkanModel(const std::string model_path, const std::string texture_path, VulkanDevice &device, const std::weak_ptr<VulkanCommandBuffer> command, const int max_frames_in_flight) : Model(model_path) 
 {
     texture = ImageBuilder(0, 0) // with the option with_texture this will be set later
               .with_format(VK_FORMAT_R8G8B8A8_SRGB)
@@ -79,7 +77,7 @@ VulkanModel::VulkanModel(const std::string model_path, VulkanDevice &device, con
               .with_tiling(VK_IMAGE_TILING_OPTIMAL)
               .with_vma_usage(VMA_MEMORY_USAGE_AUTO)
               .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
-              .with_texture(TEXTURE_PATH, command)
+              .with_texture(texture_path, command)
               .build_shared(device);
 
     texture->createTextureImageView();

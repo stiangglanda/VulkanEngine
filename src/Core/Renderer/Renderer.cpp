@@ -35,7 +35,7 @@ void Renderer::OnWindowResize(uint32_t width, uint32_t height)
 {
 }
 
-std::unique_ptr<Model> Renderer::createModel(const std::string model_path, const std::string texture_path)
+std::shared_ptr<Model> Renderer::loadModel(const std::string model_path, const std::string texture_path)
 {
     VE_CORE_INFO("Create Model");
     switch (RenderAPI::GetAPI())

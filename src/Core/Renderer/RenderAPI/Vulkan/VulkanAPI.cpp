@@ -11,6 +11,7 @@
 #include "VulkanSync.h"
 
 const std::string MODEL_PATH = RESOURCES_PATH "viking_room.obj";
+const std::string TEXTURE_PATH = RESOURCES_PATH "viking_room.png";
 
 namespace Core
 {
@@ -34,7 +35,7 @@ bool VulkanAPI::Init()
 
     swapChain.createDepthResourcesAndFramebuffers(device, renderPass->get_handle());
 
-    model = std::make_unique<VulkanModel>(MODEL_PATH, device, command, MAX_FRAMES_IN_FLIGHT);
+    model = std::make_unique<VulkanModel>(MODEL_PATH, TEXTURE_PATH, device, command, MAX_FRAMES_IN_FLIGHT);
 
     descriptorSet = std::make_unique<VulkanDescriptorSet>(device.getDevice(),//TODO should probobly be in VulkanModel
                                                         MAX_FRAMES_IN_FLIGHT,
@@ -48,9 +49,9 @@ bool VulkanAPI::Init()
     return true;
 }
 
-std::unique_ptr<Model> VulkanAPI::LoadModel(const std::string model_path, const std::string texture_path)
+std::shared_ptr<Model> VulkanAPI::LoadModel(const std::string model_path, const std::string texture_path)
 {
-    return std::make_unique<VulkanModel>(model_path, device, command, MAX_FRAMES_IN_FLIGHT);
+    return std::make_shared<VulkanModel>(model_path, texture_path, device, command, MAX_FRAMES_IN_FLIGHT);
 }
 
 

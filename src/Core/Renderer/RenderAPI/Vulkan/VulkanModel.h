@@ -12,7 +12,7 @@ namespace Core
 class VulkanModel : public Model 
 {
 public:
-    VulkanModel(const std::string model_path, VulkanDevice &device, const std::weak_ptr<VulkanCommandBuffer> command, const int max_frames_in_flight);
+    VulkanModel(const std::string model_path, const std::string texture_path, VulkanDevice &device, const std::weak_ptr<VulkanCommandBuffer> command, const int max_frames_in_flight);
     ~VulkanModel() { cleanup(); }
 
     VkBuffer get_VertexBuffer_handle() const { return vertexBuffer->get_handle(); }
