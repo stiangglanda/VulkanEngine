@@ -49,7 +49,9 @@ bool VulkanAPI::Init()
     // texture->createTextureSampler();
 
     model = std::make_unique<VulkanModel>(MODEL_PATH, device, command, MAX_FRAMES_IN_FLIGHT);
-
+    
+    model2 = std::make_unique<VulkanModel>(MODEL_PATH, device, command, MAX_FRAMES_IN_FLIGHT);
+    model2->setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(5.0f, 0.0f, 0.0f)));
     //createUniformBuffers();//TODO should probobly be in VulkanModel
     descriptorSet = std::make_unique<VulkanDescriptorSet>(device.getDevice(),//TODO should probobly be in VulkanModel
                                                         MAX_FRAMES_IN_FLIGHT,
@@ -146,6 +148,7 @@ void VulkanAPI::Draw()
 
     
     model->updateUniformBuffer(currentFrame, Cam, swapChain.getExtent().width / (float)swapChain.getExtent().height);
+    model2->updateUniformBuffer(currentFrame, Cam, swapChain.getExtent().width / (float)swapChain.getExtent().height);
     
 
     vkResetFences(device.getDevice(), 1, sync->get_inFlightFences_handle_by_index(currentFrame));
@@ -205,6 +208,8 @@ bool VulkanAPI::Shutdown()
     descriptorSetLayout.reset();
 
     model.reset();
+    model2.reset();
+    
     // This is to avoid a segmentation fault since the memory
     // already gets freed by VulkanMemoryManager::shutdown and
     // then the destructore tryes to do the same therefore we call the destructure before
@@ -303,7 +308,7 @@ void VulkanAPI::recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex)
     vkUpdateDescriptorSets(device.getDevice(), descriptorWrites.size(), descriptorWrites.data(), 0, nullptr);
 
 
-    
+
     vkCmdBindDescriptorSets(command->getCommandBuffer(currentFrame), 
          VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->get_PipelineLayout(), 0,
                             1, 
@@ -312,6 +317,60 @@ void VulkanAPI::recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex)
     vkCmdDrawIndexed(command->getCommandBuffer(currentFrame), 
                     static_cast<uint32_t>(model->getIndicesSize()), 
                     1, 0, 0, 0);
+
+    VkBuffer vertexBuffers2[] = {model2->get_VertexBuffer_handle()};
+    VkDeviceSize offsets2[] = {0};
+    vkCmdBindVertexBuffers(command->getCommandBuffer(currentFrame), 
+             0, 1, vertexBuffers2, offsets2);
+    vkCmdBindIndexBuffer(command->getCommandBuffer(currentFrame), 
+                 model2->get_IndexBuffer_handle(), 0, VK_INDEX_TYPE_UINT32);
+
+
+
+    // Update descriptor set for both UBO and texture
+    std::array<VkWriteDescriptorSet, 2> descriptorWrites2{};
+
+    // UBO update
+    VkDescriptorBufferInfo bufferInfo2{};
+    bufferInfo2.buffer = model2->get_uniformBuffersAt(currentFrame)->get_handle();
+    bufferInfo2.offset = 0;
+    bufferInfo2.range = sizeof(UniformBufferObject);
+
+    descriptorWrites2[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites2[0].dstSet = *descriptorSet->get_handle_ptr_at_index(currentFrame);
+    descriptorWrites2[0].dstBinding = 0;  // UBO binding
+    descriptorWrites2[0].dstArrayElement = 0;
+    descriptorWrites2[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites2[0].descriptorCount = 1;
+    descriptorWrites2[0].pBufferInfo = &bufferInfo2;
+
+    // Texture update
+    VkDescriptorImageInfo imageInfo2{};
+    imageInfo2.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo2.imageView = model2->get_texture()->getImageView();
+    imageInfo2.sampler = model2->get_texture()->getSampler();
+
+    descriptorWrites2[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites2[1].dstSet = *descriptorSet->get_handle_ptr_at_index(currentFrame);
+    descriptorWrites2[1].dstBinding = 1;  // Texture binding
+    descriptorWrites2[1].dstArrayElement = 0;
+    descriptorWrites2[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites2[1].descriptorCount = 1;
+    descriptorWrites2[1].pImageInfo = &imageInfo2;
+
+    vkUpdateDescriptorSets(device.getDevice(), descriptorWrites2.size(), descriptorWrites2.data(), 0, nullptr);
+
+
+
+    vkCmdBindDescriptorSets(command->getCommandBuffer(currentFrame), 
+         VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->get_PipelineLayout(), 0,
+                            1, 
+                            descriptorSet->get_handle_ptr_at_index(currentFrame), 
+                            0, nullptr);
+    vkCmdDrawIndexed(command->getCommandBuffer(currentFrame), 
+                    static_cast<uint32_t>(model2->getIndicesSize()), 
+                    1, 0, 0, 0);
+                
 
     vkCmdEndRenderPass(command->getCommandBuffer(currentFrame));
 

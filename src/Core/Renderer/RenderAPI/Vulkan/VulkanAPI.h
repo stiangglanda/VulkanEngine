@@ -78,6 +78,7 @@ class VulkanAPI : public RenderAPI
     std::unique_ptr<VulkanPipeline> graphicsPipeline;
 
     std::unique_ptr<VulkanModel> model;
+    std::unique_ptr<VulkanModel> model2;
 
     //std::vector<std::unique_ptr<VulkanBuffer>> uniformBuffers;//TODO should probobly be in VulkanModel
     //std::vector<void *> uniformBuffersMapped;//TODO should probobly be in VulkanModel
