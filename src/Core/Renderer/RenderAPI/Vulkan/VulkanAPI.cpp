@@ -11,7 +11,7 @@
 #include "VulkanSync.h"
 
 const std::string MODEL_PATH = RESOURCES_PATH "viking_room.obj";
-const std::string TEXTURE_PATH = RESOURCES_PATH "viking_room.png";
+//const std::string TEXTURE_PATH = RESOURCES_PATH "viking_room.png";
 
 namespace Core
 {
@@ -35,18 +35,18 @@ bool VulkanAPI::Init()
 
     swapChain.createDepthResourcesAndFramebuffers(device, renderPass->get_handle());
 
-    texture = ImageBuilder(0, 0) // with the option with_texture this will be set later
-                  .with_format(VK_FORMAT_R8G8B8A8_SRGB)
-                  .with_image_type(VK_IMAGE_TYPE_2D)
-                  .with_usage(VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT)
-                  .with_tiling(VK_IMAGE_TILING_OPTIMAL)
-                  .with_vma_usage(VMA_MEMORY_USAGE_AUTO)
-                  .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
-                  .with_texture(TEXTURE_PATH, command)
-                  .build_shared(device);
+    // texture = ImageBuilder(0, 0) // with the option with_texture this will be set later
+    //               .with_format(VK_FORMAT_R8G8B8A8_SRGB)
+    //               .with_image_type(VK_IMAGE_TYPE_2D)
+    //               .with_usage(VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT)
+    //               .with_tiling(VK_IMAGE_TILING_OPTIMAL)
+    //               .with_vma_usage(VMA_MEMORY_USAGE_AUTO)
+    //               .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
+    //               .with_texture(TEXTURE_PATH, command)
+    //               .build_shared(device);
 
-    texture->createTextureImageView();
-    texture->createTextureSampler();
+    // texture->createTextureImageView();
+    // texture->createTextureSampler();
 
     model = std::make_unique<VulkanModel>(MODEL_PATH, device, command, MAX_FRAMES_IN_FLIGHT);
 
@@ -54,7 +54,7 @@ bool VulkanAPI::Init()
     descriptorSet = std::make_unique<VulkanDescriptorSet>(device.getDevice(),//TODO should probobly be in VulkanModel
                                                         MAX_FRAMES_IN_FLIGHT,
                                                         descriptorSetLayout->get_handle(), 
-                                                        model->get_uniformBuffers(),texture);
+                                                        model->get_uniformBuffers(),model->get_texture());
 
     command->createCommandBuffers(MAX_FRAMES_IN_FLIGHT);
 
@@ -200,7 +200,7 @@ bool VulkanAPI::Shutdown()
     // }
 
     descriptorSet.reset();
-    texture.reset();
+    //texture.reset();
 
     descriptorSetLayout.reset();
 

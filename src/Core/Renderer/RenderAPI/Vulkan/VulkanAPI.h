@@ -66,7 +66,7 @@ class VulkanAPI : public RenderAPI
     VulkanDebug vkDebug;     // Vulkan debug output handle
     VulkanSurface surface;   // Vulkan window surface
     VulkanDevice device;     // Vulkan device for commands // GPU chosen as the default device
-    std::shared_ptr<VulkanImage> texture;//TODO should probobly be in VulkanModel
+    //std::shared_ptr<VulkanImage> texture;//TODO should probobly be in VulkanModel
     std::shared_ptr<VulkanCommandBuffer> command;
 
     Camera Cam;
