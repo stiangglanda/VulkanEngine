@@ -7,11 +7,6 @@ MeshNode::MeshNode(const std::string& name)
 {
 }
 
-void MeshNode::setModel(std::shared_ptr<Model> model)
-{
-    m_model = std::move(model);
-}
-
 void MeshNode::setLocalTransform(const glm::mat4& transform)
 {
     Node::setLocalTransform(transform);

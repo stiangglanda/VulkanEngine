@@ -14,6 +14,10 @@
 // #define TINYOBJLOADER_IMPLEMENTATION
 // #include <tiny_obj_loader.h>
 //
+#include "Renderer/Renderer.h"
+#include "SceneGraph/MeshNode.h"
+#include "gtx/transform.hpp"
+#include "matrix.hpp"
 #include <Application.h>
 #include <Core.h>
 #include <EntryPoint.h>
@@ -1817,13 +1821,18 @@
 //
 //     // return EXIT_SUCCESS;
 // }
+const std::string MODEL_PATH = RESOURCES_PATH "viking_room.obj";
+const std::string TEXTURE_PATH = RESOURCES_PATH "viking_room.png";
 
 class Sandbox : public Core::Application
 {
   public:
     Sandbox(const Core::ApplicationSpecification &specification) : Core::Application(specification)
     {
-      addChild(std::make_shared<Core::Node>("Test"));
+      auto mesh =std::make_shared<Core::Node>("Mesh");
+      mesh->setModel(Core::Renderer::loadModel(MODEL_PATH, TEXTURE_PATH));
+      mesh->getModel()->setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(3.0f, 0.0f, 0.0f)));
+      GetSceneGraph().getRoot()->addChild(mesh);
       //TODO Rewrite whole ScenGraph
     }
 

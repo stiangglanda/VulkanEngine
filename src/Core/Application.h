@@ -53,11 +53,6 @@ class Application
         return *s_Instance;
     }
     
-    void addChild(std::shared_ptr<Node> child)
-    {
-        mSceneGraph->getRoot()->addChild(child);
-    }
-
     SceneGraph& GetSceneGraph()
     {
         return *mSceneGraph;

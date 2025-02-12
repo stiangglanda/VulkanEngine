@@ -36,6 +36,11 @@ glm::mat4 Node::getWorldTransform() const {
     return transform;
 }
 
+void Node::setModel(std::shared_ptr<Model> model)
+{
+    m_model = std::move(model);
+}
+
 SceneGraph::SceneGraph() 
 {
     m_root=std::make_shared<Node>("Root");
