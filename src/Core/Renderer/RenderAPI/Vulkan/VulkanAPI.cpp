@@ -48,6 +48,12 @@ bool VulkanAPI::Init()
     return true;
 }
 
+std::unique_ptr<Model> VulkanAPI::LoadModel(const std::string model_path, const std::string texture_path)
+{
+    return std::make_unique<VulkanModel>(model_path, device, command, MAX_FRAMES_IN_FLIGHT);
+}
+
+
 void VulkanAPI::OnEvent(Core::Event &e, float delta)
 {
     // if (e.IsInCategory(Core::EventCategory::EventCategoryApplication))

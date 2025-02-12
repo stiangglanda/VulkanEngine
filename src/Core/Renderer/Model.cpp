@@ -5,7 +5,6 @@
 
 namespace Core
 {
-
 void Model::loadModel(const std::string model_path)
 {
     tinyobj::attrib_t attrib;

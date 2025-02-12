@@ -1,6 +1,7 @@
 #pragma once
 #include "../Events/Event.h"
 #include "../vepch.h"
+#include "Model.h"
 
 namespace Core
 {
@@ -25,6 +26,8 @@ class RenderAPI
         VE_CORE_INFO("Yea we are getting somewhere");
         // event hendling here
     }
+    virtual std::unique_ptr<Model> LoadModel(const std::string model_path,const std::string texture_path)=0;
+
 
     static API GetAPI()
     {
