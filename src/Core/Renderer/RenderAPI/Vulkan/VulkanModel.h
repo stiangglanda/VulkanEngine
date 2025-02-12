@@ -40,6 +40,7 @@ public:
     VkBuffer get_VertexBuffer_handle() const { return vertexBuffer->get_handle(); }
     VkBuffer get_IndexBuffer_handle() const { return indexBuffer->get_handle(); }
     const std::vector<std::unique_ptr<VulkanBuffer>>& get_uniformBuffers() const { return uniformBuffers; }
+    const std::unique_ptr<VulkanBuffer>& get_uniformBuffersAt(unsigned int index) const { return uniformBuffers[index]; }
     const std::shared_ptr<VulkanImage> get_texture() const { return texture; }
     void updateUniformBuffer(uint32_t currentImage, Camera& Cam, float aspect);
 
