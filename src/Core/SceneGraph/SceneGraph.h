@@ -4,9 +4,18 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "../Renderer/Model.h"
+#include "entt/entity/fwd.hpp"
+#include <entt/entt.hpp>
 
 namespace Core 
 {
+    struct position {
+        glm::vec3 value;
+    };
+
+    struct staticModel {
+        std::shared_ptr<Core::Model> model;
+    };
 
 class Node: public std::enable_shared_from_this<Node> {
 public:
@@ -36,13 +45,15 @@ protected:
 class SceneGraph {
 public:
     SceneGraph();
-    ~SceneGraph() = default;
+    ~SceneGraph();
 
     void setRoot(std::shared_ptr<Node> root);
     std::shared_ptr<Node> getRoot() { return m_root; }
     void update();
+    entt::registry& getRegistry() { return registry; }
 
 private:
     std::shared_ptr<Node> m_root;
+    entt::registry registry;
 };
 }

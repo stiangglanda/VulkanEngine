@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "Renderer/Renderer.h"
+#include "SceneGraph/SceneGraph.h"
 
 namespace Core
 {
@@ -66,6 +67,7 @@ bool Application::OnWindowResize(WindowResizeEvent &e)
 void Application::Shutdown()
 {
     VE_CORE_INFO("Shutdown");
+    mSceneGraph.reset();
     //m_RenderAPI->Shutdown();
     Renderer::Shutdown();
 }

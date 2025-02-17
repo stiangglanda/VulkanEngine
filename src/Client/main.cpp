@@ -14,6 +14,7 @@
 // #define TINYOBJLOADER_IMPLEMENTATION
 // #include <tiny_obj_loader.h>
 //
+#include "Renderer/Model.h"
 #include "Renderer/Renderer.h"
 #include "SceneGraph/MeshNode.h"
 #include "gtx/transform.hpp"
@@ -1833,11 +1834,17 @@ class Sandbox : public Core::Application
       //mesh->setModel(Core::Renderer::loadModel(MODEL_PATH, TEXTURE_PATH));
       //mesh->getModel()->setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(3.0f, 0.0f, 0.0f)));
       GetSceneGraph().getRoot()->addChild(mesh);
+
+      const auto entity = GetSceneGraph().getRegistry().create();
+      GetSceneGraph().getRegistry().emplace<Core::position>(entity, glm::vec3(3.0f, 0.0f, 0.0f));
+      GetSceneGraph().getRegistry().emplace<Core::staticModel>(entity, Core::Renderer::loadModel(MODEL_PATH, TEXTURE_PATH));
+      GetSceneGraph().getRegistry().get<Core::staticModel>(entity).model->setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(3.0f, 0.0f, 0.0f)));
       //TODO Rewrite whole ScenGraph
     }
 
     ~Sandbox()
     {
+
     }
 };
 

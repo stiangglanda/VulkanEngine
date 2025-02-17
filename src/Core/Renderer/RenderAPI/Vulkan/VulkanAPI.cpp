@@ -205,9 +205,10 @@ void VulkanAPI::recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex)
     scissor.extent = swapChain.getExtent();
     vkCmdSetScissor(command->getCommandBuffer(currentFrame), 0, 1, &scissor);
 
-    if(Application::Get().GetSceneGraph().getRoot()->getChildren()[0]->getName()=="Mesh")//TODO turn this into a loop and figure out how i can detect if something is a MeshNode
-    {
-        std::shared_ptr<VulkanModel> sgModel=std::dynamic_pointer_cast<VulkanModel>(Application::Get().GetSceneGraph().getRoot()->getChildren()[0]->getModel());
+    auto view = Application::Get().GetSceneGraph().getRegistry().view<staticModel>();
+
+    for(auto [entity, model]: view.each()) {
+        std::shared_ptr<VulkanModel> sgModel=std::dynamic_pointer_cast<VulkanModel>(model.model);
         if(!sgModel) 
         {
             VE_CORE_ERROR("Failed to cast Model to VulkanModel");
