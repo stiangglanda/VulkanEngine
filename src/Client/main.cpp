@@ -1829,9 +1829,9 @@ class Sandbox : public Core::Application
   public:
     Sandbox(const Core::ApplicationSpecification &specification) : Core::Application(specification)
     {
-      auto mesh =std::make_shared<Core::Node>("Mesh");
-      mesh->setModel(Core::Renderer::loadModel(MODEL_PATH, TEXTURE_PATH));
-      mesh->getModel()->setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(3.0f, 0.0f, 0.0f)));
+      auto mesh =std::make_shared<Core::Node>("Mesh1");
+      //mesh->setModel(Core::Renderer::loadModel(MODEL_PATH, TEXTURE_PATH));
+      //mesh->getModel()->setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(3.0f, 0.0f, 0.0f)));
       GetSceneGraph().getRoot()->addChild(mesh);
       //TODO Rewrite whole ScenGraph
     }

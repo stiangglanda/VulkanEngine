@@ -136,6 +136,8 @@ void VulkanAPI::Draw()
 
 bool VulkanAPI::Shutdown()
 {
+    vkDeviceWaitIdle(device.getDevice());
+
     swapChain.Shutdown(device.getDevice());
 
     graphicsPipeline.reset();
