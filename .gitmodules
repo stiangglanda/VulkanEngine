@@ -25,3 +25,6 @@
 [submodule "vendor/fastgltf"]
 	path = vendor/fastgltf
 	url = https://github.com/spnda/fastgltf
+[submodule "vendor/entt"]
+	path = vendor/entt
+	url = https://github.com/skypjack/entt
