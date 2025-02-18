@@ -18,6 +18,7 @@ add_subdirectory("vendor/VulkanMemoryAllocator")
 add_subdirectory("vendor/vk-bootstrap")
 add_subdirectory("vendor/fastgltf")
 add_subdirectory("vendor/entt")
+add_subdirectory("vendor/volk")
 
 set(IMGUI_SOURCES
     "vendor/imgui/imgui.h"
@@ -91,6 +92,7 @@ target_include_directories(Core
 	PRIVATE vendor/imgui
 	PUBLIC vendor/tinyobjloader 
 	PUBLIC vendor/entt
+	PUBLIC vendor/volk
 )
 
 target_link_libraries(Core Vulkan::Vulkan)
@@ -102,6 +104,7 @@ target_link_libraries(Core vk-bootstrap::vk-bootstrap)
 target_link_libraries(Core fastgltf::fastgltf)
 target_link_libraries(Core tinyobjloader)
 target_link_libraries(Core EnTT::EnTT)
+target_link_libraries(Core volk::volk_headers)
 
 add_executable(Client "src/Client/main.cpp" "vendor/stb_image.h")
 
