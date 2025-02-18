@@ -2,7 +2,6 @@
 // or project specific include files.
 
 #pragma once
-
 #include "vk_types.h"
 
 #include "vk_descriptors.h"

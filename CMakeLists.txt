@@ -92,7 +92,7 @@ target_include_directories(Core
 	PRIVATE vendor/imgui
 	PUBLIC vendor/tinyobjloader 
 	PUBLIC vendor/entt
-	PUBLIC vendor/volk
+	PRIVATE vendor/volk
 )
 
 target_link_libraries(Core Vulkan::Vulkan)

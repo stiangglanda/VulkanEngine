@@ -1,4 +1,7 @@
 #include "VulkanAPI.h"
+#define VK_NO_PROTOTYPES
+#define VOLK_IMPLEMENTATION
+#include <volk.h>
 #include "../../../vepch.h"
 
 #include <GLFW/glfw3.h>

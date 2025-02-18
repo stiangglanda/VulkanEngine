@@ -13,6 +13,16 @@ void VulkanInstance::Shutdown()
 
 void VulkanInstance::Init(const bool enableValidationLayers, const std::vector<const char *> validationLayers)
 {
+    if( volkInitialize() != VK_SUCCESS )
+    {
+        VE_CORE_ERROR("failed to initialize Volk!");
+        throw std::runtime_error("failed to initialize Volk!");
+    }
+    else
+    {
+        VE_CORE_INFO("Successful: Init Volk");
+    }
+
     if (enableValidationLayers && !checkValidationLayerSupport(validationLayers))
     {
         throw std::runtime_error("validation layers requested, but not available!");
@@ -59,6 +69,8 @@ void VulkanInstance::Init(const bool enableValidationLayers, const std::vector<c
     {
         VE_CORE_INFO("Successful: Init Vulkan Instance");
     }
+
+    volkLoadInstance(instance);
 }
 
 std::vector<const char *> VulkanInstance::getRequiredExtensions(const bool enableValidationLayers)

@@ -5,7 +5,7 @@
 #include "VulkanDevice.h"
 #include "VulkanMemoryManager.h"
 #include "VulkanResource.h"
-#include <vulkan/vulkan.h>
+#include <volk.h>
 
 namespace Core
 {

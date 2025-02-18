@@ -3,7 +3,7 @@
 #include "VulkanCommandBuffer.h"
 #include "VulkanDevice.h"
 #include "VulkanMemoryManager.h"
-#include <vulkan/vulkan.h>
+#include <volk.h>
 
 namespace Core
 {

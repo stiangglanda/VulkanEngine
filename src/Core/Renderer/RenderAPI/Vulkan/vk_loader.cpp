@@ -1,4 +1,3 @@
-
 #include "vk_loader.h"
 #include "../../vendor/stb_image.h"
 #include "vk_engine.h"
