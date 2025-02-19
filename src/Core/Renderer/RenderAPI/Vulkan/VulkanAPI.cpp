@@ -13,7 +13,6 @@
 #include "VulkanMemoryManager.h"
 #include "VulkanModel.h"
 #include "VulkanSync.h"
-#include "../../../SceneGraph/MeshNode.h"
 
 const std::string MODEL_PATH = RESOURCES_PATH "viking_room.obj";
 const std::string TEXTURE_PATH = RESOURCES_PATH "viking_room.png";

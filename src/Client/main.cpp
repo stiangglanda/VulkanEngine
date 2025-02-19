@@ -1,30 +1,9 @@
-// #define GLFW_INCLUDE_VULKAN
-// #include <GLFW/glfw3.h>
-//
-// #define GLM_FORCE_RADIANS
-// #define GLM_FORCE_DEPTH_ZERO_TO_ONE
-// #define GLM_ENABLE_EXPERIMENTAL
-// #include <glm/glm.hpp>
-// #include <glm/gtc/matrix_transform.hpp>
-// #include <glm/gtx/hash.hpp>
-//
-// #define STB_IMAGE_IMPLEMENTATION
-// #include "../../vendor/stb_image.h"
-//
-// #define TINYOBJLOADER_IMPLEMENTATION
-// #include <tiny_obj_loader.h>
-//
-#include "Renderer/Model.h"
 #include "Renderer/Renderer.h"
-#include "SceneGraph/MeshNode.h"
-#include "gtx/transform.hpp"
-#include "matrix.hpp"
 #include <Application.h>
 #include <Core.h>
 #include <EntryPoint.h>
 #include <SceneGraph/SceneGraph.h>
-#include <memory>
-//
+
 // #include <algorithm>
 // #include <array>
 // #include <chrono>
@@ -1830,16 +1809,10 @@ class Sandbox : public Core::Application
   public:
     Sandbox(const Core::ApplicationSpecification &specification) : Core::Application(specification)
     {
-      auto mesh =std::make_shared<Core::Node>("Mesh1");
-      //mesh->setModel(Core::Renderer::loadModel(MODEL_PATH, TEXTURE_PATH));
-      //mesh->getModel()->setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(3.0f, 0.0f, 0.0f)));
-      GetSceneGraph().getRoot()->addChild(mesh);
-
       const auto entity = GetSceneGraph().getRegistry().create();
       GetSceneGraph().getRegistry().emplace<Core::position>(entity, glm::vec3(3.0f, 0.0f, 0.0f));
       GetSceneGraph().getRegistry().emplace<Core::staticModel>(entity, Core::Renderer::loadModel(MODEL_PATH, TEXTURE_PATH));
       GetSceneGraph().getRegistry().get<Core::staticModel>(entity).model->setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(3.0f, 0.0f, 0.0f)));
-      //TODO Rewrite whole ScenGraph
     }
 
     ~Sandbox()
@@ -1857,20 +1830,3 @@ Core::Application *Core::CreateApplication(Core::ApplicationCommandLineArgs args
 
     return new Sandbox(spec);
 }
-
-// class Sandbox : public Core::Application
-//{
-//   public:
-//     Sandbox(const Core::WindowProps &specification) : Core::Application(specification)
-//     {
-//     }
-//
-//     ~Sandbox()
-//     {
-//     }
-// };
-//
-// Core::Application *Core::CreateApplication()
-//{
-//     return new Sandbox(Core::WindowProps());
-// }
