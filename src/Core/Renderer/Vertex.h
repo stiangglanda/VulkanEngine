@@ -9,6 +9,12 @@ namespace Core
 
 struct Vertex//TODO should not be in Vulkan folder and should not be vulkan specific
 {
+    //glm::vec3 position;
+	//float uv_x;
+	//glm::vec3 normal;
+	//float uv_y;
+	//glm::vec4 tangent;//can also be color
+    
     glm::vec3 pos;
     glm::vec3 color;
     glm::vec2 texCoord;

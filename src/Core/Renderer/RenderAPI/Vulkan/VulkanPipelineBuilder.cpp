@@ -58,9 +58,11 @@ VkPipeline VulkanPipelineBuilder::build_pipeline(VkDevice device)
     // VkPipelineVertexInputStateCreateInfo _vertexInputInfo = {
     //     .sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO};
 
+    // completely clear VertexInputStateCreateInfo, as we have no need for it
     VkPipelineVertexInputStateCreateInfo _vertexInputInfo{};
     _vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 
+    //TODO remove because of vertex pulling
     auto bindingDescription = Core::Vertex::getBindingDescription();
     auto attributeDescriptions = Core::Vertex::getAttributeDescriptions();
 
@@ -68,6 +70,7 @@ VkPipeline VulkanPipelineBuilder::build_pipeline(VkDevice device)
     _vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
     _vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
     _vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
+    //TODO remove because of vertex pulling end
 
     _rasterizer.depthClampEnable = VK_FALSE;
     _rasterizer.rasterizerDiscardEnable = VK_FALSE;

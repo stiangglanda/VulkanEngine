@@ -37,7 +37,7 @@ void VulkanDevice::pickPhysicalDevice(VkInstance instance, VkSurfaceKHR surface)
     for (const auto &device : devices)
     {
         VulkanDebug::logPhysicalDevice(device);
-        if (isDeviceSuitable(device, surface))
+        if (isDeviceSuitable(device, surface))//TODO should be extended to also look if the features from version 1.2 and 1.3 are also available
         {
             physicalDevice = device;//TODO add call to vkGetPhysicalDeviceProperties and print them
             break;
@@ -71,6 +71,17 @@ void VulkanDevice::createLogicalDevice(const bool enableValidationLayers,
 
     VkPhysicalDeviceFeatures deviceFeatures{};
     deviceFeatures.samplerAnisotropy = VK_TRUE;
+    deviceFeatures.robustBufferAccess = VK_TRUE;
+
+    VkPhysicalDeviceVulkan13Features features13{.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES};
+	features13.dynamicRendering = true;
+	features13.synchronization2 = true;
+    features13.pNext=nullptr;
+
+	VkPhysicalDeviceVulkan12Features features12{.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES};	
+	features12.bufferDeviceAddress = true;
+	features12.descriptorIndexing = true;
+    features12.pNext=&features13;
 
     VkDeviceCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -79,6 +90,7 @@ void VulkanDevice::createLogicalDevice(const bool enableValidationLayers,
     createInfo.pQueueCreateInfos = queueCreateInfos.data();
 
     createInfo.pEnabledFeatures = &deviceFeatures;
+    createInfo.pNext= &features12;
 
     createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
     createInfo.ppEnabledExtensionNames = deviceExtensions.data();
