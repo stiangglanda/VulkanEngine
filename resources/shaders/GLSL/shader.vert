@@ -30,9 +30,9 @@ void main() {
     Vertex vertex = vertexBuffer.vertices[gl_VertexIndex];
     
     // Transform position
-    gl_Position = ubo.proj * ubo.view * ubo.model * vec4(vertex.pos, 1.0);
+    gl_Position = ubo.proj * ubo.view * ubo.model * vec4(vertex.position, 1.0);
     
     // Pass through vertex attributes
-    fragColor = vertex.color;
-    fragTexCoord = vertex.texCoord;
+    fragColor = vertex.color.rgb;
+    fragTexCoord = vec2(vertex.uv_x, vertex.uv_y);
 }

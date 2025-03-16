@@ -9,15 +9,15 @@ namespace Core
 
 struct Vertex//TODO should not be in Vulkan folder and should not be vulkan specific
 {
-    //glm::vec3 position;
-	//float uv_x;
-	//glm::vec3 normal;
-	//float uv_y;
-	//glm::vec4 tangent;//can also be color
+    glm::vec3 position;
+	float uv_x;
+	glm::vec3 normal;
+	float uv_y;
+    glm::vec4 color; // can also be tangent
     
-    glm::vec3 pos;
-    glm::vec3 color;
-    glm::vec2 texCoord;
+    //glm::vec3 pos;
+    //glm::vec3 color;
+    //glm::vec2 texCoord;
 
     //static VkVertexInputBindingDescription getBindingDescription()
     //{
@@ -51,7 +51,8 @@ struct Vertex//TODO should not be in Vulkan folder and should not be vulkan spec
 
     bool operator==(const Vertex &other) const
     {
-        return pos == other.pos && color == other.color && texCoord == other.texCoord;
+        return position == other.position && color == other.color && normal == other.normal && uv_x == other.uv_x &&
+               uv_y == other.uv_y;
     }
 };
 
@@ -62,8 +63,11 @@ template <> struct hash<Core::Vertex>
 {
     size_t operator()(Core::Vertex const &vertex) const
     {
-        return ((hash<glm::vec3>()(vertex.pos) ^ (hash<glm::vec3>()(vertex.color) << 1)) >> 1) ^
-               (hash<glm::vec2>()(vertex.texCoord) << 1);
+        return ((((hash<glm::vec3>()(vertex.position) 
+               ^ (hash<glm::vec3>()(vertex.normal) << 1)) >> 1) 
+               ^ (hash<glm::vec4>()(vertex.color) << 1)) >> 1) 
+               ^ ((hash<float>()(vertex.uv_x) 
+               ^ (hash<float>()(vertex.uv_y) << 1)) >> 1);
     }
 };
 } // namespace std
