@@ -44,7 +44,10 @@ bool VulkanAPI::Init()
     descriptorSet = std::make_unique<VulkanDescriptorSet>(device.getDevice(),//TODO should probobly be in VulkanModel
                                                         MAX_FRAMES_IN_FLIGHT,
                                                         descriptorSetLayout->get_handle(), 
-                                                        model->get_uniformBuffers(),model->get_texture());
+                                                        model->get_uniformBuffers(), 
+                                                        model->get_VertexBuffer_handle(),
+                                                        model->getverticesSize(),
+                                                        model->get_texture());
 
     command->createCommandBuffers(MAX_FRAMES_IN_FLIGHT);
 
@@ -228,7 +231,7 @@ void VulkanAPI::recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex)
     
     
         // Update descriptor set for both UBO and texture
-        std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
+        std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
     
         // UBO update
         VkDescriptorBufferInfo bufferInfo{};
@@ -243,6 +246,20 @@ void VulkanAPI::recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex)
         descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
         descriptorWrites[0].descriptorCount = 1;
         descriptorWrites[0].pBufferInfo = &bufferInfo;
+
+        // vertex update
+        VkDescriptorBufferInfo vertexbufferInfo{};
+        vertexbufferInfo.buffer = sgModel->get_VertexBuffer_handle();
+        vertexbufferInfo.offset = 0;
+        vertexbufferInfo.range = sizeof(Vertex) * sgModel->getverticesSize();
+
+        descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descriptorWrites[1].dstSet = *descriptorSet->get_handle_ptr_at_index(currentFrame);
+        descriptorWrites[1].dstBinding = 1; // vertex binding
+        descriptorWrites[1].dstArrayElement = 0;
+        descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+        descriptorWrites[1].descriptorCount = 1;
+        descriptorWrites[1].pBufferInfo = &vertexbufferInfo;
     
         // Texture update
         VkDescriptorImageInfo imageInfo{};
@@ -250,13 +267,13 @@ void VulkanAPI::recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex)
         imageInfo.imageView = sgModel->get_texture()->getImageView();
         imageInfo.sampler = sgModel->get_texture()->getSampler();
     
-        descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descriptorWrites[1].dstSet = *descriptorSet->get_handle_ptr_at_index(currentFrame);
-        descriptorWrites[1].dstBinding = 1;  // Texture binding
-        descriptorWrites[1].dstArrayElement = 0;
-        descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        descriptorWrites[1].descriptorCount = 1;
-        descriptorWrites[1].pImageInfo = &imageInfo;
+        descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descriptorWrites[2].dstSet = *descriptorSet->get_handle_ptr_at_index(currentFrame);
+        descriptorWrites[2].dstBinding = 2;  // Texture binding
+        descriptorWrites[2].dstArrayElement = 0;
+        descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        descriptorWrites[2].descriptorCount = 1;
+        descriptorWrites[2].pImageInfo = &imageInfo;
     
         vkUpdateDescriptorSets(device.getDevice(), descriptorWrites.size(), descriptorWrites.data(), 0, nullptr);
     
@@ -282,7 +299,7 @@ void VulkanAPI::recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex)
 
 
     // Update descriptor set for both UBO and texture
-    std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
+    std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
 
     // UBO update
     VkDescriptorBufferInfo bufferInfo{};
@@ -298,19 +315,33 @@ void VulkanAPI::recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex)
     descriptorWrites[0].descriptorCount = 1;
     descriptorWrites[0].pBufferInfo = &bufferInfo;
 
+    // vertex update
+    VkDescriptorBufferInfo vertexbufferInfo{};
+    vertexbufferInfo.buffer = model->get_VertexBuffer_handle();
+    vertexbufferInfo.offset = 0;
+    vertexbufferInfo.range = sizeof(Vertex) * model->getverticesSize();
+
+    descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[1].dstSet = *descriptorSet->get_handle_ptr_at_index(currentFrame);
+    descriptorWrites[1].dstBinding = 1; // vertex binding
+    descriptorWrites[1].dstArrayElement = 0;
+    descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    descriptorWrites[1].descriptorCount = 1;
+    descriptorWrites[1].pBufferInfo = &vertexbufferInfo;
+
     // Texture update
     VkDescriptorImageInfo imageInfo{};
     imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     imageInfo.imageView = model->get_texture()->getImageView();
     imageInfo.sampler = model->get_texture()->getSampler();
 
-    descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    descriptorWrites[1].dstSet = *descriptorSet->get_handle_ptr_at_index(currentFrame);
-    descriptorWrites[1].dstBinding = 1;  // Texture binding
-    descriptorWrites[1].dstArrayElement = 0;
-    descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    descriptorWrites[1].descriptorCount = 1;
-    descriptorWrites[1].pImageInfo = &imageInfo;
+    descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[2].dstSet = *descriptorSet->get_handle_ptr_at_index(currentFrame);
+    descriptorWrites[2].dstBinding = 2;  // Texture binding
+    descriptorWrites[2].dstArrayElement = 0;
+    descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[2].descriptorCount = 1;
+    descriptorWrites[2].pImageInfo = &imageInfo;
 
     vkUpdateDescriptorSets(device.getDevice(), descriptorWrites.size(), descriptorWrites.data(), 0, nullptr);
 

@@ -14,10 +14,13 @@ public:
     VulkanDescriptorSet(VkDevice device, const int max_frames_in_flight, 
                         VkDescriptorSetLayout descriptorSetLayout, 
                         const std::vector<std::unique_ptr<VulkanBuffer>>& uniformBuffers, 
+                        const VkBuffer VertexBuffer, 
+                        size_t verticesSize,
                         std::weak_ptr<VulkanImage> texture) : device(device), descriptorPool(VK_NULL_HANDLE) 
     {
         createDescriptorPool(max_frames_in_flight);
-        createDescriptorSets(max_frames_in_flight, descriptorSetLayout, uniformBuffers, texture);
+        createDescriptorSets(max_frames_in_flight, descriptorSetLayout, uniformBuffers, VertexBuffer,
+                             verticesSize, texture);
     }
 
     // Destructor to destroy the descriptor set
@@ -56,6 +59,8 @@ private:
     void createDescriptorSets(const int max_frames_in_flight, 
                             VkDescriptorSetLayout descriptorSetLayout, 
                             const std::vector<std::unique_ptr<VulkanBuffer>>& uniformBuffers, 
+                            const VkBuffer VertexBuffer,
+                            size_t verticesSize,
                             std::weak_ptr<VulkanImage> texture);
 
     // Helper function to destroy the descriptor set

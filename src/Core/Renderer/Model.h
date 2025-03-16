@@ -16,7 +16,11 @@ public:
     // Common functionality
     void setModelMatrix(const glm::mat4& matrix) { modelMatrix = matrix; }
     [[nodiscard]] glm::mat4 getModelMatrix() const { return modelMatrix; }
-    size_t getIndicesSize() { return indices.size(); }
+    const size_t getverticesSize() const
+    {
+        return vertices.size();
+    }
+    const size_t getIndicesSize() const { return indices.size(); }
 
     // API-specific interface
     // virtual void initialize() = 0;

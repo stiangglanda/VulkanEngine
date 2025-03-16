@@ -10,8 +10,8 @@ void VulkanModel::createVertexBuffer(VulkanDevice &device, const std::weak_ptr<V
     VulkanBuffer stagingBuffer = VulkanBuffer::create_staging_buffer(device, bufferSize, vertices.data());
 
     vertexBuffer = (BufferBuilder(bufferSize)
-                        .with_usage(VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT)
-                        .with_vma_usage(VMA_MEMORY_USAGE_AUTO) // VMA_MEMORY_USAGE_GPU_ONLY
+                        .with_usage(VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT)
+                        .with_vma_usage(VMA_MEMORY_USAGE_GPU_ONLY) // VMA_MEMORY_USAGE_GPU_ONLY
                         .with_sharing_mode(VK_SHARING_MODE_EXCLUSIVE)
                         .build_unique(device));
     VulkanBuffer::copyBuffer(command, stagingBuffer.get_handle(), vertexBuffer->get_handle(), bufferSize);
