@@ -24,6 +24,8 @@ void VulkanPipelineBuilder::clear()
 
     _renderInfo = {.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO};
 
+    _dynamicRendering = {.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR, .pNext = VK_NULL_HANDLE};
+
     _shaderStages.clear();
 }
 
@@ -83,9 +85,19 @@ VkPipeline VulkanPipelineBuilder::build_pipeline(VkDevice device)
     // build the actual pipeline
     // we now use all of the info structs we have been writing into into this one
     // to create the pipeline
+
+    // Provide information for dynamic rendering
+    //VkPipelineRenderingCreateInfoKHR _dynamicRendering{VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR};
+    //pipeline_create.pNext = VK_NULL_HANDLE;
+    //pipeline_create.colorAttachmentCount = 1;
+    //pipeline_create.pColorAttachmentFormats = &color_rendering_format;
+    //pipeline_create.depthAttachmentFormat = depth_format;
+    //pipeline_create.stencilAttachmentFormat = depth_format;
+
     VkGraphicsPipelineCreateInfo pipelineInfo = {.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO};
     // connect the renderInfo to the pNext extension mechanism
     // pipelineInfo.pNext = &_renderInfo;//is used for dynamic rendering
+    pipelineInfo.pNext = &_dynamicRendering; // reference the new dynamic structure
 
     pipelineInfo.stageCount = (uint32_t)_shaderStages.size();
     pipelineInfo.pStages = _shaderStages.data();
@@ -97,9 +109,10 @@ VkPipeline VulkanPipelineBuilder::build_pipeline(VkDevice device)
     pipelineInfo.pDepthStencilState = &_depthStencil;
     pipelineInfo.pColorBlendState = &colorBlending;
     pipelineInfo.layout = _pipelineLayout;
-    pipelineInfo.renderPass = _renderPass;//TODO use dynamic rendering
+    pipelineInfo.renderPass = VK_NULL_HANDLE;// TODO use dynamic rendering
     pipelineInfo.subpass = 0;//TODO use dynamic rendering
     pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;//may not be nessesary
+
 
     VkDynamicState state[] = {VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR};
 
@@ -201,11 +214,17 @@ void VulkanPipelineBuilder::set_color_attachment_format(VkFormat format)
     // connect the format to the renderInfo  structure
     _renderInfo.colorAttachmentCount = 1;
     _renderInfo.pColorAttachmentFormats = &_colorAttachmentformat;
+
+    _dynamicRendering.colorAttachmentCount = 1;
+    _dynamicRendering.pColorAttachmentFormats = &_colorAttachmentformat;
 }
 
 void VulkanPipelineBuilder::set_depth_format(VkFormat format)
 {
     _renderInfo.depthAttachmentFormat = format;
+
+    _dynamicRendering.depthAttachmentFormat = format;
+    _dynamicRendering.stencilAttachmentFormat = format;
 }
 
 void VulkanPipelineBuilder::disable_depthtest()

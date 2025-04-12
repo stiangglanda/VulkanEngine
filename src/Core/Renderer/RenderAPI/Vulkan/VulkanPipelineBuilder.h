@@ -18,7 +18,8 @@ class VulkanPipelineBuilder
     VkPipelineDepthStencilStateCreateInfo _depthStencil;
     VkPipelineRenderingCreateInfo _renderInfo;
     VkFormat _colorAttachmentformat;
-    VkRenderPass _renderPass;//TODO use dynamic rendering
+    VkPipelineRenderingCreateInfoKHR _dynamicRendering;
+    //VkRenderPass _renderPass;//TODO use dynamic rendering
 
     VulkanPipelineBuilder()
     {

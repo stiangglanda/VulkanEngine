@@ -5,16 +5,18 @@
 
 namespace Core
 {
-    void VulkanPipeline::createPipeline(VkDescriptorSetLayout descriptorSetLayout, VkRenderPass renderPass) 
+void VulkanPipeline::createPipeline(VkDescriptorSetLayout descriptorSetLayout, VkFormat color_attachment_format) 
     {
 
         VkShaderModule vertShaderModule;
-        if(!VulkanShader::loadShaderModule(device, RESOURCES_PATH "shaders/GLSL/vert.spv", &vertShaderModule))
+        if (!VulkanShader::loadShaderModule(device.getDevice(), RESOURCES_PATH "shaders/GLSL/vert.spv",
+                                            &vertShaderModule))
         {
             VE_CORE_ERROR("Failed to load Shader");
         }
         VkShaderModule fragShaderModule;
-        if(!VulkanShader::loadShaderModule(device, RESOURCES_PATH "shaders/GLSL/frag.spv", &fragShaderModule))
+        if (!VulkanShader::loadShaderModule(device.getDevice(), RESOURCES_PATH "shaders/GLSL/frag.spv",
+                                            &fragShaderModule))
         {
             VE_CORE_ERROR("Failed to load Shader");
         }
@@ -38,19 +40,19 @@ namespace Core
         std::vector<VkDescriptorSetLayout> descriptorSetLayouts;
         descriptorSetLayouts.push_back(descriptorSetLayout);
 
-        pipelineLayout=std::make_unique<VulkanPipelineLayout>(device, descriptorSetLayouts);
+        pipelineLayout = std::make_unique<VulkanPipelineLayout>(device.getDevice(), descriptorSetLayouts);
 
         // use the triangle layout we created
         pipelineBuilder._pipelineLayout = pipelineLayout->get_handle();
 
-        pipelineBuilder._renderPass = renderPass;
+        //pipelineBuilder._renderPass = renderPass;
 
         // render format
-        // pipelineBuilder.set_color_attachment_format(engine->_drawImage.imageFormat);
-        // pipelineBuilder.set_depth_format(engine->_depthImage.imageFormat);
+        pipelineBuilder.set_color_attachment_format(color_attachment_format);
+        pipelineBuilder.set_depth_format(device.findDepthFormat());
 
         // finally build the pipeline
-        pipeline = pipelineBuilder.build_pipeline(device);
+        pipeline = pipelineBuilder.build_pipeline(device.getDevice());
 
         // create the transparent variant
         // pipelineBuilder.enable_blending_additive();
@@ -59,8 +61,12 @@ namespace Core
 
         // transparentPipeline.pipeline = pipelineBuilder.build_pipeline(engine->_device);
 
-        vkDestroyShaderModule(device, fragShaderModule, nullptr);//TODO maybe create a VulkanShader class anyway so this can be called by the destructor
-        vkDestroyShaderModule(device, vertShaderModule, nullptr);//TODO maybe create a VulkanShader class anyway so this can be called by the destructor
+        vkDestroyShaderModule(
+            device.getDevice(), fragShaderModule,
+            nullptr); // TODO maybe create a VulkanShader class anyway so this can be called by the destructor
+        vkDestroyShaderModule(
+            device.getDevice(), vertShaderModule,
+            nullptr); // TODO maybe create a VulkanShader class anyway so this can be called by the destructor
 
         VE_CORE_INFO("Created Pipeline");
     }
@@ -68,7 +74,7 @@ namespace Core
     void VulkanPipeline::cleanup() {
         if (pipeline != VK_NULL_HANDLE) 
         {
-            vkDestroyPipeline(device, pipeline, nullptr);
+            vkDestroyPipeline(device.getDevice(), pipeline, nullptr);
             pipeline = VK_NULL_HANDLE;
             VE_CORE_INFO("Destroyed Pipeline");
         }

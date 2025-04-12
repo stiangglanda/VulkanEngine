@@ -2,15 +2,17 @@
 #include "../../../vepch.h"
 #include <volk.h>
 #include "VulkanPipelineLayout.h"
+#include "VulkanDevice.h"
 
 namespace Core
 {
 
 class VulkanPipeline {
 public:
-    VulkanPipeline(VkDevice device, VkDescriptorSetLayout descriptorSetLayout, VkRenderPass renderPass) : device(device), pipeline(VK_NULL_HANDLE) //questianable
+    VulkanPipeline(VulkanDevice &device, VkDescriptorSetLayout descriptorSetLayout, VkFormat color_attachment_format)
+        : device(device), pipeline(VK_NULL_HANDLE) // questianable
     {
-        createPipeline(descriptorSetLayout, renderPass);
+        createPipeline(descriptorSetLayout, color_attachment_format);
     }
 
     ~VulkanPipeline() {
@@ -27,7 +29,6 @@ public:
     VulkanPipeline& operator=(VulkanPipeline&& other) noexcept {
         if (this != &other) {
             cleanup(); // Destroy current layout if it exists
-            device = other.device;
             pipeline = other.pipeline;
             pipelineLayout = std::move(other.pipelineLayout);
             other.pipeline = VK_NULL_HANDLE; // Avoid double destruction
@@ -51,12 +52,12 @@ public:
     }
 
 private:
-    VkDevice device;
+    VulkanDevice& device;
     VkPipeline pipeline;
     std::unique_ptr<VulkanPipelineLayout> pipelineLayout;
 
     // Create the descriptor set layout
-    void createPipeline(VkDescriptorSetLayout descriptorSetLayout, VkRenderPass renderPass);
+    void createPipeline(VkDescriptorSetLayout descriptorSetLayout, VkFormat color_attachment_format);
 
     // Helper function to destroy the descriptor set layout
     void cleanup();

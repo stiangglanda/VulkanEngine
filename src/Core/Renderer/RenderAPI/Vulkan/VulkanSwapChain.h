@@ -44,6 +44,11 @@ class VulkanSwapChain
         return swapChain;
     }
 
+    VkImageView getDepthImageView() const
+    {
+        return depthImageView;
+    }
+
     VkFramebuffer getFramebuffer(unsigned int index) const
     {
         if (swapChainFramebuffers.size() > index)
@@ -53,6 +58,19 @@ class VulkanSwapChain
         else
         {
             VE_CORE_ERROR("VulkanSwapChain.getFramebuffer index out of bounds");
+            return nullptr;
+        }
+    }
+
+    VkImageView getImageViews(unsigned int index) const
+    {
+        if (swapChainImageViews.size() > index)
+        {
+            return swapChainImageViews[index];
+        }
+        else
+        {
+            VE_CORE_ERROR("VulkanSwapChain.getImageViews index out of bounds");
             return nullptr;
         }
     }
