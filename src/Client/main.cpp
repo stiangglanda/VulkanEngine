@@ -1,21 +1,28 @@
 #include "Renderer/Renderer.h"
+#include "Renderer/VoxelModel.h"
 #include <Application.h>
 #include <Core.h>
 #include <EntryPoint.h>
 #include <SceneGraph/SceneGraph.h>
+#include <memory>
 
 const std::string MODEL_PATH = RESOURCES_PATH "viking_room.obj";
 const std::string TEXTURE_PATH = RESOURCES_PATH "viking_room.png";
+const std::string VOXEL_MODEL_PATH = RESOURCES_PATH "house.vox";
 
 class Sandbox : public Core::Application
 {
   public:
     Sandbox(const Core::ApplicationSpecification &specification) : Core::Application(specification)
     {
+      using namespace Core;
       const auto entity = GetSceneGraph().getRegistry().create();
-      GetSceneGraph().getRegistry().emplace<Core::position>(entity, glm::vec3(3.0f, 0.0f, 0.0f));
-      GetSceneGraph().getRegistry().emplace<Core::staticModel>(entity, Core::Renderer::loadModel(MODEL_PATH, TEXTURE_PATH));
-      GetSceneGraph().getRegistry().get<Core::staticModel>(entity).model->setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(3.0f, 0.0f, 0.0f)));
+      GetSceneGraph().getRegistry().emplace<position>(entity, glm::vec3(3.0f, 0.0f, 0.0f));
+      GetSceneGraph().getRegistry().emplace<staticModel>(entity, Renderer::loadModel(MODEL_PATH, TEXTURE_PATH));
+      GetSceneGraph().getRegistry().get<staticModel>(entity).model->setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(3.0f, 0.0f, 0.0f)));
+
+      GetSceneGraph().getRegistry().emplace<Core::position>(entity, glm::vec3(0.0f, 0.0f, 0.0f));
+      GetSceneGraph().getRegistry().emplace<voxelModel>(entity, Core::Renderer::loadVoxelModel(VOXEL_MODEL_PATH));
     }
 
     ~Sandbox()

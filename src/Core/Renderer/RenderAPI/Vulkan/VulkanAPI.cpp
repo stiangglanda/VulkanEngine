@@ -12,6 +12,7 @@
 
 #include "VulkanMemoryManager.h"
 #include "VulkanModel.h"
+#include "VulkanVoxelModel.h"
 #include "VulkanSync.h"
 
 const std::string MODEL_PATH = RESOURCES_PATH "viking_room.obj";
@@ -58,6 +59,11 @@ bool VulkanAPI::Init()
 std::shared_ptr<Model> VulkanAPI::LoadModel(const std::string model_path, const std::string texture_path)
 {
     return std::make_shared<VulkanModel>(model_path, texture_path, device, command, MAX_FRAMES_IN_FLIGHT);
+}
+
+std::shared_ptr<VoxelModel> VulkanAPI::LoadVoxelModel(const std::string model_path)
+{
+    return std::make_shared<VulkanVoxelModel>(model_path, device, command, MAX_FRAMES_IN_FLIGHT);
 }
 
 

@@ -55,6 +55,26 @@ std::shared_ptr<Model> Renderer::loadModel(const std::string model_path, const s
     }
 }
 
+std::shared_ptr<VoxelModel> Renderer::loadVoxelModel(const std::string model_path)
+{
+    VE_CORE_INFO("Create Voxel Model");
+    switch (RenderAPI::GetAPI())
+    {
+    case RenderAPI::API::Vulkan:
+        VE_CORE_INFO("Create Vulkan Voxel Model");
+        return s_RenderAPI->LoadVoxelModel(model_path);
+        break;
+    case RenderAPI::API::None:
+        VE_CORE_ERROR("Can not create model with API None");
+        return nullptr;
+        break;
+    default:
+        VE_CORE_ERROR("Can not create model with unknown API");
+        return nullptr;
+        break;  
+    }
+}
+
 void Renderer::BeginScene()
 {
     // s_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();

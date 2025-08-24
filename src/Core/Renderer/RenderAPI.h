@@ -2,6 +2,7 @@
 #include "../Events/Event.h"
 #include "../vepch.h"
 #include "Model.h"
+#include "VoxelModel.h"
 
 namespace Core
 {
@@ -27,6 +28,7 @@ class RenderAPI
         // event hendling here
     }
     virtual std::shared_ptr<Model> LoadModel(const std::string model_path,const std::string texture_path)=0;
+    virtual std::shared_ptr<VoxelModel> LoadVoxelModel(const std::string model_path)=0;
 
 
     static API GetAPI()

@@ -3,21 +3,15 @@
 #include <vector>
 #include <iostream>
 
-// Place the implementation macro in this .cpp file
 #define OGT_VOX_IMPLEMENTATION
 #include "../../vendor/ogt_vox.h"
 
 namespace Core
 {
 
-// --- VoxelChunk Implementation ---
-
 uint8_t VoxelChunk::getVoxel(uint32_t x, uint32_t y, uint32_t z) const
 {
-    if (x >= CHUNK_SIZE || y >= CHUNK_SIZE || z >= CHUNK_SIZE)
-    {
-        return 0; // Out of bounds is treated as air
-    }
+    if (x >= CHUNK_SIZE || y >= CHUNK_SIZE || z >= CHUNK_SIZE) return 0;
     return voxels[x + y * CHUNK_SIZE + z * CHUNK_SIZE * CHUNK_SIZE];
 }
 
@@ -27,10 +21,7 @@ void VoxelChunk::setVoxel(uint32_t x, uint32_t y, uint32_t z, uint8_t paletteInd
 
     voxels[x + y * CHUNK_SIZE + z * CHUNK_SIZE * CHUNK_SIZE] = paletteIndex;
     isDirty = true;
-    if (paletteIndex != 0)
-    {
-        isEmpty = false;
-    }
+    isEmpty = paletteIndex != 0;
 }
 
 void VoxelChunk::generateMesh()
@@ -40,26 +31,18 @@ void VoxelChunk::generateMesh()
     vertices.clear();
     indices.clear();
 
-    // The core Greedy Meshing algorithm
-    // This process is repeated 6 times for each face direction (positive/negative X, Y, Z)
     for (int axis = 0; axis < 3; ++axis)
     {
         for (int dir = -1; dir <= 1; dir += 2)
         {
-            // Create a mask for the current slice
             std::vector<uint8_t> mask(CHUNK_SIZE * CHUNK_SIZE, 0);
-
-            // Axis indices
             int u = (axis + 1) % 3;
             int v = (axis + 2) % 3;
             
-            // World-space position vector
             glm::ivec3 x = {0, 0, 0};
-            // Normal vector for this face direction
             glm::vec3 normal = {0, 0, 0};
             normal[axis] = dir;
 
-            // Iterate through slices of the chunk
             for (x[axis] = -1; x[axis] < (int)CHUNK_SIZE; )
             {
                 // --- 1. Create the mask ---
@@ -198,12 +181,10 @@ void VoxelModel::setVoxel(uint32_t x, uint32_t y, uint32_t z, uint8_t paletteInd
 {
     if (x >= modelDimensions.x || y >= modelDimensions.y || z >= modelDimensions.z) return;
 
-    // Determine which chunk this voxel belongs to
     uint32_t chunkX = x / CHUNK_SIZE;
     uint32_t chunkY = y / CHUNK_SIZE;
     uint32_t chunkZ = z / CHUNK_SIZE;
 
-    // Calculate local coordinates within that chunk
     uint32_t localX = x % CHUNK_SIZE;
     uint32_t localY = y % CHUNK_SIZE;
     uint32_t localZ = z % CHUNK_SIZE;
@@ -214,20 +195,19 @@ void VoxelModel::setVoxel(uint32_t x, uint32_t y, uint32_t z, uint8_t paletteInd
 
 void VoxelModel::loadFromVoxFile(const std::string& model_path)
 {
-    // 1. Read file into a buffer
     std::ifstream file(model_path, std::ios::binary);
     if (!file.is_open()) throw std::runtime_error("Failed to open .vox file: " + model_path);
     std::vector<uint8_t> buffer(std::istreambuf_iterator<char>(file), {});
 
-    // 2. Parse buffer with ogt_vox
     const ogt_vox_scene* scene = ogt_vox_read_scene(buffer.data(), buffer.size());
     if (!scene) throw std::runtime_error("Failed to parse .vox file: " + model_path);
 
-    // 3. Load the first model in the scene
     if (scene->num_models > 0)
     {
         const ogt_vox_model* model = scene->models[0];
         modelDimensions = { model->size_x, model->size_y, model->size_z };
+
+        VE_CORE_INFO("VoxelModel: {}x{}x{} (hash={})", model->size_x, model->size_y, model->size_z, model->voxel_hash);
 
         // 4. Calculate chunk grid dimensions and initialize chunks
         chunkGridDimensions = (modelDimensions + (CHUNK_SIZE - 1u)) / CHUNK_SIZE;
@@ -243,12 +223,6 @@ void VoxelModel::loadFromVoxFile(const std::string& model_path)
         }
 
         // 5. Populate our chunk data from the sparse voxel list
-        //for (uint32_t i = 0; i < model->size_x * model->size_y * model->size_z; ++i)
-        //{
-            // MagicaVoxel Y is up, but many engines use Z up. Here we assume Y is up.
-        //    setVoxel(v.x, v.y, v.z, model->voxel_data[i]);
-        //}
-
         for (uint32_t x = 0; x < model->size_x; x++)
         {
             for (uint32_t y = 0; y < model->size_y; y++)

@@ -44,6 +44,7 @@ class VulkanAPI : public RenderAPI
     virtual void Draw() override;
     virtual void OnEvent(Event &e, float delta) override;
     virtual std::shared_ptr<Model> LoadModel(const std::string model_path,const std::string texture_path) override;
+    virtual std::shared_ptr<VoxelModel> LoadVoxelModel(const std::string model_path) override;
 
   private:
     void recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex);

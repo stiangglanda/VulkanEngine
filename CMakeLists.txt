@@ -73,6 +73,7 @@ add_library(Core ${IMGUI_SOURCES} "vendor/stb_image.h" "src/Core/Core.cpp" "src/
 "src/Core/Renderer/RenderAPI/Vulkan/VulkanDescriptorSet.h" "src/Core/Renderer/RenderAPI/Vulkan/VulkanDescriptorSet.cpp"
 "src/Core/Renderer/RenderAPI/Vulkan/VulkanModel.h" "src/Core/Renderer/RenderAPI/Vulkan/VulkanModel.cpp"
 "src/Core/Renderer/RenderAPI/Vulkan/VulkanSync.h" "src/Core/Renderer/RenderAPI/Vulkan/VulkanSync.cpp"
+"src/Core/Renderer/RenderAPI/Vulkan/VulkanVoxelModel.h" "src/Core/Renderer/RenderAPI/Vulkan/VulkanVoxelModel.cpp"
 "src/Core/Renderer/Model.h" "src/Core/Renderer/Model.cpp"
 "src/Core/Renderer/VoxelModel.h" "src/Core/Renderer/VoxelModel.cpp"
 "src/Core/SceneGraph/SceneGraph.h" "src/Core/SceneGraph/SceneGraph.cpp"
