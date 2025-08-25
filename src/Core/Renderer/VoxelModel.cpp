@@ -24,10 +24,10 @@ void VoxelChunk::setVoxel(uint32_t x, uint32_t y, uint32_t z, uint8_t paletteInd
     isEmpty = paletteIndex != 0;
 }
 
-void VoxelChunk::generateMesh()
+void VoxelChunk::generateMesh(const std::vector<glm::vec4>& palette)
 {
     if (!isDirty || isEmpty) return;
-
+    
     vertices.clear();
     indices.clear();
 
@@ -121,14 +121,20 @@ void VoxelChunk::generateMesh()
                             v3.position = chunkOffset + glm::vec3(x[0], x[1], x[2]) + du + dv;
                             v4.position = chunkOffset + glm::vec3(x[0], x[1], x[2]) + dv;
 
-                            // Set UVs based on world position (for tiled texturing in shader)
-                            v1.uv_x = v1.position.x; v1.uv_y = v1.position.y;
-                            v2.uv_x = v2.position.x; v2.uv_y = v2.position.y;
-                            v3.uv_x = v3.position.x; v3.uv_y = v3.position.y;
-                            v4.uv_x = v4.position.x; v4.uv_y = v4.position.y;
-                            
-                            // A custom attribute for texture index can be added to Vertex struct
-                            // v1.texture_index = current_color_index;
+                            // Get color from palette
+                            glm::vec4 color = palette[current_color_index];
+                            v1.color = color;
+                            v2.color = color;
+                            v3.color = color;
+                            v4.color = color;
+
+                            // Set UV coordinates for face mapping
+                            float u_scale = 1.0f / float(w);
+                            float v_scale = 1.0f / float(h);
+                            v1.uv_x = 0.0f; v1.uv_y = 0.0f;
+                            v2.uv_x = 1.0f * w; v2.uv_y = 0.0f;
+                            v3.uv_x = 1.0f * w; v3.uv_y = 1.0f * h;
+                            v4.uv_x = 0.0f; v4.uv_y = 1.0f * h;
                             
                             v1.normal = normal; v2.normal = normal; v3.normal = normal; v4.normal = normal;
 
@@ -250,7 +256,7 @@ void VoxelModel::loadFromVoxFile(const std::string& model_path)
     // This can be parallelized for faster loading!
     for (auto& chunk : chunks)
     {
-        chunk.generateMesh();
+        chunk.generateMesh(palette);
     }
 }
 

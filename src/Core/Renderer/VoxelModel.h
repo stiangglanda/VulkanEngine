@@ -21,19 +21,19 @@ struct VoxelChunk
 
     [[nodiscard]] uint8_t getVoxel(uint32_t x, uint32_t y, uint32_t z) const;
     void setVoxel(uint32_t x, uint32_t y, uint32_t z, uint8_t paletteIndex);
-    void generateMesh();
+    void generateMesh(const std::vector<glm::vec4>& palette);
 };
 
 class VoxelModel
 {
 public:
     explicit VoxelModel(const std::string& model_path);
-    ~VoxelModel() = default;
+    virtual ~VoxelModel() = default; // Add virtual destructor
 
-    void setModelMatrix(const glm::mat4& matrix) { modelMatrix = matrix; }
-    [[nodiscard]] glm::mat4 getModelMatrix() const { return modelMatrix; }
-    [[nodiscard]] const std::vector<VoxelChunk>& getChunks() const { return chunks; }
-    [[nodiscard]] const std::vector<glm::vec4>& getPalette() const { return palette; }
+    virtual void setModelMatrix(const glm::mat4& matrix) { modelMatrix = matrix; }
+    [[nodiscard]] virtual glm::mat4 getModelMatrix() const { return modelMatrix; }
+    [[nodiscard]] virtual const std::vector<VoxelChunk>& getChunks() const { return chunks; }
+    [[nodiscard]] virtual const std::vector<glm::vec4>& getPalette() const { return palette; }
 
 private:
     void loadFromVoxFile(const std::string& model_path);
