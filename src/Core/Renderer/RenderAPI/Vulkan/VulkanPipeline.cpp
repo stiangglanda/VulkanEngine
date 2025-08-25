@@ -27,7 +27,7 @@ void VulkanPipeline::createPipeline(VkDescriptorSetLayout descriptorSetLayout, V
 
         pipelineBuilder.set_input_topology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 
-        pipelineBuilder.set_polygon_mode(VK_POLYGON_MODE_LINE);  // Changed from VK_POLYGON_MODE_FILL
+        pipelineBuilder.set_polygon_mode(VK_POLYGON_MODE_FILL); // Changed from VK_POLYGON_MODE_FILL
 
         pipelineBuilder.set_cull_mode(VK_CULL_MODE_BACK_BIT, VK_FRONT_FACE_COUNTER_CLOCKWISE);
 

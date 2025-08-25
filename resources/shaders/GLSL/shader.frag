@@ -9,4 +9,5 @@ layout(location = 0) out vec4 outColor;
 
 void main() {
     outColor = texture(texSampler, fragTexCoord);
+    outColor = vec4(fragColor, 1.0);//comment this out if you want to see the texture. This is only for the voxels
 }

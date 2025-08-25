@@ -22,10 +22,10 @@ class Sandbox : public Core::Application
       GetSceneGraph().getRegistry().get<staticModel>(entity).model->setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(3.0f, 0.0f, 0.0f)));
 
 
-      //const auto entity2 = GetSceneGraph().getRegistry().create();
-      //GetSceneGraph().getRegistry().emplace<Core::position>(entity2, glm::vec3(3.0f, 0.0f, 0.0f));
-      //GetSceneGraph().getRegistry().emplace<voxelModel>(entity2, Core::Renderer::loadVoxelModel(VOXEL_MODEL_PATH));
-      //GetSceneGraph().getRegistry().get<voxelModel>(entity2).model->setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(3.0f, 0.0f, 0.0f)));
+      const auto entity2 = GetSceneGraph().getRegistry().create();
+      GetSceneGraph().getRegistry().emplace<Core::position>(entity2, glm::vec3(3.0f, 0.0f, 0.0f));
+      GetSceneGraph().getRegistry().emplace<voxelModel>(entity2, Core::Renderer::loadVoxelModel(VOXEL_MODEL_PATH));
+      GetSceneGraph().getRegistry().get<voxelModel>(entity2).model->setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(3.0f, 0.0f, 0.0f)));
     }
 
     ~Sandbox()
