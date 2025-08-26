@@ -218,24 +218,6 @@ void VulkanAPI::recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex)
 
     vkCmdBeginRenderingKHR(command->getCommandBuffer(currentFrame), &render_info);
 
-
-
-    //VkRenderPassBeginInfo renderPassInfo{};
-    //renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-    //renderPassInfo.renderPass = renderPass->get_handle();
-    //renderPassInfo.framebuffer = swapChain.getFramebuffer(imageIndex);
-    //renderPassInfo.renderArea.offset = {0, 0};
-    //renderPassInfo.renderArea.extent = swapChain.getExtent();
-
-    //std::array<VkClearValue, 2> clearValues{};
-    //clearValues[0].color = {{0.0f, 0.0f, 0.0f, 1.0f}};
-    //clearValues[1].depthStencil = {1.0f, 0};
-    //renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
-    //renderPassInfo.pClearValues = clearValues.data();
-
-    //vkCmdBeginRenderPass(command->getCommandBuffer(currentFrame), 
-    //   &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-
     vkCmdBindPipeline(command->getCommandBuffer(currentFrame), 
     VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->get_handle());
 
@@ -252,53 +234,6 @@ void VulkanAPI::recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex)
     scissor.offset = {0, 0};
     scissor.extent = swapChain.getExtent();
     vkCmdSetScissor(command->getCommandBuffer(currentFrame), 0, 1, &scissor);
-
-    // Update descriptor set for both UBO and texture
-    //std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
-
-    //// UBO update
-    //VkDescriptorBufferInfo bufferInfo{};
-    //bufferInfo.buffer = model->get_uniformBuffersAt(currentFrame)->get_handle();
-    //bufferInfo.offset = 0;
-    //bufferInfo.range = sizeof(UniformBufferObject);
-
-    //descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    //descriptorWrites[0].dstSet = *model->get_descriptorSet_handle_at_index(currentFrame);
-    //descriptorWrites[0].dstBinding = 0;  // UBO binding
-    //descriptorWrites[0].dstArrayElement = 0;
-    //descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    //descriptorWrites[0].descriptorCount = 1;
-    //descriptorWrites[0].pBufferInfo = &bufferInfo;
-
-    //// vertex update
-    //VkDescriptorBufferInfo vertexbufferInfo{};
-    //vertexbufferInfo.buffer = model->get_VertexBuffer_handle();
-    //vertexbufferInfo.offset = 0;
-    //vertexbufferInfo.range = sizeof(Vertex) * model->getverticesSize();
-
-    //descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    //descriptorWrites[1].dstSet = *model->get_descriptorSet_handle_at_index(currentFrame);
-    //descriptorWrites[1].dstBinding = 1; // vertex binding
-    //descriptorWrites[1].dstArrayElement = 0;
-    //descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-    //descriptorWrites[1].descriptorCount = 1;
-    //descriptorWrites[1].pBufferInfo = &vertexbufferInfo;
-
-    //// Texture update
-    //VkDescriptorImageInfo imageInfo{};
-    //imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    //imageInfo.imageView = model->get_texture()->getImageView();
-    //imageInfo.sampler = model->get_texture()->getSampler();
-
-    //descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    //descriptorWrites[2].dstSet = *model->get_descriptorSet_handle_at_index(currentFrame);
-    //descriptorWrites[2].dstBinding = 2;  // Texture binding
-    //descriptorWrites[2].dstArrayElement = 0;
-    //descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    //descriptorWrites[2].descriptorCount = 1;
-    //descriptorWrites[2].pImageInfo = &imageInfo;
-
-    //vkUpdateDescriptorSets(device.getDevice(), descriptorWrites.size(), descriptorWrites.data(), 0, nullptr);
 
     vkCmdBindDescriptorSets(command->getCommandBuffer(currentFrame), 
     VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->get_PipelineLayout(), 0,
@@ -354,53 +289,6 @@ void VulkanAPI::recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex)
             const auto& chunkData = chunkDataVec[chunkIdx];
             if(chunkData.indexCount == 0) continue; // Skip empty chunks
 
-            //// Update descriptor sets
-            //std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
-
-            //// UBO update
-            //VkDescriptorBufferInfo bufferInfo{};
-            //bufferInfo.buffer = chunkData.uniformBuffers[currentFrame]->get_handle();
-            //bufferInfo.offset = 0;
-            //bufferInfo.range = sizeof(UniformBufferObject);
-
-            //descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            //descriptorWrites[0].dstSet = *voxModel->get_descriptorSet_handle_at_index(chunkIdx, currentFrame);
-            //descriptorWrites[0].dstBinding = 0;
-            //descriptorWrites[0].dstArrayElement = 0;
-            //descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-            //descriptorWrites[0].descriptorCount = 1;
-            //descriptorWrites[0].pBufferInfo = &bufferInfo;
-
-            //// Vertex buffer update
-            //VkDescriptorBufferInfo vertexBufferInfo{};
-            //vertexBufferInfo.buffer = chunkData.vertexBuffer->get_handle();
-            //vertexBufferInfo.offset = 0;
-            //vertexBufferInfo.range = sizeof(Vertex) * chunkData.vertexBuffer->get_size();
-
-            //descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            //descriptorWrites[1].dstSet = *voxModel->get_descriptorSet_handle_at_index(chunkIdx, currentFrame);
-            //descriptorWrites[1].dstBinding = 1;
-            //descriptorWrites[1].dstArrayElement = 0;
-            //descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-            //descriptorWrites[1].descriptorCount = 1;
-            //descriptorWrites[1].pBufferInfo = &vertexBufferInfo;
-
-            //// Texture update (use model's texture for now)
-            //VkDescriptorImageInfo imageInfo{};
-            //imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-            //imageInfo.imageView = model->get_texture()->getImageView();
-            //imageInfo.sampler = model->get_texture()->getSampler();
-
-            //descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            //descriptorWrites[2].dstSet = *voxModel->get_descriptorSet_handle_at_index(chunkIdx, currentFrame);
-            //descriptorWrites[2].dstBinding = 2;
-            //descriptorWrites[2].dstArrayElement = 0;
-            //descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-            //descriptorWrites[2].descriptorCount = 1;
-            //descriptorWrites[2].pImageInfo = &imageInfo;
-
-            //vkUpdateDescriptorSets(device.getDevice(), descriptorWrites.size(), descriptorWrites.data(), 0, nullptr);
-
             vkCmdBindDescriptorSets(command->getCommandBuffer(currentFrame), 
                 VK_PIPELINE_BIND_POINT_GRAPHICS, 
                 graphicsPipeline->get_PipelineLayout(), 
@@ -415,8 +303,6 @@ void VulkanAPI::recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex)
                 chunkData.indexCount, 1, 0, 0, 0);
         }
     }
-
-    //vkCmdEndRenderPass(command->getCommandBuffer(currentFrame));
 
     vkCmdEndRenderingKHR(command->getCommandBuffer(currentFrame));
 
