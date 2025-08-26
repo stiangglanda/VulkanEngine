@@ -11,6 +11,8 @@ VulkanVoxelModel::VulkanVoxelModel(const std::string model_path, VulkanDevice &d
 {
     createChunkBuffers(device, command);
     createUniformBuffers(device, max_frames_in_flight);
+    // Descriptor sets must be created after buffers
+    // Descriptor set layout will be passed in from VulkanAPI
     VE_CORE_INFO("Created VulkanVoxelModel");
 }
 
@@ -80,6 +82,23 @@ void VulkanVoxelModel::createUniformBuffers(VulkanDevice &device, const int max_
     }
 }
 
+void VulkanVoxelModel::createDescriptorSets(VulkanDevice &device, int max_frames_in_flight,
+                                            VkDescriptorSetLayout descriptorSetLayout, std::weak_ptr<VulkanImage> texture)
+{
+    for (auto& chunk : chunkData) {
+        if (!chunk.vertexBuffer || !chunk.indexBuffer) continue; // Skip empty chunks
+        chunk.descriptorSet = std::make_unique<VulkanDescriptorSet>(
+            device.getDevice(),
+            max_frames_in_flight,
+            descriptorSetLayout,
+            chunk.uniformBuffers,
+            chunk.vertexBuffer->get_handle(),
+            chunk.vertexBuffer->get_size(),
+            texture // No texture for voxel chunks yet
+        );
+    }
+}
+
 glm::mat4 VulkanVoxelModel::calculateChunkModelMatrix(const glm::uvec3& chunkGridPosition) const
 {
     // Calculate world position offset for this chunk
@@ -113,13 +132,13 @@ void VulkanVoxelModel::updateUniformBuffers(uint32_t currentImage, Camera& cam, 
 void VulkanVoxelModel::cleanup()
 {
     for (auto& chunk : chunkData) {
+        chunk.descriptorSet.reset();
         chunk.vertexBuffer.reset();
         chunk.indexBuffer.reset();
         for (auto& buffer : chunk.uniformBuffers) {
             buffer.reset();
         }
     }
-    
     VE_CORE_INFO("Destroyed VulkanVoxelModel");
 }
 

@@ -5,6 +5,7 @@
 #include "VulkanCommandBuffer.h"
 #include "VulkanDevice.h"
 #include "VulkanImage.h"
+#include "VulkanDescriptorSet.h"
 #include "camera.h"
 
 namespace Core
@@ -22,12 +23,20 @@ public:
     const std::shared_ptr<VulkanImage> get_texture() const { return texture; }
     void updateUniformBuffer(uint32_t currentImage, Camera& Cam, float aspect);
 
+    // New method to get descriptor set
+    VkDescriptorSet* get_descriptorSet_handle_at_index(unsigned int index) {
+        return descriptorSet->get_handle_ptr_at_index(index);
+    }
+    void createDescriptorSet(VulkanDevice &device, const int max_frames_in_flight,
+                             VkDescriptorSetLayout descriptorSetLayout);
+
 private:
     std::unique_ptr<VulkanBuffer> vertexBuffer;
     std::unique_ptr<VulkanBuffer> indexBuffer;
     std::vector<std::unique_ptr<VulkanBuffer>> uniformBuffers;
     std::vector<void *> uniformBuffersMapped;
     std::shared_ptr<VulkanImage> texture;
+    std::unique_ptr<VulkanDescriptorSet> descriptorSet; // Added descriptor set member
 
     void cleanup();
 

@@ -48,29 +48,37 @@ void VulkanModel::createUniformBuffers(VulkanDevice &device, const int max_frame
     }
 }
 
-void VulkanModel::updateUniformBuffer(uint32_t currentImage, Camera& Cam, float aspect) // TODO use actual camera
-{//TODO move everything ralatiing to camera to VulkanAPI into sepret UniformBuffer
+void VulkanModel::createDescriptorSet(VulkanDevice &device, const int max_frames_in_flight, VkDescriptorSetLayout descriptorSetLayout)
+{
+    descriptorSet = std::make_unique<VulkanDescriptorSet>(
+        device.getDevice(),
+        max_frames_in_flight,
+        descriptorSetLayout,
+        uniformBuffers,
+        vertexBuffer->get_handle(),
+        vertices.size(),
+        texture
+    );
+}
+
+void VulkanModel::updateUniformBuffer(uint32_t currentImage, Camera& Cam, float aspect)
+{
     static auto startTime = std::chrono::high_resolution_clock::now();
     auto currentTime = std::chrono::high_resolution_clock::now();
     float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
-    // Cam.update();
     UniformBufferObject ubo{};
 
     ubo.view = Cam.getViewMatrix();
-
-    ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    ubo.model = getModelMatrix();//TODO shoul be seperate from camera cause per object
-    // ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    ubo.proj = glm::perspective(glm::radians(45.0f), aspect,
-                                0.1f, 10.0f);
+    ubo.model = getModelMatrix();
+    ubo.proj = glm::perspective(glm::radians(45.0f), aspect, 0.1f, 100.0f);//TODO adjust far plane 
     ubo.proj[1][1] *= -1;
     memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
 }
 
 VulkanModel::VulkanModel(const std::string model_path, const std::string texture_path, VulkanDevice &device, const std::weak_ptr<VulkanCommandBuffer> command, const int max_frames_in_flight) : Model(model_path) 
 {
-    texture = ImageBuilder(0, 0) // with the option with_texture this will be set later
+    texture = ImageBuilder(0, 0)
               .with_format(VK_FORMAT_R8G8B8A8_SRGB)
               .with_image_type(VK_IMAGE_TYPE_2D)
               .with_usage(VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT)
@@ -91,13 +99,12 @@ VulkanModel::VulkanModel(const std::string model_path, const std::string texture
 
 void VulkanModel::cleanup() 
 {
+    descriptorSet.reset();
     texture.reset();
 
     for (size_t i = 0; i < uniformBuffers.size(); i++)
     {
-        uniformBuffers[i].reset(); // This is to avoid a segmentation fault since the memory
-                                   // already gets freed by VulkanMemoryManager::shutdown and
-                                   // then the destructore tryes to do the same therefore we call the destructure before
+        uniformBuffers[i].reset();
     }
     VE_CORE_INFO("Destroyed VulkanModel");
 }

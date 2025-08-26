@@ -14,6 +14,7 @@
 #include "VulkanModel.h"
 #include "VulkanVoxelModel.h"
 #include "VulkanSync.h"
+#include "UniformBufferObject.h"
 
 const std::string MODEL_PATH = RESOURCES_PATH "viking_room.obj";
 const std::string TEXTURE_PATH = RESOURCES_PATH "viking_room.png";
@@ -40,14 +41,7 @@ bool VulkanAPI::Init()
     swapChain.createDepthResourcesAndFramebuffers(device, renderPass->get_handle());
 
     model = std::make_unique<VulkanModel>(MODEL_PATH, TEXTURE_PATH, device, command, MAX_FRAMES_IN_FLIGHT);
-
-    descriptorSet = std::make_unique<VulkanDescriptorSet>(device.getDevice(),//TODO should probobly be in VulkanModel
-                                                        MAX_FRAMES_IN_FLIGHT,
-                                                        descriptorSetLayout->get_handle(), 
-                                                        model->get_uniformBuffers(), 
-                                                        model->get_VertexBuffer_handle(),
-                                                        model->getverticesSize(),
-                                                        model->get_texture());
+    model->createDescriptorSet(device, MAX_FRAMES_IN_FLIGHT, descriptorSetLayout->get_handle());
 
     command->createCommandBuffers(MAX_FRAMES_IN_FLIGHT);
 
@@ -58,12 +52,16 @@ bool VulkanAPI::Init()
 
 std::shared_ptr<Model> VulkanAPI::LoadModel(const std::string model_path, const std::string texture_path)
 {
-    return std::make_shared<VulkanModel>(model_path, texture_path, device, command, MAX_FRAMES_IN_FLIGHT);
+    auto vulkanModel = std::make_shared<VulkanModel>(model_path, texture_path, device, command, MAX_FRAMES_IN_FLIGHT);
+    vulkanModel->createDescriptorSet(device, MAX_FRAMES_IN_FLIGHT, descriptorSetLayout->get_handle());
+    return vulkanModel;
 }
 
 std::shared_ptr<VoxelModel> VulkanAPI::LoadVoxelModel(const std::string model_path)
 {
-    return std::make_shared<VulkanVoxelModel>(model_path, device, command, MAX_FRAMES_IN_FLIGHT);
+    auto voxelModel = std::make_shared<VulkanVoxelModel>(model_path, device, command, MAX_FRAMES_IN_FLIGHT);
+    voxelModel->createDescriptorSets(device, MAX_FRAMES_IN_FLIGHT, descriptorSetLayout->get_handle(),model->get_texture());
+    return voxelModel;
 }
 
 
@@ -153,8 +151,6 @@ bool VulkanAPI::Shutdown()
     graphicsPipeline.reset();
     
     renderPass.reset();
-
-    descriptorSet.reset();
 
     descriptorSetLayout.reset();
 
@@ -257,62 +253,62 @@ void VulkanAPI::recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex)
     scissor.extent = swapChain.getExtent();
     vkCmdSetScissor(command->getCommandBuffer(currentFrame), 0, 1, &scissor);
 
-    
-    vkCmdBindIndexBuffer(command->getCommandBuffer(currentFrame), 
-    model->get_IndexBuffer_handle(), 0, VK_INDEX_TYPE_UINT32);
-
     // Update descriptor set for both UBO and texture
-    std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
+    //std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
 
-    // UBO update
-    VkDescriptorBufferInfo bufferInfo{};
-    bufferInfo.buffer = model->get_uniformBuffersAt(currentFrame)->get_handle();
-    bufferInfo.offset = 0;
-    bufferInfo.range = sizeof(UniformBufferObject);
+    //// UBO update
+    //VkDescriptorBufferInfo bufferInfo{};
+    //bufferInfo.buffer = model->get_uniformBuffersAt(currentFrame)->get_handle();
+    //bufferInfo.offset = 0;
+    //bufferInfo.range = sizeof(UniformBufferObject);
 
-    descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    descriptorWrites[0].dstSet = *descriptorSet->get_handle_ptr_at_index(currentFrame);
-    descriptorWrites[0].dstBinding = 0;  // UBO binding
-    descriptorWrites[0].dstArrayElement = 0;
-    descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    descriptorWrites[0].descriptorCount = 1;
-    descriptorWrites[0].pBufferInfo = &bufferInfo;
+    //descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    //descriptorWrites[0].dstSet = *model->get_descriptorSet_handle_at_index(currentFrame);
+    //descriptorWrites[0].dstBinding = 0;  // UBO binding
+    //descriptorWrites[0].dstArrayElement = 0;
+    //descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    //descriptorWrites[0].descriptorCount = 1;
+    //descriptorWrites[0].pBufferInfo = &bufferInfo;
 
-    // vertex update
-    VkDescriptorBufferInfo vertexbufferInfo{};
-    vertexbufferInfo.buffer = model->get_VertexBuffer_handle();
-    vertexbufferInfo.offset = 0;
-    vertexbufferInfo.range = sizeof(Vertex) * model->getverticesSize();
+    //// vertex update
+    //VkDescriptorBufferInfo vertexbufferInfo{};
+    //vertexbufferInfo.buffer = model->get_VertexBuffer_handle();
+    //vertexbufferInfo.offset = 0;
+    //vertexbufferInfo.range = sizeof(Vertex) * model->getverticesSize();
 
-    descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    descriptorWrites[1].dstSet = *descriptorSet->get_handle_ptr_at_index(currentFrame);
-    descriptorWrites[1].dstBinding = 1; // vertex binding
-    descriptorWrites[1].dstArrayElement = 0;
-    descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-    descriptorWrites[1].descriptorCount = 1;
-    descriptorWrites[1].pBufferInfo = &vertexbufferInfo;
+    //descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    //descriptorWrites[1].dstSet = *model->get_descriptorSet_handle_at_index(currentFrame);
+    //descriptorWrites[1].dstBinding = 1; // vertex binding
+    //descriptorWrites[1].dstArrayElement = 0;
+    //descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    //descriptorWrites[1].descriptorCount = 1;
+    //descriptorWrites[1].pBufferInfo = &vertexbufferInfo;
 
-    // Texture update
-    VkDescriptorImageInfo imageInfo{};
-    imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    imageInfo.imageView = model->get_texture()->getImageView();
-    imageInfo.sampler = model->get_texture()->getSampler();
+    //// Texture update
+    //VkDescriptorImageInfo imageInfo{};
+    //imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    //imageInfo.imageView = model->get_texture()->getImageView();
+    //imageInfo.sampler = model->get_texture()->getSampler();
 
-    descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    descriptorWrites[2].dstSet = *descriptorSet->get_handle_ptr_at_index(currentFrame);
-    descriptorWrites[2].dstBinding = 2;  // Texture binding
-    descriptorWrites[2].dstArrayElement = 0;
-    descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    descriptorWrites[2].descriptorCount = 1;
-    descriptorWrites[2].pImageInfo = &imageInfo;
+    //descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    //descriptorWrites[2].dstSet = *model->get_descriptorSet_handle_at_index(currentFrame);
+    //descriptorWrites[2].dstBinding = 2;  // Texture binding
+    //descriptorWrites[2].dstArrayElement = 0;
+    //descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    //descriptorWrites[2].descriptorCount = 1;
+    //descriptorWrites[2].pImageInfo = &imageInfo;
 
-    vkUpdateDescriptorSets(device.getDevice(), descriptorWrites.size(), descriptorWrites.data(), 0, nullptr);
+    //vkUpdateDescriptorSets(device.getDevice(), descriptorWrites.size(), descriptorWrites.data(), 0, nullptr);
 
     vkCmdBindDescriptorSets(command->getCommandBuffer(currentFrame), 
     VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->get_PipelineLayout(), 0,
                    1, 
-                   descriptorSet->get_handle_ptr_at_index(currentFrame), 
+                   model->get_descriptorSet_handle_at_index(currentFrame), 
                    0, nullptr);
+
+    vkCmdBindIndexBuffer(command->getCommandBuffer(currentFrame), model->get_IndexBuffer_handle(), 0,
+                     VK_INDEX_TYPE_UINT32);
+
     vkCmdDrawIndexed(command->getCommandBuffer(currentFrame), 
            static_cast<uint32_t>(model->getIndicesSize()), 
            1, 0, 0, 0);  
@@ -328,68 +324,16 @@ void VulkanAPI::recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex)
         }
         sgModel->updateUniformBuffer(currentFrame, Cam, swapChain.getExtent().width / (float)swapChain.getExtent().height);
 
+        vkCmdBindDescriptorSets(command->getCommandBuffer(currentFrame), VK_PIPELINE_BIND_POINT_GRAPHICS,
+                        graphicsPipeline->get_PipelineLayout(), 0, 1,
+                        sgModel->get_descriptorSet_handle_at_index(currentFrame), 0, nullptr);
+
         vkCmdBindIndexBuffer(command->getCommandBuffer(currentFrame), 
         sgModel->get_IndexBuffer_handle(), 0, VK_INDEX_TYPE_UINT32);
-    
-    
-    
-        // Update descriptor set for both UBO and texture
-        std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
-    
-        // UBO update
-        VkDescriptorBufferInfo bufferInfo{};
-        bufferInfo.buffer = sgModel->get_uniformBuffersAt(currentFrame)->get_handle();
-        bufferInfo.offset = 0;
-        bufferInfo.range = sizeof(UniformBufferObject);
-    
-        descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descriptorWrites[0].dstSet = *descriptorSet->get_handle_ptr_at_index(currentFrame);
-        descriptorWrites[0].dstBinding = 0;  // UBO binding
-        descriptorWrites[0].dstArrayElement = 0;
-        descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        descriptorWrites[0].descriptorCount = 1;
-        descriptorWrites[0].pBufferInfo = &bufferInfo;
 
-        // vertex update
-        VkDescriptorBufferInfo vertexbufferInfo{};
-        vertexbufferInfo.buffer = sgModel->get_VertexBuffer_handle();
-        vertexbufferInfo.offset = 0;
-        vertexbufferInfo.range = sizeof(Vertex) * sgModel->getverticesSize();
-
-        descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descriptorWrites[1].dstSet = *descriptorSet->get_handle_ptr_at_index(currentFrame);
-        descriptorWrites[1].dstBinding = 1; // vertex binding
-        descriptorWrites[1].dstArrayElement = 0;
-        descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-        descriptorWrites[1].descriptorCount = 1;
-        descriptorWrites[1].pBufferInfo = &vertexbufferInfo;
-    
-        // Texture update
-        VkDescriptorImageInfo imageInfo{};
-        imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        imageInfo.imageView = sgModel->get_texture()->getImageView();
-        imageInfo.sampler = sgModel->get_texture()->getSampler();
-    
-        descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descriptorWrites[2].dstSet = *descriptorSet->get_handle_ptr_at_index(currentFrame);
-        descriptorWrites[2].dstBinding = 2;  // Texture binding
-        descriptorWrites[2].dstArrayElement = 0;
-        descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        descriptorWrites[2].descriptorCount = 1;
-        descriptorWrites[2].pImageInfo = &imageInfo;
-    
-        vkUpdateDescriptorSets(device.getDevice(), descriptorWrites.size(), descriptorWrites.data(), 0, nullptr);
-    
-    
-    
-        vkCmdBindDescriptorSets(command->getCommandBuffer(currentFrame), 
-             VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->get_PipelineLayout(), 0,
-                                1, 
-                                descriptorSet->get_handle_ptr_at_index(currentFrame), 
-                                0, nullptr);
         vkCmdDrawIndexed(command->getCommandBuffer(currentFrame), 
-                        static_cast<uint32_t>(sgModel->getIndicesSize()), 
-                        1, 0, 0, 0);  
+            static_cast<uint32_t>(sgModel->getIndicesSize()), 
+            1, 0, 0, 0);
     }          
 
     // Add Voxel model rendering
@@ -405,66 +349,67 @@ void VulkanAPI::recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex)
         voxModel->updateUniformBuffers(currentFrame, Cam, swapChain.getExtent().width / (float)swapChain.getExtent().height);
 
         // Render each chunk
-        for(const auto& chunkData : voxModel->getChunkData()) 
-        {
+        const auto& chunkDataVec = voxModel->getChunkData();
+        for(size_t chunkIdx = 0; chunkIdx < chunkDataVec.size(); ++chunkIdx) {
+            const auto& chunkData = chunkDataVec[chunkIdx];
             if(chunkData.indexCount == 0) continue; // Skip empty chunks
 
-            vkCmdBindIndexBuffer(command->getCommandBuffer(currentFrame), 
-                chunkData.indexBuffer->get_handle(), 0, VK_INDEX_TYPE_UINT32);
+            //// Update descriptor sets
+            //std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
 
-            // Update descriptor sets
-            std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
+            //// UBO update
+            //VkDescriptorBufferInfo bufferInfo{};
+            //bufferInfo.buffer = chunkData.uniformBuffers[currentFrame]->get_handle();
+            //bufferInfo.offset = 0;
+            //bufferInfo.range = sizeof(UniformBufferObject);
 
-            // UBO update
-            VkDescriptorBufferInfo bufferInfo{};
-            bufferInfo.buffer = chunkData.uniformBuffers[currentFrame]->get_handle();
-            bufferInfo.offset = 0;
-            bufferInfo.range = sizeof(UniformBufferObject);
+            //descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            //descriptorWrites[0].dstSet = *voxModel->get_descriptorSet_handle_at_index(chunkIdx, currentFrame);
+            //descriptorWrites[0].dstBinding = 0;
+            //descriptorWrites[0].dstArrayElement = 0;
+            //descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+            //descriptorWrites[0].descriptorCount = 1;
+            //descriptorWrites[0].pBufferInfo = &bufferInfo;
 
-            descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            descriptorWrites[0].dstSet = *descriptorSet->get_handle_ptr_at_index(currentFrame);
-            descriptorWrites[0].dstBinding = 0;
-            descriptorWrites[0].dstArrayElement = 0;
-            descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-            descriptorWrites[0].descriptorCount = 1;
-            descriptorWrites[0].pBufferInfo = &bufferInfo;
+            //// Vertex buffer update
+            //VkDescriptorBufferInfo vertexBufferInfo{};
+            //vertexBufferInfo.buffer = chunkData.vertexBuffer->get_handle();
+            //vertexBufferInfo.offset = 0;
+            //vertexBufferInfo.range = sizeof(Vertex) * chunkData.vertexBuffer->get_size();
 
-            // Vertex buffer update
-            VkDescriptorBufferInfo vertexBufferInfo{};
-            vertexBufferInfo.buffer = chunkData.vertexBuffer->get_handle();
-            vertexBufferInfo.offset = 0;
-            vertexBufferInfo.range = sizeof(Vertex) * chunkData.vertexBuffer->get_size();
+            //descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            //descriptorWrites[1].dstSet = *voxModel->get_descriptorSet_handle_at_index(chunkIdx, currentFrame);
+            //descriptorWrites[1].dstBinding = 1;
+            //descriptorWrites[1].dstArrayElement = 0;
+            //descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+            //descriptorWrites[1].descriptorCount = 1;
+            //descriptorWrites[1].pBufferInfo = &vertexBufferInfo;
 
-            descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            descriptorWrites[1].dstSet = *descriptorSet->get_handle_ptr_at_index(currentFrame);
-            descriptorWrites[1].dstBinding = 1;
-            descriptorWrites[1].dstArrayElement = 0;
-            descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-            descriptorWrites[1].descriptorCount = 1;
-            descriptorWrites[1].pBufferInfo = &vertexBufferInfo;
+            //// Texture update (use model's texture for now)
+            //VkDescriptorImageInfo imageInfo{};
+            //imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            //imageInfo.imageView = model->get_texture()->getImageView();
+            //imageInfo.sampler = model->get_texture()->getSampler();
 
-            // For now, use a default texture or palette texture
-            VkDescriptorImageInfo imageInfo{};
-            imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-            imageInfo.imageView = model->get_texture()->getImageView();  // You might want to create a palette texture
-            imageInfo.sampler = model->get_texture()->getSampler();
+            //descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            //descriptorWrites[2].dstSet = *voxModel->get_descriptorSet_handle_at_index(chunkIdx, currentFrame);
+            //descriptorWrites[2].dstBinding = 2;
+            //descriptorWrites[2].dstArrayElement = 0;
+            //descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+            //descriptorWrites[2].descriptorCount = 1;
+            //descriptorWrites[2].pImageInfo = &imageInfo;
 
-            descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            descriptorWrites[2].dstSet = *descriptorSet->get_handle_ptr_at_index(currentFrame);
-            descriptorWrites[2].dstBinding = 2;
-            descriptorWrites[2].dstArrayElement = 0;
-            descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-            descriptorWrites[2].descriptorCount = 1;
-            descriptorWrites[2].pImageInfo = &imageInfo;
-
-            vkUpdateDescriptorSets(device.getDevice(), descriptorWrites.size(), descriptorWrites.data(), 0, nullptr);
+            //vkUpdateDescriptorSets(device.getDevice(), descriptorWrites.size(), descriptorWrites.data(), 0, nullptr);
 
             vkCmdBindDescriptorSets(command->getCommandBuffer(currentFrame), 
                 VK_PIPELINE_BIND_POINT_GRAPHICS, 
                 graphicsPipeline->get_PipelineLayout(), 
                 0, 1, 
-                descriptorSet->get_handle_ptr_at_index(currentFrame), 
+                voxModel->get_descriptorSet_handle_at_index(chunkIdx, currentFrame), 
                 0, nullptr);
+
+            vkCmdBindIndexBuffer(command->getCommandBuffer(currentFrame), chunkData.indexBuffer->get_handle(), 0,
+                     VK_INDEX_TYPE_UINT32);
 
             vkCmdDrawIndexed(command->getCommandBuffer(currentFrame), 
                 chunkData.indexCount, 1, 0, 0, 0);

@@ -4,65 +4,53 @@
 #include "VulkanDebug.h"
 #include "VulkanInstance.h"
 #include "VulkanSurface.h"
-#include "camera.h"
-#include <memory>
-#define GLM_FORCE_RADIANS
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE
-#define GLM_ENABLE_EXPERIMENTAL
-#include "VulkanBuffer.h"
-#include "VulkanCommandBuffer.h"
-#include "VulkanPipelineLayout.h"
-#include "VulkanPipeline.h"
-#include "VulkanDescriptorSetLayout.h"
 #include "VulkanDevice.h"
-#include "VulkanImage.h"
 #include "VulkanSwapChain.h"
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include "VulkanRenderPass.h"
-#include "UniformBufferObject.h"
-#include "VulkanDescriptorSet.h"
-#include "VulkanModel.h"
+#include "VulkanDescriptorSetLayout.h"
+#include "VulkanPipeline.h"
 #include "VulkanSync.h"
-
-struct GLFWwindow;
+#include "VulkanModel.h"
+#include "camera.h"
+#include "../../VoxelModel.h"
 
 namespace Core
 {
 
+const uint32_t MAX_FRAMES_IN_FLIGHT = 2;
+
 class VulkanAPI : public RenderAPI
 {
-  public:
-    VulkanAPI()
-    {
-    }
-    virtual ~VulkanAPI() = default;
+public:
+    VulkanAPI()=default;
+    ~VulkanAPI()=default;
 
-    virtual bool Init() override;
-    virtual bool Shutdown() override;
-    virtual void Update(float delta) override;
-    virtual void Draw() override;
-    virtual void OnEvent(Event &e, float delta) override;
-    virtual std::shared_ptr<Model> LoadModel(const std::string model_path,const std::string texture_path) override;
-    virtual std::shared_ptr<VoxelModel> LoadVoxelModel(const std::string model_path) override;
+    bool Init() override;
+    bool Shutdown() override;
 
-  private:
-    void recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex);
+    void OnEvent(Event &e, float delta) override;
+    void Update(float delta) override;
+    void Draw() override;
+
+    std::shared_ptr<Model> LoadModel(const std::string model_path, const std::string texture_path) override;
+    std::shared_ptr<VoxelModel> LoadVoxelModel(const std::string model_path) override;
+
+private:
+    void recordCommandBuffer(uint32_t currentImage, uint32_t imageIndex);
+
+    std::vector<const char *> validationLayers = {
+        "VK_LAYER_KHRONOS_validation"};
 
 #ifdef NDEBUG
-    const bool enableValidationLayers = true;
+    const bool enableValidationLayers = false;
 #else
     const bool enableValidationLayers = true;
 #endif
 
-    const std::vector<const char *> validationLayers = {"VK_LAYER_KHRONOS_validation"};
-
-    const int MAX_FRAMES_IN_FLIGHT = 2;
-
-    VulkanInstance instance; // Vulkan library handle
+    VulkanInstance instance;  // Vulkan library handle
     VulkanDebug vkDebug;     // Vulkan debug output handle
     VulkanSurface surface;   // Vulkan window surface
-    VulkanDevice device;     // Vulkan device for commands // GPU chosen as the default device
+    VulkanDevice device;     // Vulkan device for commands
     std::shared_ptr<VulkanCommandBuffer> command;
 
     Camera Cam;
@@ -74,8 +62,6 @@ class VulkanAPI : public RenderAPI
     std::unique_ptr<VulkanPipeline> graphicsPipeline;
 
     std::unique_ptr<VulkanModel> model;
-
-    std::unique_ptr<VulkanDescriptorSet> descriptorSet;//TODO should probobly be in VulkanModel
 
     std::unique_ptr<VulkanSync> sync;
     uint32_t currentFrame = 0;

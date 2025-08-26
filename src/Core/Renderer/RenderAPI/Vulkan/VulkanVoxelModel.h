@@ -4,6 +4,7 @@
 #include "VulkanCommandBuffer.h"
 #include "VulkanDevice.h"
 #include "VulkanImage.h"
+#include "VulkanDescriptorSet.h"
 #include "camera.h"
 
 namespace Core
@@ -16,6 +17,7 @@ struct VulkanChunkData {
     std::vector<std::unique_ptr<VulkanBuffer>> uniformBuffers;
     std::vector<void*> uniformBuffersMapped;
     uint32_t indexCount;
+    std::unique_ptr<VulkanDescriptorSet> descriptorSet; // Descriptor set for this chunk
 };
 
 class VulkanVoxelModel : public VoxelModel 
@@ -28,6 +30,11 @@ public:
 
     const std::vector<VulkanChunkData>& getChunkData() const { return chunkData; }
     void updateUniformBuffers(uint32_t currentImage, Camera& cam, float aspect);
+    void createDescriptorSets(VulkanDevice &device, int max_frames_in_flight, VkDescriptorSetLayout descriptorSetLayout,
+                              std::weak_ptr<VulkanImage> texture);
+    VkDescriptorSet* get_descriptorSet_handle_at_index(size_t chunkIdx, unsigned int frameIdx) {
+        return chunkData[chunkIdx].descriptorSet->get_handle_ptr_at_index(frameIdx);
+    }
 
 private:
     std::vector<VulkanChunkData> chunkData;
