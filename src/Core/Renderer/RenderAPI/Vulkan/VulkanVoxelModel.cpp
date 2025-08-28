@@ -102,13 +102,13 @@ void VulkanVoxelModel::createDescriptorSets(VulkanDevice &device, int max_frames
 glm::mat4 VulkanVoxelModel::calculateChunkModelMatrix(const glm::uvec3& chunkGridPosition) const
 {
     // Calculate world position offset for this chunk
-    glm::vec3 chunkOffset = glm::vec3(chunkGridPosition) * static_cast<float>(CHUNK_SIZE);
+    glm::vec3 chunkOffset = glm::vec3(chunkGridPosition);
     
     // Create translation matrix for the chunk
-    glm::mat4 chunkTranslation = glm::translate(glm::mat4(1.0f), chunkOffset);
+    glm::mat4 chunkTranslation = glm::translate(getModelMatrix(), chunkOffset);
     
     // Combine with the model's transformation
-    return getModelMatrix() * chunkTranslation;
+    return chunkTranslation;
 }
 
 void VulkanVoxelModel::updateUniformBuffers(uint32_t currentImage, Camera& cam, float aspect)
