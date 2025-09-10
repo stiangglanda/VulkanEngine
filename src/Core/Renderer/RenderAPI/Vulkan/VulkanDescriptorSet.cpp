@@ -109,7 +109,6 @@ namespace Core
         VE_CORE_INFO("Create Descriptor Sets");
     }
 
-    // Helper function to destroy the descriptor set layout
     void VulkanDescriptorSet::cleanup() 
     {
         if (descriptorPool != VK_NULL_HANDLE) {

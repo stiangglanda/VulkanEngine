@@ -3,8 +3,6 @@
 
 namespace Core
 {
-
-// Create the descriptor set layout
     void VulkanDescriptorSetLayout::createDescriptorSetLayout() {
         VkDescriptorSetLayoutBinding uboLayoutBinding{};
         uboLayoutBinding.binding = 0;
@@ -42,7 +40,6 @@ namespace Core
         }
     }
 
-    // Helper function to destroy the descriptor set layout
     void VulkanDescriptorSetLayout::cleanup() {
         if (descriptorSetLayout != VK_NULL_HANDLE) {
             vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);

@@ -3,8 +3,6 @@
 
 namespace Core
 {
-
-// Create the Pipeline Layout
     void VulkanPipelineLayout::createPipelineLayout(std::vector<VkDescriptorSetLayout> descriptorSetLayouts) 
     {
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
@@ -23,7 +21,6 @@ namespace Core
         }
     }
 
-    // Helper function to destroy the Pipeline Layout
     void VulkanPipelineLayout::cleanup() {
         if (pipelineLayout != VK_NULL_HANDLE) {
             vkDestroyPipelineLayout(device, pipelineLayout, nullptr);

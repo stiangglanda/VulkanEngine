@@ -65,14 +65,6 @@ VkDeviceSize VulkanBuffer::get_size() const
     return size;
 }
 
-// uint64_t VulkanBuffer::get_device_address() const
-// {
-// 	VkBufferDeviceAddressInfoKHR buffer_device_address_info{};
-// 	buffer_device_address_info.sType  = VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_INFO;
-// 	buffer_device_address_info.buffer = get_handle();
-// 	return vkGetBufferDeviceAddressKHR(get_device().getDevice(), &buffer_device_address_info);
-// }
-
 void VulkanBuffer::copyBuffer(std::weak_ptr<VulkanCommandBuffer> command, VkBuffer srcBuffer, VkBuffer dstBuffer,
                               VkDeviceSize size)
 {

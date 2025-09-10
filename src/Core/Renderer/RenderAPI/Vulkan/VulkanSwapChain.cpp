@@ -15,7 +15,6 @@ void VulkanSwapChain::Init(const VulkanDevice &device, VkSurfaceKHR surface)
 void VulkanSwapChain::createDepthResourcesAndFramebuffers(VulkanDevice &device, VkRenderPass renderPass)//TODO Remove renderPass
 {
     createDepthResources(device);
-    //createFramebuffers(device.getDevice(), renderPass);
     VE_CORE_INFO("Vulkan Swap Chain DepthResources and Framebuffers created");
 }
 
@@ -232,7 +231,6 @@ void VulkanSwapChain::recreateSwapChain(VulkanDevice &device, VkSurfaceKHR surfa
     createSwapChain(device, surface);
     createImageViews(device);
     createDepthResources(device);
-    //createFramebuffers(device.getDevice(), renderPass);
 }
 
 void VulkanSwapChain::createDepthResources(VulkanDevice &device)

@@ -19,7 +19,6 @@ class VulkanPipelineBuilder
     VkPipelineRenderingCreateInfo _renderInfo;
     VkFormat _colorAttachmentformat;
     VkPipelineRenderingCreateInfoKHR _dynamicRendering;
-    //VkRenderPass _renderPass;//TODO use dynamic rendering
 
     VulkanPipelineBuilder()
     {

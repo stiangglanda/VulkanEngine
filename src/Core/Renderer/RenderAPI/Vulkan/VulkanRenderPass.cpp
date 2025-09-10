@@ -3,7 +3,6 @@
 
 namespace Core
 {
-    // Create the Render Pass
     void VulkanRenderPass::createRenderPass(VulkanDevice& Device, VulkanSwapChain& SwapChain) 
     {
         VkAttachmentDescription colorAttachment{};
@@ -72,7 +71,6 @@ namespace Core
         }
     }
 
-    // Helper function to destroy the Render Pass
     void VulkanRenderPass::cleanup() {
         if (renderPass != VK_NULL_HANDLE) {
             vkDestroyRenderPass(device, renderPass, nullptr);

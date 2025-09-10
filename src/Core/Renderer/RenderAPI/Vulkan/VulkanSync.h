@@ -7,25 +7,21 @@ namespace Core
 
 class VulkanSync {
 public:
-    // Constructor to create VulkanSync
     VulkanSync(VkDevice device, const int max_frames_in_flight) : device(device) 
     {
         createSyncObjects(device, max_frames_in_flight);
     }
 
-    // Destructor to destroy the VulkanSync Objects
     ~VulkanSync() 
     {
         cleanup();
     }
 
-    // Move constructor
     VulkanSync(VulkanSync&& other) noexcept 
         : device(other.device) 
     {
     }
 
-    // Move assignment operator
     VulkanSync& operator=(VulkanSync&& other) noexcept {
         if (this != &other) {
             cleanup(); // Destroy current layout if it exists
@@ -34,11 +30,9 @@ public:
         return *this;
     }
 
-    // Deleted copy constructor and assignment operator to prevent copying
     VulkanSync(const VulkanSync&) = delete;
     VulkanSync& operator=(const VulkanSync&) = delete;
 
-    // Get the Semaphore by index
     VkSemaphore get_imageAvailableSemaphores_handle_by_index(unsigned int index) const
     {
         if(index<imageAvailableSemaphores.size())
@@ -52,7 +46,6 @@ public:
         }
     }
 
-    // Get the Semaphore by index
     VkSemaphore* get_renderFinishedSemaphores_handle_by_index(unsigned int index)
     {
         if(index<renderFinishedSemaphores.size())
@@ -66,7 +59,6 @@ public:
         }
     }
 
-    // Get the Fence by index
     VkFence* get_inFlightFences_handle_by_index(unsigned int index)
     {
         if(index<inFlightFences.size())
@@ -86,7 +78,6 @@ private:
     std::vector<VkSemaphore> renderFinishedSemaphores;
     std::vector<VkFence> inFlightFences;
 
-    // Create the VulkanSync Objects
     void createSyncObjects(VkDevice device, const int max_frames_in_flight);
 
     void cleanup();

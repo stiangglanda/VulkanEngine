@@ -4,9 +4,7 @@
 
 namespace Core
 {
-/**
- * @brief Facade class around a Vulkan handle providing some utility functions.
- */
+
 template <typename T> class VulkanResource
 {
   public:

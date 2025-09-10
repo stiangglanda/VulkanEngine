@@ -42,10 +42,7 @@ void VulkanPipeline::createPipeline(VkDescriptorSetLayout descriptorSetLayout, V
 
         pipelineLayout = std::make_unique<VulkanPipelineLayout>(device.getDevice(), descriptorSetLayouts);
 
-        // use the triangle layout we created
         pipelineBuilder._pipelineLayout = pipelineLayout->get_handle();
-
-        //pipelineBuilder._renderPass = renderPass;
 
         // render format
         pipelineBuilder.set_color_attachment_format(color_attachment_format);

@@ -10,7 +10,6 @@
 namespace Core
 {
 
-// Structure to hold Vulkan-specific data for each chunk
 struct VulkanChunkData {
     std::unique_ptr<VulkanBuffer> vertexBuffer;
     std::unique_ptr<VulkanBuffer> indexBuffer;
