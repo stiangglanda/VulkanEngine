@@ -268,11 +268,9 @@ void VoxelModel::loadFromVoxFile(const std::string& model_path)
         }
     }
 
-    // 7. Clean up
     ogt_vox_destroy_scene(scene);
 
     // 8. Generate the initial mesh for every chunk
-    // This can be parallelized for faster loading!
     for (auto& chunk : chunks)
     {
         chunk.generateMesh(palette);

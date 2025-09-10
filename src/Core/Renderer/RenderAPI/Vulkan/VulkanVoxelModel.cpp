@@ -11,8 +11,6 @@ VulkanVoxelModel::VulkanVoxelModel(const std::string model_path, VulkanDevice &d
 {
     createChunkBuffers(device, command);
     createUniformBuffers(device, max_frames_in_flight);
-    // Descriptor sets must be created after buffers
-    // Descriptor set layout will be passed in from VulkanAPI
     VE_CORE_INFO("Created VulkanVoxelModel");
 }
 
@@ -101,13 +99,10 @@ void VulkanVoxelModel::createDescriptorSets(VulkanDevice &device, int max_frames
 
 glm::mat4 VulkanVoxelModel::calculateChunkModelMatrix(const glm::uvec3& chunkGridPosition) const
 {
-    // Calculate world position offset for this chunk
     glm::vec3 chunkOffset = glm::vec3(chunkGridPosition);
     
-    // Create translation matrix for the chunk
     glm::mat4 chunkTranslation = glm::translate(getModelMatrix(), chunkOffset);
     
-    // Combine with the model's transformation
     return chunkTranslation;
 }
 
@@ -116,7 +111,6 @@ void VulkanVoxelModel::updateUniformBuffers(uint32_t currentImage, Camera& cam, 
     const auto& chunks = getChunks();
     
     for (size_t i = 0; i < chunks.size(); i++) {
-        // Skip empty chunks
         if (chunks[i].isEmpty) continue;
 
         UniformBufferObject ubo{};
