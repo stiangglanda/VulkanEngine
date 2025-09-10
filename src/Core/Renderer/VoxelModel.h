@@ -19,7 +19,7 @@ struct VoxelChunk
 
     VoxelChunk() : voxels(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE, 0) {}
 
-    [[nodiscard]] uint8_t getVoxel(uint32_t x, uint32_t y, uint32_t z) const;
+    [[nodiscard]] uint8_t getVoxel(int x, int y, int z) const;
     void setVoxel(uint32_t x, uint32_t y, uint32_t z, uint8_t paletteIndex);
     void generateMesh(const std::vector<glm::vec4>& palette);
 };
