@@ -15,7 +15,6 @@ add_subdirectory("vendor/glm")
 add_subdirectory("vendor/tinyobjloader")
 add_subdirectory("vendor/spdlog")
 add_subdirectory("vendor/VulkanMemoryAllocator")
-add_subdirectory("vendor/vk-bootstrap")
 add_subdirectory("vendor/fastgltf")
 add_subdirectory("vendor/entt")
 add_subdirectory("vendor/volk")
@@ -44,15 +43,9 @@ add_library(Core ${IMGUI_SOURCES} "vendor/stb_image.h" "src/Core/Core.cpp" "src/
 "src/Core/Events/MouseEvent.h" "src/Core/vepch.h" "src/Core/vepch.cpp" 
 "src/Core/Log.cpp" "src/Core/Renderer/RenderAPI.cpp" "src/Core/Renderer/RenderAPI.h" 
 "src/Core/Renderer/RenderAPI/Vulkan/VulkanAPI.h" "src/Core/Renderer/RenderAPI/Vulkan/VulkanAPI.cpp" 
-"src/Core/Renderer/RenderAPI/Vulkan/vk_types.h" "src/Core/Renderer/RenderAPI/Vulkan/VulkanPipelineBuilder.h" 
-"src/Core/Renderer/RenderAPI/Vulkan/VulkanPipelineBuilder.cpp" "src/Core/Renderer/RenderAPI/Vulkan/vk_initializers.h" 
-"src/Core/Renderer/RenderAPI/Vulkan/vk_initializers.cpp"  
-"src/Core/Renderer/RenderAPI/Vulkan/vk_descriptors.h" "src/Core/Renderer/RenderAPI/Vulkan/vk_descriptors.cpp"   
-"src/Core/Renderer/RenderAPI/Vulkan/meshes.h" "src/Core/Renderer/RenderAPI/Vulkan/meshes.cpp"
-"src/Core/Renderer/RenderAPI/Vulkan/vk_images.h" "src/Core/Renderer/RenderAPI/Vulkan/vk_images.cpp" 
-"src/Core/Renderer/RenderAPI/Vulkan/camera.cpp" "src/Core/Renderer/RenderAPI/Vulkan/vk_loader.h" 
-"src/Core/Renderer/RenderAPI/Vulkan/vk_loader.cpp" "src/Core/Renderer/RenderAPI/Vulkan/vk_engine.h" 
-"src/Core/Renderer/RenderAPI/Vulkan/vk_engine.cpp" "src/Core/Renderer/RenderAPI/Vulkan/imgui/imgui_impl_vulkan.h" 
+"src/Core/Renderer/RenderAPI/Vulkan/VulkanPipelineBuilder.h" 
+"src/Core/Renderer/RenderAPI/Vulkan/VulkanPipelineBuilder.cpp" "src/Core/Renderer/RenderAPI/Vulkan/camera.cpp"
+"src/Core/Renderer/RenderAPI/Vulkan/imgui/imgui_impl_vulkan.h" 
 "src/Core/Renderer/RenderAPI/Vulkan/imgui/imgui_impl_vulkan.cpp" "src/Core/Renderer/RenderAPI/Vulkan/imgui/imgui_impl_glfw.h" 
 "src/Core/Renderer/RenderAPI/Vulkan/imgui/imgui_impl_glfw.cpp" "src/Core/Renderer/Renderer.cpp"
 "src/Core/Renderer/Renderer.h" "src/Core/Renderer/RenderAPI/Vulkan/VulkanInstance.h"
@@ -85,6 +78,7 @@ set_property(TARGET Core PROPERTY CXX_STANDARD 20)
 target_precompile_headers(Core PRIVATE "src/Core/vepch.h")
 
 target_compile_definitions(Core PUBLIC RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/") # This is useful to get an ASSETS_PATH in your IDE during development but you should comment this if you compile a release version and uncomment the next line
+target_compile_definitions(Core PUBLIC VK_NO_PROTOTYPES)
 
 target_include_directories(Core 
 	PUBLIC vendor/glfw/include 
@@ -102,7 +96,6 @@ target_link_libraries(Core glfw)
 target_link_libraries(Core glm::glm)
 target_link_libraries(Core spdlog::spdlog)
 target_link_libraries(Core GPUOpen::VulkanMemoryAllocator)
-target_link_libraries(Core vk-bootstrap::vk-bootstrap)
 target_link_libraries(Core fastgltf::fastgltf)
 target_link_libraries(Core tinyobjloader)
 target_link_libraries(Core EnTT::EnTT)
