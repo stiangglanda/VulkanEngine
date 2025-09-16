@@ -110,11 +110,12 @@ void VulkanVoxelModel::updateUniformBuffers(uint32_t currentImage, Camera& cam, 
 {
     const auto& chunks = getChunks();
     
-    for (size_t i = 0; i < chunks.size(); i++) {
+    for (size_t i = 0; i < chunks.size(); i++) 
+    {
         if (chunks[i].isEmpty) continue;
 
         UniformBufferObject ubo{};
-        ubo.model = calculateChunkModelMatrix(chunks[i].chunkGridPosition);
+        ubo.model = getModelMatrix();
         ubo.view = cam.getViewMatrix();
         ubo.proj = glm::perspective(glm::radians(45.0f), aspect, 0.1f, 100.0f);
         ubo.proj[1][1] *= -1; // Flip Y coordinate for Vulkan

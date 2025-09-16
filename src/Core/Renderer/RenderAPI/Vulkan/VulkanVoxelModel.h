@@ -13,7 +13,8 @@ namespace Core
 struct VulkanChunkData {
     std::unique_ptr<VulkanBuffer> vertexBuffer;
     std::unique_ptr<VulkanBuffer> indexBuffer;
-    std::vector<std::unique_ptr<VulkanBuffer>> uniformBuffers;
+    std::vector<std::unique_ptr<VulkanBuffer>>
+        uniformBuffers; // TODO remove uniformBuffers in chunk because the VoxelModel only needs one UBO with the model matrix and not per chunk
     std::vector<void*> uniformBuffersMapped;
     uint32_t indexCount;
     std::unique_ptr<VulkanDescriptorSet> descriptorSet; // Descriptor set for this chunk
@@ -39,9 +40,9 @@ private:
     std::vector<VulkanChunkData> chunkData;
     
     void cleanup();
-    void createChunkBuffers(VulkanDevice &device, const std::weak_ptr<VulkanCommandBuffer> command);
+    void createChunkBuffers(VulkanDevice &device, const std::weak_ptr<VulkanCommandBuffer> command);//TODO move uniformBuffers from VulkanChunkData to VulkanVoxelModel
     void createUniformBuffers(VulkanDevice &device, const int max_frames_in_flight);
-    glm::mat4 calculateChunkModelMatrix(const glm::uvec3& chunkGridPosition) const;
+    glm::mat4 calculateChunkModelMatrix(const glm::uvec3& chunkGridPosition) const;//TODO no longer needed
 };
 
 }
