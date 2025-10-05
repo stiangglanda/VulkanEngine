@@ -8,7 +8,7 @@ It shows a small sample that implements rendering an obj model with Vulkan in on
 
 The plan is to use the engine primarily for voxel rendering.
 
-![alt text](https://github.com/stiangglanda/VulkanEngine/blob/master/resources/VulkanSample.png)
+<img width="1374" height="721" alt="VulkanEngine" src="https://github.com/user-attachments/assets/270b9f95-7870-4250-a71c-3b45c7329407" />
 
 ## Build Guide
 ---
